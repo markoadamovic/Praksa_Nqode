@@ -13,5 +13,7 @@ public interface BookService {
     BookDto createBook(BookDto bookDto, Long writerId);
 
 
+    BookDto getBook(Long bookId);
 
+    void delete(Long bookId);
 }

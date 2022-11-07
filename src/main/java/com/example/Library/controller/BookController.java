@@ -22,10 +22,23 @@ public class BookController {
 
         return new ResponseEntity<List<BookDto>>(bookList, HttpStatus.OK);
     }
+    @GetMapping(path = "/{bookId}")
+    public ResponseEntity<?> getBook(@PathVariable Long bookId){
+        BookDto bookDto = bookService.getBook(bookId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(bookDto);
+    }
     @PostMapping(path = "/writer/{writerId}")
     public ResponseEntity<?> createBook(@RequestBody BookDto bookDto, @PathVariable Long writerId){
 
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDto, writerId));
 
+    }
+
+    @DeleteMapping(path = "/{bookId}")
+    public ResponseEntity<?> deleteBook(@PathVariable Long bookId){
+        bookService.delete(bookId);
+
+        return ResponseEntity.ok().build();
     }
 }

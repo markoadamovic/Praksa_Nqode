@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -23,7 +24,7 @@ public class BookServiceImpl implements BookService {
         List<Book> bookList = bookRepository.findAll();
         List<BookDto> bookDtos = new ArrayList<>();
 
-        for(Book book : bookList){
+        for (Book book : bookList) {
             BookDto bookDto = BookMapper.toDto(book);
             bookDtos.add(bookDto);
         }
@@ -37,5 +38,25 @@ public class BookServiceImpl implements BookService {
         book.setWriter(writerService.getWriterModel(writerId));
 
         return BookMapper.toDto(bookRepository.save(book));
+    }
+
+    @Override
+    public BookDto getBook(Long bookId) {
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isPresent()) {
+            Book book = bookOptional.get();
+            return BookMapper.toDto(book);
+        } else {
+            return null; //toDO Exception
+        }
+    }
+
+    @Override
+    public void delete(Long bookId) {
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if (bookOptional.isPresent()) {
+            Book book = bookOptional.get();
+            bookRepository.delete(book);
+        }
     }
 }
