@@ -2,7 +2,6 @@ package com.example.Library.controller;
 
 import com.example.Library.model.dto.WriterDto;
 import com.example.Library.service.WriterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/writer")
 public class WriterController {
 
-    @Autowired
-    WriterService writerService;
+    private final WriterService writerService;
+
+    public WriterController(WriterService writerService) {
+        this.writerService = writerService;
+    }
 
     @PostMapping
     public ResponseEntity<?> createWriter(@RequestBody WriterDto writerDto){
@@ -26,7 +28,7 @@ public class WriterController {
         return ResponseEntity.status(HttpStatus.OK).body(writerService.updateWriter(writerDto, writerId));
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{writerId}")
     public ResponseEntity<?> deleteWriter(@PathVariable Long id){
 
         writerService.delete(id);
