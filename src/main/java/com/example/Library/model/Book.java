@@ -1,7 +1,5 @@
 package com.example.Library.model;
 
-import lombok.Builder;
-
 import javax.persistence.*;
 
 @Entity
@@ -16,8 +14,15 @@ public class Book {
     @Column(name = "description")
     private String description;
     @ManyToOne
-    @JoinColumn(name = "writer_id")
-    private Writer writer;
+    @JoinColumn(name = "author_id")
+    private Author author;
+
+    public Book(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+    public Book(){
+    }
 
     public String getTitle() {
         return title;
@@ -43,18 +48,12 @@ public class Book {
         this.description = description;
     }
 
-    public Writer getWriter() {
-        return writer;
+    public Author getAuthor() {
+        return author;
     }
 
-    public void setWriter(Writer writer) {
-        this.writer = writer;
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
-    public Book(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-    public Book(){
-    }
 }

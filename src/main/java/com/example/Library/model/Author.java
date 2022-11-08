@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Writer {
+public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -16,8 +16,15 @@ public class Writer {
     @Column(name = "last_name")
     private String lastName;
 
-    @OneToMany(mappedBy = "writer")
+    @OneToMany(mappedBy = "author")
     private List<Book> books;
+
+    public Author(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    public Author(){
+    }
 
     public Long getId() {
         return id;
@@ -51,10 +58,5 @@ public class Writer {
         this.books = books;
     }
 
-    public Writer(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-    public Writer(){
-    }
+
 }

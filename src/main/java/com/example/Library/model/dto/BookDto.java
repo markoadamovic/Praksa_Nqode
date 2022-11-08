@@ -1,19 +1,21 @@
 package com.example.Library.model.dto;
 
-import com.example.Library.model.Book;
-import com.example.Library.model.Writer;
-import com.example.Library.repository.WriterRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
-
 public class BookDto {
 
     private Long id;
     private String title;
     private String description;
+    private Long authorId;
 
-    private Long writerId;
+    public BookDto(Long id, String title, String description, Long authorId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.authorId = authorId;
+    }
+
+    public BookDto() {
+    }
 
     public Long getId() {
         return id;
@@ -39,22 +41,12 @@ public class BookDto {
         this.description = description;
     }
 
-    public Long getWriterId() {
-        return this.writerId;
+    public Long getAuthorId() {
+        return this.authorId;
     }
 
-    public void setWriter(Long writer) {
-        this.writerId = writer;
-    }
-
-    public BookDto() {
-    }
-
-    public BookDto(Long id, String title, String description, Long writerId) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.writerId = writerId;
+    public void setAuthor(Long authorId) {
+        this.authorId = authorId;
     }
 
 }

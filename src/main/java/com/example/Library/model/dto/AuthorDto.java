@@ -1,12 +1,21 @@
 package com.example.Library.model.dto;
 
-public class WriterDto {
+public class AuthorDto {
 
     private Long id;
 
     private String firstName;
 
     private String lastName;
+
+    public AuthorDto(Long id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public AuthorDto() {
+    }
 
     public Long getId() {
         return id;
@@ -32,12 +41,4 @@ public class WriterDto {
         this.lastName = lastName;
     }
 
-    public WriterDto(Long id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public WriterDto() {
-    }
 }

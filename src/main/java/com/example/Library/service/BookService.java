@@ -8,10 +8,9 @@ import java.util.List;
 @Service
 public interface BookService {
 
-    List<BookDto> getBooks();
-
     BookDto createBook(BookDto bookDto, Long writerId);
 
+    List<BookDto> getBooks();
 
     BookDto getBook(Long bookId);
 

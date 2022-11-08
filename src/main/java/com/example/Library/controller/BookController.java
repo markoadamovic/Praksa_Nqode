@@ -10,40 +10,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/book")
+@RequestMapping(value = "/author/{authorId}/book")
 public class BookController {
 
     @Autowired
     BookService bookService;
 
-    @GetMapping
-    public ResponseEntity<?> getBooks(){
-        List<BookDto> bookList = bookService.getBooks();
+    @PostMapping
+    public ResponseEntity<?> createBook(@RequestBody BookDto bookDto,
+                                        @PathVariable Long authorId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDto, authorId));
+    }
 
+    @GetMapping
+    public ResponseEntity<?> getBooks() {
+        List<BookDto> bookList = bookService.getBooks();
         return new ResponseEntity<List<BookDto>>(bookList, HttpStatus.OK);
     }
+
     @GetMapping(path = "/{bookId}")
-    public ResponseEntity<?> getBook(@PathVariable Long bookId){
+    public ResponseEntity<?> getBook(@PathVariable Long bookId) {
         BookDto bookDto = bookService.getBook(bookId);
-
         return ResponseEntity.status(HttpStatus.OK).body(bookDto);
-    }
-    @PostMapping(path = "/{writerId}")
-    public ResponseEntity<?> createBook(@RequestBody BookDto bookDto, @PathVariable Long writerId){
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDto, writerId));
     }
 
     @DeleteMapping(path = "/{bookId}")
-    public ResponseEntity<?> deleteBook(@PathVariable Long bookId){
+    public ResponseEntity<?> deleteBook(@PathVariable Long bookId) {
         bookService.delete(bookId);
-
         return ResponseEntity.ok().build();
     }
 
     @PutMapping(path = "/{bookId}")
-    public ResponseEntity<?> updateBook(@RequestBody BookDto bookDto,@PathVariable Long bookId) {
-        BookDto bookDto1 = bookService.updateBook(bookDto,bookId);
+    public ResponseEntity<?> updateBook(@RequestBody BookDto bookDto,
+                                        @PathVariable Long bookId) {
+        BookDto bookDto1 = bookService.updateBook(bookDto, bookId);
         return ResponseEntity.status(HttpStatus.OK).body(bookDto1);
     }
+
 }
