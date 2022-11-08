@@ -28,11 +28,10 @@ public class BookController {
 
         return ResponseEntity.status(HttpStatus.OK).body(bookDto);
     }
-    @PostMapping(path = "/writer/{writerId}")
+    @PostMapping(path = "/{writerId}")
     public ResponseEntity<?> createBook(@RequestBody BookDto bookDto, @PathVariable Long writerId){
 
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDto, writerId));
-
     }
 
     @DeleteMapping(path = "/{bookId}")
@@ -40,5 +39,11 @@ public class BookController {
         bookService.delete(bookId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(path = "/{bookId}")
+    public ResponseEntity<?> updateBook(@RequestBody BookDto bookDto,@PathVariable Long bookId) {
+        BookDto bookDto1 = bookService.updateBook(bookDto,bookId);
+        return ResponseEntity.status(HttpStatus.OK).body(bookDto1);
     }
 }

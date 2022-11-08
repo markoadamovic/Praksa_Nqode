@@ -7,6 +7,8 @@ import com.example.Library.repository.WriterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -66,5 +68,16 @@ public class WriterServiceImpl implements WriterService{
         }else{
             return null; //toDo EXception
         }
+    }
+
+    @Override
+    public List<WriterDto> getWriters() {
+        List<Writer> writers = writerRepository.findAll();
+        List<WriterDto> writerDtos = new ArrayList<>();
+        for(Writer writer : writers) {
+            WriterDto writerDto = WriterMapper.toDto(writer);
+            writerDtos.add(writerDto);
+        }
+        return writerDtos;
     }
 }

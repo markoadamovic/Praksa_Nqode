@@ -1,5 +1,6 @@
 package com.example.Library.service;
 
+import com.example.Library.model.Writer;
 import com.example.Library.model.dto.BookDto;
 import com.example.Library.model.Book;
 import com.example.Library.model.mapper.BookMapper;
@@ -41,22 +42,41 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto getBook(Long bookId) {
+    public void delete(Long bookId) {
         Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if (bookOptional.isPresent()) {
+        if(bookOptional.isPresent()) {
             Book book = bookOptional.get();
-            return BookMapper.toDto(book);
-        } else {
-            return null; //toDO Exception
+            bookRepository.delete(book);
+        }else{
+            //toDo
         }
     }
 
     @Override
-    public void delete(Long bookId) {
+    public BookDto updateBook(BookDto bookDto, Long bookId) {
         Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if (bookOptional.isPresent()) {
+        if(bookOptional.isPresent()) {
             Book book = bookOptional.get();
-            bookRepository.delete(book);
+            book.setTitle(bookDto.getTitle());
+            book.setDescription(bookDto.getDescription());
+
+            Writer writer = writerService.getWriterModel(bookDto.getWriterId());
+            book.setWriter(writer);
+
+            return BookMapper.toDto(bookRepository.save(book));
+        }else {
+            return null; //toDO EX
+        }
+    }
+
+    @Override
+    public BookDto getBook(Long bookId) {
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        if(bookOptional.isPresent()){
+            Book book = bookOptional.get();
+            return BookMapper.toDto(book);
+        }else{
+            throw new RuntimeException("Book not found"); //TODO
         }
     }
 }

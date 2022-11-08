@@ -39,7 +39,7 @@ public class BookDto {
         this.description = description;
     }
 
-    public Long getWriter() {
+    public Long getWriterId() {
         return this.writerId;
     }
 

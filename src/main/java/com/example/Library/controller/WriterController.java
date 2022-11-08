@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/writer")
 public class WriterController {
@@ -39,5 +41,12 @@ public class WriterController {
         WriterDto writerDto = writerService.getWriter(writerId);
         return ResponseEntity.status(HttpStatus.OK).body(writerDto);
 
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getWriters() {
+        List<WriterDto> writersDto = writerService.getWriters();
+
+        return new ResponseEntity<List<WriterDto>>(writersDto, HttpStatus.OK);
     }
 }

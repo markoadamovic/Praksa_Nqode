@@ -4,6 +4,8 @@ import com.example.Library.model.Writer;
 import com.example.Library.model.dto.WriterDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface WriterService {
     WriterDto createWriter(WriterDto writerDto);
@@ -15,4 +17,6 @@ public interface WriterService {
    Writer getWriterModel(Long id);
 
    WriterDto getWriter(Long writerId);
+
+    List<WriterDto> getWriters();
 }
