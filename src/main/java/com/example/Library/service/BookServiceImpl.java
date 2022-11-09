@@ -73,4 +73,5 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException());
         return BookMapper.toDto(book);
     }
+
 }
