@@ -11,10 +11,13 @@ public class Book {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "title")
     private String title;
+
     @Column(name = "description")
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;

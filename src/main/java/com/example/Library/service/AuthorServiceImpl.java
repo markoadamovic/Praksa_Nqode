@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -22,46 +23,38 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDto createAuthor(AuthorDto authorDto) {
         Author author = AuthorMapper.toEntity(authorDto);
+
         return AuthorMapper.toDto(authorRepository.save(author));
     }
 
     @Override
-    public Author getAuthorModel(Long authorId) {
-        if (authorRepository.findById(authorId).isEmpty()) {
-            throw new RuntimeException("no author");
+    public Author findAuthorModel(Long authorId) {
+        Optional<Author> optionalAuthor = authorRepository.findById(authorId);
+        if(optionalAuthor.isEmpty()){
+            throw new RuntimeException(String.format("Author with id %s is not found", authorId)); //TODO
         }
-        return authorRepository.findById(authorId).get();
+        return optionalAuthor.get();
     }
 
     @Override
     public AuthorDto getAuthor(Long authorId) {
-        Optional<Author> authorOptional = authorRepository.findById(authorId);
-        if (authorOptional.isEmpty()) {
-            return null;
-        }
-        Author author = authorOptional.get();
+        Author author = findAuthorModel(authorId);
         return AuthorMapper.toDto(author);
+
     }
 
     @Override
     public List<AuthorDto> getAuthors() {
         List<Author> authors = authorRepository.findAll();
-        List<AuthorDto> authorDtos = new ArrayList<>();
-        for (Author author : authors) {
-            AuthorDto authorDto = AuthorMapper.toDto(author);
-            authorDtos.add(authorDto);
-        }
-        return authorDtos;
+
+        return authors.stream()
+                .map(AuthorMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public AuthorDto updateAuthor(AuthorDto authorDto, Long authorId) {
-        Optional<Author> authorOptional = authorRepository.findById(authorId);
-        if (authorOptional.isEmpty()) {
-            return null; // toDo Exception handling
-        }
-
-        Author author = authorOptional.get();
+        Author author = findAuthorModel(authorId);
         author.setFirstName(authorDto.getFirstName());
         author.setLastName(authorDto.getLastName());
 
@@ -70,23 +63,16 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void delete(Long authorId) {
-        if (authorRepository.findById(authorId).isEmpty()) {
-            throw new RuntimeException("No author");
-        }
         if (authorHasBooks(authorId)) {
-            throw new RuntimeException("has books");
+            throw new RuntimeException("Has books"); //TODO
         }
-        Author author = authorRepository.findById(authorId).get();
-        authorRepository.delete(author);
 
+        Author author = findAuthorModel(authorId);
+        authorRepository.delete(author);
     }
 
     private Boolean authorHasBooks(Long authorId) {
-        Author a = authorRepository.isAuthorAssignedToBook(authorId);
-        if (a.getBooks().isEmpty()) {
-            return false;
-        }
-        return true;
+        return authorRepository.isAuthorAssignedToBook(authorId);
     }
 
 }

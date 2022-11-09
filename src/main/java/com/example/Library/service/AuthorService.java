@@ -14,7 +14,7 @@ public interface AuthorService {
 
     void delete(Long authorId);
 
-    Author getAuthorModel(Long authorId);
+    Author findAuthorModel(Long authorId);
 
     AuthorDto getAuthor(Long authorId);
 

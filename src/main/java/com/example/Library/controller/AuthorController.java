@@ -13,8 +13,11 @@ import java.util.List;
 @RequestMapping(value = "/author")
 public class AuthorController {
 
-    @Autowired
-    AuthorService authorService;
+    private final AuthorService authorService;
+
+    public AuthorController(AuthorService authorService){
+        this.authorService = authorService;
+    }
 
     @PostMapping
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
@@ -24,18 +27,21 @@ public class AuthorController {
     @GetMapping(path = "/{authorId}")
     public ResponseEntity<AuthorDto> getAuthor(@PathVariable Long authorId) {
         AuthorDto authorDto = authorService.getAuthor(authorId);
+
         return ResponseEntity.status(HttpStatus.OK).body(authorDto);
     }
 
     @GetMapping
     public ResponseEntity<List<AuthorDto>> getAuthors() {
         List<AuthorDto> authorsDto = authorService.getAuthors();
-        return new ResponseEntity<List<AuthorDto>>(authorsDto, HttpStatus.OK);
+
+        return ResponseEntity.status(HttpStatus.OK).body(authorsDto);
     }
 
     @DeleteMapping(value = "/{authorId}")
     public ResponseEntity<AuthorDto> deleteAuthor(@PathVariable Long authorId) {
         authorService.delete(authorId);
+
         return ResponseEntity.ok().build();
     }
 

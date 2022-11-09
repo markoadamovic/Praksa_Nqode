@@ -13,8 +13,11 @@ import java.util.List;
 @RequestMapping(value = "/author/{authorId}/book")
 public class BookController {
 
-    @Autowired
-    BookService bookService;
+    private final BookService bookService;
+
+    public BookController(BookService bookService){
+        this.bookService = bookService;
+    }
 
     @PostMapping
     public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto,
@@ -25,18 +28,21 @@ public class BookController {
     @GetMapping
     public ResponseEntity<List<BookDto>> getBooks() {
         List<BookDto> bookList = bookService.getBooks();
-        return new ResponseEntity<List<BookDto>>(bookList, HttpStatus.OK);
+
+        return ResponseEntity.status(HttpStatus.OK).body(bookList);
     }
 
     @GetMapping(path = "/{bookId}")
     public ResponseEntity<BookDto> getBook(@PathVariable Long bookId) {
         BookDto bookDto = bookService.getBook(bookId);
+
         return ResponseEntity.status(HttpStatus.OK).body(bookDto);
     }
 
     @DeleteMapping(path = "/{bookId}")
     public ResponseEntity<BookDto> deleteBook(@PathVariable Long bookId) {
         bookService.delete(bookId);
+
         return ResponseEntity.ok().build();
     }
 
@@ -44,6 +50,7 @@ public class BookController {
     public ResponseEntity<BookDto> updateBook(@RequestBody BookDto bookDto,
                                               @PathVariable Long bookId) {
         BookDto bookDto1 = bookService.updateBook(bookDto, bookId);
+
         return ResponseEntity.status(HttpStatus.OK).body(bookDto1);
     }
 

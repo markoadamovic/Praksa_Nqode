@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface AuthorRepository extends JpaRepository <Author, Long> {
 
-    @Query("SELECT a FROM Author a JOIN Book b ON a.id = b.author.id WHERE a.id = :authorId")
-    Author isAuthorAssignedToBook(@Param("authorId") Long authorId);
+    @Query("SELECT count(b) > 0 FROM Book b " +
+            "WHERE b.author.id = :authorId")
+    Boolean isAuthorAssignedToBook(@Param("authorId") Long authorId);
 }

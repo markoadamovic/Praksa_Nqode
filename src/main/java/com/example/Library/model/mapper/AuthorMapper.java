@@ -6,13 +6,11 @@ import com.example.Library.model.dto.AuthorDto;
 public class AuthorMapper {
 
     public static Author toEntity(AuthorDto authorDto) {
-        Author author = new Author(authorDto.getFirstName(), authorDto.getLastName());
-        return author;
+        return new Author(authorDto.getFirstName(), authorDto.getLastName());
     }
 
     public static AuthorDto toDto(Author author) {
-        AuthorDto authorDto = new AuthorDto(author.getId(), author.getFirstName(), author.getLastName());
-        return authorDto;
+        return new AuthorDto(author.getId(), author.getFirstName(), author.getLastName());
     }
 
 }
