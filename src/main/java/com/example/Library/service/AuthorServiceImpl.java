@@ -33,59 +33,59 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.findById(authorId).get();
     }
 
-        @Override
-        public AuthorDto getAuthor (Long authorId){
-            Optional<Author> authorOptional = authorRepository.findById(authorId);
-            if (authorOptional.isEmpty()) {
-                return null;
-            }
-            Author author = authorOptional.get();
-            return AuthorMapper.toDto(author);
+    @Override
+    public AuthorDto getAuthor(Long authorId) {
+        Optional<Author> authorOptional = authorRepository.findById(authorId);
+        if (authorOptional.isEmpty()) {
+            return null;
         }
-
-        @Override
-        public List<AuthorDto> getAuthors () {
-            List<Author> authors = authorRepository.findAll();
-            List<AuthorDto> authorDtos = new ArrayList<>();
-            for (Author author : authors) {
-                AuthorDto authorDto = AuthorMapper.toDto(author);
-                authorDtos.add(authorDto);
-            }
-            return authorDtos;
-        }
-
-        @Override
-        public AuthorDto updateAuthor (AuthorDto authorDto, Long authorId){
-            Optional<Author> authorOptional = authorRepository.findById(authorId);
-            if (authorOptional.isEmpty()) {
-                return null; // toDo Exception handling
-            }
-
-            Author author = authorOptional.get();
-            author.setFirstName(authorDto.getFirstName());
-            author.setLastName(authorDto.getLastName());
-
-            return AuthorMapper.toDto(authorRepository.save(author));
-        }
-
-        @Override
-        public void delete (Long authorId){
-            if (authorRepository.findById(authorId).isEmpty()) {
-                throw new RuntimeException("No author");
-            }
-            if (authorHasBooks(authorId)) {
-                throw new RuntimeException("has books");
-            }
-            Author author = authorRepository.findById(authorId).get();
-            authorRepository.delete(author);
-
-        }
-
-        private Boolean authorHasBooks (Long authorId){
-            Author a = authorRepository.isAuthorAssignedToBook(authorId);
-            if (a.getBooks().isEmpty()) {
-                return false;
-            }
-            return true;
-        }
+        Author author = authorOptional.get();
+        return AuthorMapper.toDto(author);
     }
+
+    @Override
+    public List<AuthorDto> getAuthors() {
+        List<Author> authors = authorRepository.findAll();
+        List<AuthorDto> authorDtos = new ArrayList<>();
+        for (Author author : authors) {
+            AuthorDto authorDto = AuthorMapper.toDto(author);
+            authorDtos.add(authorDto);
+        }
+        return authorDtos;
+    }
+
+    @Override
+    public AuthorDto updateAuthor(AuthorDto authorDto, Long authorId) {
+        Optional<Author> authorOptional = authorRepository.findById(authorId);
+        if (authorOptional.isEmpty()) {
+            return null; // toDo Exception handling
+        }
+
+        Author author = authorOptional.get();
+        author.setFirstName(authorDto.getFirstName());
+        author.setLastName(authorDto.getLastName());
+
+        return AuthorMapper.toDto(authorRepository.save(author));
+    }
+
+    @Override
+    public void delete(Long authorId) {
+        if (authorRepository.findById(authorId).isEmpty()) {
+            throw new RuntimeException("No author");
+        }
+        if (authorHasBooks(authorId)) {
+            throw new RuntimeException("has books");
+        }
+        Author author = authorRepository.findById(authorId).get();
+        authorRepository.delete(author);
+
+    }
+
+    private Boolean authorHasBooks(Long authorId) {
+        Author a = authorRepository.isAuthorAssignedToBook(authorId);
+        if (a.getBooks().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+}
