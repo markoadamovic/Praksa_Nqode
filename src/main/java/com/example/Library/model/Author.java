@@ -1,7 +1,6 @@
 package com.example.Library.model;
 
 
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -23,7 +22,8 @@ public class Author {
         this.firstName = firstName;
         this.lastName = lastName;
     }
-    public Author(){
+
+    public Author() {
     }
 
     public Long getId() {

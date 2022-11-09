@@ -18,7 +18,7 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto,
-                                        @PathVariable Long authorId) {
+                                              @PathVariable Long authorId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDto, authorId));
     }
 
@@ -42,7 +42,7 @@ public class BookController {
 
     @PutMapping(path = "/{bookId}")
     public ResponseEntity<BookDto> updateBook(@RequestBody BookDto bookDto,
-                                        @PathVariable Long bookId) {
+                                              @PathVariable Long bookId) {
         BookDto bookDto1 = bookService.updateBook(bookDto, bookId);
         return ResponseEntity.status(HttpStatus.OK).body(bookDto1);
     }
