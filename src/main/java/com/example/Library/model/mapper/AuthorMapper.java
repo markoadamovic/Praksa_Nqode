@@ -1,6 +1,6 @@
 package com.example.Library.model.mapper;
 
-import com.example.Library.model.Author;
+import com.example.Library.model.entity.Author;
 import com.example.Library.model.dto.AuthorDto;
 
 public class AuthorMapper {

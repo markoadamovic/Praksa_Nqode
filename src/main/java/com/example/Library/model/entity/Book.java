@@ -1,4 +1,6 @@
-package com.example.Library.model;
+package com.example.Library.model.entity;
+
+import com.example.Library.model.entity.Author;
 
 import javax.persistence.*;
 

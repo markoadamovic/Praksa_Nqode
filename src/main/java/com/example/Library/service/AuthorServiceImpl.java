@@ -1,6 +1,6 @@
 package com.example.Library.service;
 
-import com.example.Library.model.Author;
+import com.example.Library.model.entity.Author;
 import com.example.Library.model.dto.AuthorDto;
 import com.example.Library.model.mapper.AuthorMapper;
 import com.example.Library.repository.AuthorRepository;

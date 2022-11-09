@@ -1,6 +1,6 @@
 package com.example.Library.model.mapper;
 
-import com.example.Library.model.Book;
+import com.example.Library.model.entity.Book;
 import com.example.Library.model.dto.BookDto;
 
 public class BookMapper {

@@ -1,8 +1,8 @@
 package com.example.Library.service;
 
-import com.example.Library.model.Author;
+import com.example.Library.model.entity.Author;
 import com.example.Library.model.dto.BookDto;
-import com.example.Library.model.Book;
+import com.example.Library.model.entity.Book;
 import com.example.Library.model.mapper.BookMapper;
 import com.example.Library.repository.BookRepository;
 import org.springframework.stereotype.Service;
