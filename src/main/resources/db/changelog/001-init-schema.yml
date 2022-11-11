@@ -38,7 +38,7 @@ databaseChangeLog:
                  primariKey: true
                  nullable: false
              - column:
-               name: firstname_name
+               name: first_name
                type: varchar(50)
                constrains:
                  nullable: false
