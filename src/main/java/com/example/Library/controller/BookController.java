@@ -40,18 +40,16 @@ public class BookController {
     }
 
     @DeleteMapping(path = "/{bookId}")
-    public ResponseEntity<BookDto> deleteBook(@PathVariable Long bookId) {
+    public ResponseEntity<Void> deleteBook(@PathVariable Long bookId) {
         bookService.delete(bookId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping(path = "/{bookId}")
     public ResponseEntity<BookDto> updateBook(@RequestBody BookDto bookDto,
                                               @PathVariable Long bookId) {
-        BookDto bookDto1 = bookService.updateBook(bookDto, bookId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(bookDto1);
+        return ResponseEntity.status(HttpStatus.OK).body(bookService.updateBook(bookDto, bookId));
     }
 
 }
