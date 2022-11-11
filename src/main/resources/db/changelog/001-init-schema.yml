@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-init-schema
+      author: markoadamovic
+      changes:
+        - createTable:
+            tableName: book
+            columns:
+              - column:
+                name: id
+                type: bigint
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+              - column:
+                  name: title
+                  type: varchar(50)
+                  constrains:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(150)
+              - column:
+                  name: author_id
+                  type: Integer
+                  constrains:
+                    nullable: false
+
+        - createTable:
+           tableName: author
+           columns:
+             - column:
+               name: id
+               type: bigint
+               autoIncrement: true
+               constraints:
+                 primariKey: true
+                 nullable: false
+             - column:
+               name: first_name
+               type: varchar(50)
+               constrains:
+                 nullable: false
+             - column:
+               name: last_name
+               type: varchar(50)
+               constrains:
+                 nullable: false
+
