@@ -7,16 +7,16 @@ public class UserDto {
     private Long id;
     private String firstName;
     private String lastName;
-    private String adress;
+    private String address;
     private String email;
     private UserRole userRole;
 
-    public UserDto(Long id, String firstName, String lastName, String email, String adress, UserRole userRole) {
+    public UserDto(Long id, String firstName, String lastName, String email, String address, UserRole userRole) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.adress = adress;
+        this.address = address;
         this.userRole = userRole;
     }
 
@@ -47,12 +47,12 @@ public class UserDto {
         this.lastName = lastName;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getEmail() {

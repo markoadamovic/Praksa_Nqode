@@ -7,44 +7,64 @@ databaseChangeLog:
             tableName: book
             columns:
               - column:
-                name: id
-                type: bigint
-                autoIncrement: true
+                  name: id
+                  type: bigint
+                  autoIncrement: true
                 constraints:
                   primaryKey: true
                   nullable: false
               - column:
                   name: title
                   type: varchar(50)
-                  constrains:
-                    nullable: false
               - column:
                   name: description
                   type: varchar(150)
               - column:
                   name: author_id
-                  type: Integer
-                  constrains:
-                    nullable: false
-
+                  type: bigint
         - createTable:
            tableName: author
            columns:
              - column:
-               name: id
-               type: bigint
-               autoIncrement: true
+                 name: id
+                 type: bigint
+                 autoIncrement: true
                constraints:
-                 primariKey: true
+                 primaryKey: true
                  nullable: false
              - column:
-               name: first_name
-               type: varchar(50)
-               constrains:
-                 nullable: false
+                 name: first_name
+                 type: varchar(50)
              - column:
-               name: last_name
-               type: varchar(50)
-               constrains:
-                 nullable: false
+                 name: last_name
+                 type: varchar(50)
+        - createTable:
+           tableName: user
+           columns:
+             - column:
+                 name: id
+                 type: bigint
+                 autoIncrement: true
+             - column:
+                 name: first_name
+                 type: varchar(50)
+             - column:
+                 name: last_name
+                 type: varchar(50)
+             - column:
+                 name: email
+                 type: varchar(50)
+                 constraints:
+                   nullable: false
+                   unique: true
+             - column:
+                 name: address
+                 type: varchar(50)
+             - column:
+                 name: password
+                 type: varchar(50)
+             - column:
+                 name: role
+                 type: varchar(50)
+
 

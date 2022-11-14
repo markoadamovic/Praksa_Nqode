@@ -1,5 +1,6 @@
 package com.example.Library.service;
 
+import com.example.Library.exception.NotFoundException;
 import com.example.Library.model.entity.Author;
 import com.example.Library.model.dto.BookDto;
 import com.example.Library.model.entity.Book;
@@ -42,11 +43,8 @@ public class BookServiceImpl implements BookService {
     }
 
     public Book findBookModel(Long bookId){
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if(bookOptional.isEmpty()) {
-            throw new RuntimeException(String.format("Book with id %s is not found", bookId)); //TODO
-        }
-        return bookOptional.get();
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new NotFoundException("Book with id " + bookId + " is not found"));
     }
 
     @Override

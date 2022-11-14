@@ -1,5 +1,7 @@
 package com.example.Library.service;
 
+import com.example.Library.exception.AuthorIsAssignedToBookException;
+import com.example.Library.exception.NotFoundException;
 import com.example.Library.model.entity.Author;
 import com.example.Library.model.dto.AuthorDto;
 import com.example.Library.model.mapper.AuthorMapper;
@@ -28,19 +30,15 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author findAuthorModel(Long authorId) {
-        Optional<Author> optionalAuthor = authorRepository.findById(authorId);
-        if(optionalAuthor.isEmpty()){
-            throw new RuntimeException(String.format("Author with id %s is not found", authorId)); //TODO
-        }
-        return optionalAuthor.get();
+    public Author findAuthorModel(Long authorId) throws NotFoundException {
+        return authorRepository.findById(authorId).orElseThrow(() -> new NotFoundException("Author is not found"));
     }
 
     @Override
     public AuthorDto getAuthor(Long authorId) {
         Author author = findAuthorModel(authorId);
-        return AuthorMapper.toDto(author);
 
+        return AuthorMapper.toDto(author);
     }
 
     @Override
@@ -64,11 +62,12 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void delete(Long authorId) {
         if (authorHasBooks(authorId)) {
-            throw new RuntimeException("Has books"); //TODO
+            throw new AuthorIsAssignedToBookException("Author has books");
         }
 
         Author author = findAuthorModel(authorId);
         authorRepository.delete(author);
+
     }
 
     private Boolean authorHasBooks(Long authorId) {

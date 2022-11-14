@@ -1,5 +1,6 @@
 package com.example.Library.service;
 
+import com.example.Library.exception.NotFoundException;
 import com.example.Library.model.entity.Author;
 import com.example.Library.model.dto.AuthorDto;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public interface AuthorService {
 
     void delete(Long authorId);
 
-    Author findAuthorModel(Long authorId);
+    Author findAuthorModel(Long authorId) throws NotFoundException;
 
     AuthorDto getAuthor(Long authorId);
 
