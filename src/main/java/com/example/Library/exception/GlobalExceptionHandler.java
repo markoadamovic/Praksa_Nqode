@@ -23,8 +23,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
-    @ExceptionHandler(EmailNotUniqueException.class)
-    public ResponseEntity<ErrorMessage> handeEmailNotUniqueException(EmailNotUniqueException e) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorMessage> handleBadRequestException(BadRequestException e) {
         ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);

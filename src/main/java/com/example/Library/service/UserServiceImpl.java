@@ -1,6 +1,6 @@
 package com.example.Library.service;
 
-import com.example.Library.exception.EmailNotUniqueException;
+import com.example.Library.exception.BadRequestException;
 import com.example.Library.exception.NotFoundException;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
@@ -10,7 +10,6 @@ import com.example.Library.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +25,7 @@ public class UserServiceImpl implements UserService {
     public UserCreateDto createUser(UserCreateDto userCreateDto) {
 
         if(userWithEmailExists(userCreateDto.getEmail())) {
-            throw new EmailNotUniqueException("User with email " + userCreateDto.getEmail() + " exists");
+            throw new BadRequestException("User with email " + userCreateDto.getEmail() + " exists");
         }
         User user = UserMapper.toEntity(userCreateDto);
 
