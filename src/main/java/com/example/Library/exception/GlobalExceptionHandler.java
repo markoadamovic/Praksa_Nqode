@@ -18,16 +18,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthorIsAssignedToBookException.class)
     public ResponseEntity<ErrorMessage> handeAuthorIsAssignedToBookException(AuthorIsAssignedToBookException e) {
-        ErrorMessage message = new ErrorMessage(HttpStatus.CONFLICT, e.getMessage());
+        ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
     @ExceptionHandler(EmailNotUniqueException.class)
     public ResponseEntity<ErrorMessage> handeEmailNotUniqueException(EmailNotUniqueException e) {
-        ErrorMessage message = new ErrorMessage(HttpStatus.CONFLICT, e.getMessage());
+        ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
 }
