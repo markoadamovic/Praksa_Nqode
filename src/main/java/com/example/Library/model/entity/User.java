@@ -20,29 +20,30 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "adress")
-    private String adress;
+    @Column(name = "address")
+    private String address;
 
     @Column(name = "password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private UserRole userRole;
 
-    public User(String firstName, String lastName, String email, String adress, String password, UserRole userRole) {
+    public User(String firstName, String lastName, String email, String address, String password, UserRole userRole) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.adress = adress;
+        this.address = address;
         this.password = password;
         this.userRole = userRole;
     }
 
-    public User(String firstName, String lastName, String email, String adress, UserRole userRole) {
+    public User(String firstName, String lastName, String email, String address, UserRole userRole) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.adress = adress;
+        this.address = address;
         this.userRole = userRole;
     }
 
@@ -81,12 +82,12 @@ public class User {
         this.email = email;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
     public void setAdress(String adress) {
-        this.adress = adress;
+        this.address = adress;
     }
 
     public String getPassword() {

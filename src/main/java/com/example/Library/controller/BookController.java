@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/author/{authorId}/book")
+@RequestMapping(value = "/book")
 public class BookController {
 
     private final BookService bookService;
@@ -19,7 +19,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @PostMapping
+    @PostMapping(value = "/{authorId}")
     public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto,
                                               @PathVariable Long authorId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDto, authorId));

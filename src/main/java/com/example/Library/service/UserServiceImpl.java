@@ -1,5 +1,7 @@
 package com.example.Library.service;
 
+import com.example.Library.exception.BadRequestException;
+import com.example.Library.exception.NotFoundException;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.entity.User;
@@ -8,7 +10,6 @@ import com.example.Library.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,18 +23,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserCreateDto createUser(UserCreateDto userCreateDto) {
-        //TODO EXception if exists(user.email) throw...
+
+        if(userWithEmailExists(userCreateDto.getEmail())) {
+            throw new BadRequestException("User with email " + userCreateDto.getEmail() + " exists");
+        }
         User user = UserMapper.toEntity(userCreateDto);
 
         return UserMapper.toUserCreateDto(userRepository.save(user));
     }
 
-    public User findUserModel(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if(userOptional.isEmpty()){
-            throw new RuntimeException("User not found"); //TODO
-        }
-        return userOptional.get();
+    public boolean userWithEmailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public User findUserModel(Long id) throws NotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
     }
 
     @Override
@@ -64,7 +69,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
-        user.setAdress(userDto.getAdress());
+        user.setAdress(userDto.getAddress());
         user.setUserType(userDto.getUserType());
 
         return UserMapper.toDto(userRepository.save(user));

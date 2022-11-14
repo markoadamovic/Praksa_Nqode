@@ -1,5 +1,6 @@
 package com.example.Library.model.entity;
 
+
 public enum UserRole {
 
     ADMINISTRATOR("ADMINISTRATOR"),

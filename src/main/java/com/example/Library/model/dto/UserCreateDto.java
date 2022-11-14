@@ -7,16 +7,16 @@ public class UserCreateDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String adress;
+    private String address;
     private String password;
     private UserRole userRole;
 
     public UserCreateDto(String firstName, String lastName, String email,
-                          String adress, String password, UserRole userRole) {
+                          String address, String password, UserRole userRole) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.adress = adress;
+        this.address = address;
         this.password = password;
         this.userRole = userRole;
     }
@@ -45,12 +45,12 @@ public class UserCreateDto {
         this.email = email;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String adress) {
+        this.address = address;
     }
 
     public String getPassword() {
