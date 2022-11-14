@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@RequestMapping(value = "/author/{authorId}/book") //TODO getBooks(u putanju bezveze stavljam authorID)
 @RequestMapping(value = "/book")
 public class BookController {
 
