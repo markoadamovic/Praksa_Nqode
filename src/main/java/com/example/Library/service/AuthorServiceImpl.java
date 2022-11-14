@@ -30,7 +30,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author findAuthorModel(Long authorId) throws NotFoundException {
+    public Author findAuthorModel(Long authorId) {
         return authorRepository.findById(authorId).orElseThrow(() -> new NotFoundException("Author is not found"));
     }
 
@@ -62,7 +62,8 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void delete(Long authorId) {
         if (authorHasBooks(authorId)) {
-            throw new AuthorIsAssignedToBookException("Author has books");
+            throw new AuthorIsAssignedToBookException(String.format("author with id %s can not be deleted" +
+                    "because he has book assigned to him ", authorId));
         }
 
         Author author = findAuthorModel(authorId);
