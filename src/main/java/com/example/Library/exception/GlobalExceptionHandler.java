@@ -17,9 +17,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(AuthorIsAssignedToBookException.class)
-    public ResponseEntity<ErrorMessage> handeAuthorIsAssignedToBookException(AuthorIsAssignedToBookException e) {
+    public ResponseEntity<ErrorMessage> handleAuthorIsAssignedToBookException(AuthorIsAssignedToBookException e) {
         ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage());
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
