@@ -1,5 +1,7 @@
 package com.example.Library.service;
 
+import com.example.Library.exception.AuthorIsAssignedToBookException;
+import com.example.Library.exception.NotFoundException;
 import com.example.Library.model.dto.AuthorDto;
 import com.example.Library.model.entity.Author;
 import com.example.Library.model.mapper.AuthorMapper;
@@ -16,8 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthorServiceUnitTest {
@@ -30,12 +33,15 @@ public class AuthorServiceUnitTest {
     private AuthorRepository authorRepository;
 
     private AuthorDto authorDto1;
+
     private AuthorDto authorDto2;
 
     private Author author1;
+
     private Author author2;
 
     private List<Author> authorsList;
+
     private List<AuthorDto> authorDtoList;
 
     @BeforeEach
@@ -76,29 +82,49 @@ public class AuthorServiceUnitTest {
     @Test
     void shouldCreateNewAuthor() {
         Mockito.when(authorRepository.save(any())).thenReturn(author1);
+
         AuthorDto expectedDto = authorService.createAuthor(authorDto1);
         assertEquals(authorDto1.getId(), expectedDto.getId());
         assertEquals(authorDto1.getFirstName(), expectedDto.getFirstName());
     }
 
     @Test
-    void findAuthor_ifIdExists_returnAuthor() {
+    void findAuthor_ifAuthorExists_returnAuthor() {
         Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author1));
+
         Author expected = authorService.findAuthorModel(author1.getId());
         assertEquals(author1, expected);
     }
 
     @Test
-    void getAuthor_ifIdExists_returnAuthorDto() {
+    void findAuthor_ifAuthorNotExists_throwNotFoundException() {
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(NotFoundException.class, () -> authorService.findAuthorModel(any()));
+        assertTrue(exception.getMessage().contains("Author is not found"));
+    }
+
+    @Test
+    void getAuthor_ifAuthorExists_returnAuthorDto() {
         Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author1));
+
         AuthorDto expected = authorService.getAuthor(author1.getId());
         assertEquals(authorDto1.getId(), expected.getId());
         assertEquals(authorDto1.getFirstName(), expected.getFirstName());
     }
 
     @Test
+    void getAuthor_ifAuthorNotExists_throwNotFoundExpception() {
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(NotFoundException.class, () -> authorService.getAuthor(any()));
+        assertTrue(exception.getMessage().contains("Author is not found"));
+    }
+
+    @Test
     void getAuthors_ifAuthorsExists_returnAuthorDtoList() {
         Mockito.when(authorRepository.findAll()).thenReturn(authorsList);
+
         List<AuthorDto> expected = authorService.getAuthors();
         assertEquals(authorDtoList.get(0).getId(), expected.get(0).getId());
         assertEquals(authorDtoList.get(1).getId(), expected.get(1).getId());
@@ -107,18 +133,49 @@ public class AuthorServiceUnitTest {
     }
 
     @Test
-    void updateAuthor_ifIdExists_returnUpdatedAuthorDto() {
-        Mockito.when(authorRepository.findById(author1.getId())).thenReturn(Optional.ofNullable(author1));
+    void updateAuthor_ifAuthorExists_returnUpdatedAuthorDto() {
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author1));
         Mockito.when(authorRepository.save(author1)).thenReturn(author1);
-        AuthorDto expected = authorService.updateAuthor(authorDto2, author1.getId());
+
+        AuthorDto expected = authorService.updateAuthor(authorDto2, any());
         assertEquals(author1.getId(), expected.getId());
         assertEquals(authorDto2.getFirstName(), expected.getFirstName());
         assertEquals(authorDto2.getLastName(), expected.getLastName());
     }
 
     @Test
-    void deleteAuthor_ifIdExists() {
+    void updateAuthor_ifAuthorNotExists_throwNotFoundException() {
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.empty());
 
+        Exception exception = assertThrows(NotFoundException.class,
+                () -> authorService.updateAuthor(authorDto1, any()));
+        assertTrue(exception.getMessage().contains("Author is not found"));
+    }
+
+    @Test
+    void deleteAuthor_ifAuthorExists() {
+        Mockito.when(authorRepository.isAuthorAssignedToBook(any())).thenReturn(false);
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author1));
+
+        authorService.delete(author1.getId());
+        verify(authorRepository).delete(author1);
+    }
+
+    @Test
+    void deleteAuthor_ifAuthorIsAssignedToBook_throwAuthorIsAssignedToBookException() {
+        Mockito.when(authorRepository.isAuthorAssignedToBook(any())).thenReturn(true);
+
+        Exception exception = assertThrows(AuthorIsAssignedToBookException.class, () -> authorService.delete(any()));
+        assertTrue(exception.getMessage().contains("has book assigned to him"));
+    }
+
+    @Test
+    void deleteAuthor_ifAuthorNotExists_throwNotFoundException() {
+        Mockito.when(authorRepository.isAuthorAssignedToBook(any())).thenReturn(false);
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(NotFoundException.class, () -> authorService.delete(any()));
+        assertTrue(exception.getMessage().contains("Author is not found"));
     }
 
 }
