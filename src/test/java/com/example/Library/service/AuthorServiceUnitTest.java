@@ -55,19 +55,13 @@ public class AuthorServiceUnitTest {
     }
 
     private List<Author> createAuthorList(Author author1, Author author2) {
-        List<Author> authors = new ArrayList<>();
-        authors.add(author1);
-        authors.add(author2);
 
-        return authors;
+        return List.of(author1, author2);
     }
 
     private List<AuthorDto> createAuthorDtoList(Author author1, Author author2) {
-        List<AuthorDto> authorDtos = new ArrayList<>();
-        authorDtos.add(AuthorMapper.toDto(author1));
-        authorDtos.add(AuthorMapper.toDto(author2));
 
-        return authorDtos;
+        return List.of(AuthorMapper.toDto(author1), AuthorMapper.toDto(author2));
     }
 
     private Author createAuthor(Long id, String firstName, String lastName) {

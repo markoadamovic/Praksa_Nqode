@@ -61,17 +61,13 @@ public class UserServiceUnitTest {
     }
 
     private List<User> createUserList(User user){
-        List<User> users = new ArrayList<>();
-        users.add(user);
 
-        return users;
+        return List.of(user);
     }
 
     private List<UserDto> createUserDtoList(UserDto userDto) {
-        List<UserDto> userDtos = new ArrayList<>();
-        userDtos.add(userDto);
 
-        return userDtos;
+        return List.of(userDto);
     }
 
     private User createUser(Long id, String firstName, String lastName, String address,

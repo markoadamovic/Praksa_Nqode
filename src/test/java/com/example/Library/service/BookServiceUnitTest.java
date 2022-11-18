@@ -59,11 +59,8 @@ public class BookServiceUnitTest {
     }
 
     private List<Book> createBookList(Book book, Book book1) {
-        List<Book> bookList1 = new ArrayList<>();
-        bookList1.add(book);
-        bookList1.add(book1);
 
-        return bookList1;
+        return List.of(book, book1);
     }
 
     private Author createAuthor(Long id, String firstName, String lastName) {
