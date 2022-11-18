@@ -42,9 +42,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping(path = "/{userId}")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Long userId) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userDto, userId));
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userDto, id));
     }
 
 }

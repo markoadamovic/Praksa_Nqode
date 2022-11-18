@@ -44,10 +44,12 @@ public class BookControllerIntegrationTest {
     private final String BOOK_TITLE = "Na Drini cuprija";
     private final String BOOK_DESCRIPTION = "Drama";
 
+    private Long BOOKDTO_ID = 1L;
+
     @Test
     void createBook_returnHttpStatusCreated() throws Exception {
         Author author = createAuthor(FIRSTNAME, LASTNAME);
-        BookDto bookDto = createBookDto(1l,TITLE, DESCRIPTION, author.getId());
+        BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
         mockMvc.perform(post("/book" + "/{authorId}", author.getId())
@@ -62,7 +64,7 @@ public class BookControllerIntegrationTest {
 
     @Test
     void createBook_returnNotFoundException_ifAuthorIsNotFound() throws Exception {
-        BookDto bookDto = createBookDto(1l,TITLE, DESCRIPTION, 1L);
+        BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, 1L);
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
         mockMvc.perform(post("/book" + "/{authorId}", 1000L)
@@ -112,7 +114,7 @@ public class BookControllerIntegrationTest {
     void updateBook_returnHttpStatusOk() throws Exception {
         Author author = createAuthor(FIRSTNAME, LASTNAME);
         Book book = createBook(BOOK_TITLE, BOOK_DESCRIPTION, author);
-        BookDto bookDto = createBookDto(1l,TITLE, DESCRIPTION, author.getId());
+        BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
         mockMvc.perform(put("/book" + "/{bookId}", book.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -128,7 +130,7 @@ public class BookControllerIntegrationTest {
     @Test
     void updateBook_returnHttpStatusNotFound_ifBookIsNotFound() throws Exception {
         Author author = createAuthor(FIRSTNAME, LASTNAME);
-        BookDto bookDto = createBookDto(1l,TITLE, DESCRIPTION, author.getId());
+        BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
         mockMvc.perform(put("/book" + "/{bookId}", 200l)
                         .contentType(MediaType.APPLICATION_JSON)
