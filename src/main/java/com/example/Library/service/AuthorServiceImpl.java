@@ -68,7 +68,6 @@ public class AuthorServiceImpl implements AuthorService {
 
         Author author = findAuthorModel(authorId);
         authorRepository.delete(author);
-
     }
 
     private Boolean authorHasBooks(Long authorId) {

@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+
     private final AuthorService authorService;
 
     public BookServiceImpl(BookRepository bookRepository, AuthorService authorService) {
