@@ -26,15 +26,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("local")
-public class AuthorControllerIntegrationTest {
+class AuthorControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    AuthorRepository authorRepository;
+    private AuthorRepository authorRepository;
 
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
     private Author author;
 
@@ -50,7 +50,7 @@ public class AuthorControllerIntegrationTest {
 
     @Test
     void getAuthor_returnHttpStatusOk() throws Exception {
-        mockMvc.perform(get("/author" + "/{authorId}", author.getId()))
+        mockMvc.perform(get(URL_AUTHOR_PREFIX + "/{authorId}", author.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(author.getId()))
@@ -59,7 +59,7 @@ public class AuthorControllerIntegrationTest {
 
     @Test
     void getAuthor_returnHttpStatusNotFound_ifAuthorIsNotFound() throws Exception {
-        mockMvc.perform(get("/author" + "/{authorId}", 100L))
+        mockMvc.perform(get(URL_AUTHOR_PREFIX + "/{authorId}", 100L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -69,7 +69,7 @@ public class AuthorControllerIntegrationTest {
         AuthorDto authorDto = createAuthorDto("Marko", "Adamovic");
         String authorDtoJson = mapper.writeValueAsString(authorDto);
 
-        mockMvc.perform(post("/author")
+        mockMvc.perform(post(URL_AUTHOR_PREFIX)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -81,14 +81,14 @@ public class AuthorControllerIntegrationTest {
 
     @Test
     void deleteAuthor_returnHttpStatusNoContent() throws Exception {
-        mockMvc.perform(delete("/author" + "/{authorId}", author.getId()))
+        mockMvc.perform(delete(URL_AUTHOR_PREFIX + "/{authorId}", author.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteAuthor_returnHttpStatusNotFound_ifAuthorIsNotFound() throws Exception {
-        mockMvc.perform(delete("/author" + "/{authorId}", 100L))
+        mockMvc.perform(delete(URL_AUTHOR_PREFIX + "/{authorId}", 100L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -98,7 +98,7 @@ public class AuthorControllerIntegrationTest {
         AuthorDto authorDto = createAuthorDto("Niko", "Nikolic");
         String authorDtoJson = mapper.writeValueAsString(authorDto);
 
-        mockMvc.perform(put("/author" + "/{authorId}", author.getId())
+        mockMvc.perform(put(URL_AUTHOR_PREFIX + "/{authorId}", author.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -113,7 +113,7 @@ public class AuthorControllerIntegrationTest {
         AuthorDto authorDto = createAuthorDto("Niko", "Nikolic");
         String authorDtoJson = mapper.writeValueAsString(authorDto);
 
-        mockMvc.perform(put("/author" + "/{authorId}", 100l )
+        mockMvc.perform(put(URL_AUTHOR_PREFIX + "/{authorId}", 100l )
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorDtoJson)
                         .accept(MediaType.APPLICATION_JSON))

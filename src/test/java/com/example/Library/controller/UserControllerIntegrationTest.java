@@ -27,15 +27,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("local")
-public class UserControllerIntegrationTest {
+class UserControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
     private User user;
 
@@ -54,7 +54,7 @@ public class UserControllerIntegrationTest {
         UserCreateDto userCreateDto = new UserCreateDto(FIRSTNAME_USER, LASTNAME_USER, EMAIL_CREATE,
                                                         ADDRESS, PASSWORD, USERROLE);
         String userCreateDtoJson = mapper.writeValueAsString(userCreateDto);
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post(URL_USER_PREFIX)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userCreateDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -66,35 +66,35 @@ public class UserControllerIntegrationTest {
 
     @Test
     void getUser_returnHttpStatusOk() throws Exception {
-        mockMvc.perform(get("/user" + "/{id}", user.getId()))
+        mockMvc.perform(get(URL_USER_PREFIX + "/{id}", user.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     void getUser_returnHttpStatusNotFound_ifUserNotFound() throws Exception {
-        mockMvc.perform(get("/user" + "{id}", 200L))
+        mockMvc.perform(get(URL_USER_PREFIX + "{id}", 200L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void getUsers_returnHttpStatusOK() throws Exception {
-        mockMvc.perform(get("/user"))
+        mockMvc.perform(get(URL_USER_PREFIX))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     void deleteUser_returnHttpStatusNoContent() throws Exception {
-        mockMvc.perform(delete("/user" + "/{id}", user.getId()))
+        mockMvc.perform(delete(URL_USER_PREFIX + "/{id}", user.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteUser_returnHttpStatusIsNotFound_ifUserNotFound() throws Exception {
-        mockMvc.perform(delete("/user" + "/{id}", 14L))
+        mockMvc.perform(delete(URL_USER_PREFIX + "/{id}", 14L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -104,7 +104,7 @@ public class UserControllerIntegrationTest {
         UserDto userDto = createUserDto(UPDATE_FIRSTNAME, UPDATE_LASTNAME, UPDATE_EMAIL, UPDATE_ADDRESS, UPDATE_USERROLE);
         String userDtoJson = mapper.writeValueAsString(userDto);
 
-        mockMvc.perform(put("/user" + "/{id}", user.getId())
+        mockMvc.perform(put(URL_USER_PREFIX + "/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -117,7 +117,7 @@ public class UserControllerIntegrationTest {
     void updateUser_returnHttpStatusNotFound_ifUserIsNotFound() throws Exception {
         UserDto userDto = createUserDto(UPDATE_FIRSTNAME, UPDATE_LASTNAME, UPDATE_EMAIL, UPDATE_ADDRESS, UPDATE_USERROLE);
         String userDtoJson = mapper.writeValueAsString(userDto);
-        mockMvc.perform(put("/user" + "/{id}", 123L)
+        mockMvc.perform(put(URL_USER_PREFIX + "/{id}", 123L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userDtoJson)
                         .accept(MediaType.APPLICATION_JSON))

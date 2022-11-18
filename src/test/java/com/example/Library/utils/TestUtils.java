@@ -4,7 +4,8 @@ import com.example.Library.model.entity.UserRole;
 
 public class TestUtils {
 
-    //BOOK
+    //BOOK CONSTANTS
+
     public static final String FIRSTNAME = "Marko";
     public static final String LASTNAME = "Adamovic";
     public static final String TITLE = "Lord of the rings";
@@ -12,8 +13,9 @@ public class TestUtils {
     public static final String UPDATE_BOOK_TITLE = "Na Drini cuprija";
     public static final String UPDATE_DESCRIPTION = "Drama";
     public static Long BOOKDTO_ID = 1L;
+    public static final String URL_BOOK_PREFIX = "/book";
 
-    //USER
+    //USER CONSTANTS
 
     public static String FIRSTNAME_USER = "Marko";
     public static String LASTNAME_USER = "Adamovic";
@@ -28,8 +30,11 @@ public class TestUtils {
     public static String UPDATE_EMAIL = "nikolicniko@gmail.com";
     public static String UPDATE_ADDRESS = "NS";
     public static UserRole UPDATE_USERROLE = UserRole.valueOf("USER");
+    public static final String URL_USER_PREFIX = "/user";
 
-    //AUTHOR
+    //AUTHOR CONSTANTS
+
     public static final String FIRSTNAME_AUTHOR = "Marko";
     public static final String LASTNAME_AUTHOR = "Adamovic";
+    public static final String URL_AUTHOR_PREFIX = "/author";
 }

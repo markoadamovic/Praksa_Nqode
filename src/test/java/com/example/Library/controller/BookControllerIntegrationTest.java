@@ -27,18 +27,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("local")
-public class BookControllerIntegrationTest {
+class BookControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    AuthorRepository authorRepository;
+    private AuthorRepository authorRepository;
 
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
     private Book book;
 
@@ -62,7 +62,7 @@ public class BookControllerIntegrationTest {
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
-        mockMvc.perform(post("/book" + "/{authorId}", author.getId())
+        mockMvc.perform(post(URL_BOOK_PREFIX + "/{authorId}", author.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -77,7 +77,7 @@ public class BookControllerIntegrationTest {
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, 1L);
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
-        mockMvc.perform(post("/book" + "/{authorId}", 1000L)
+        mockMvc.perform(post(URL_BOOK_PREFIX + "/{authorId}", 1000L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -87,15 +87,14 @@ public class BookControllerIntegrationTest {
 
     @Test
     void getBooks_returnHttpStatusOk() throws Exception {
-        mockMvc.perform(get("/book"))
+        mockMvc.perform(get(URL_BOOK_PREFIX))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     void getBook_returnHttpStatusOk() throws Exception {
-
-        mockMvc.perform(get("/book" + "/{bookId}", book.getId()))
+        mockMvc.perform(get(URL_BOOK_PREFIX + "/{bookId}", book.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(book.getTitle()))
@@ -105,15 +104,14 @@ public class BookControllerIntegrationTest {
 
     @Test
     void deleteBook_returnHttpStatusNoContent() throws Exception {
-
-        mockMvc.perform(delete("/book" + "/{bookId}", book.getId()))
+        mockMvc.perform(delete(URL_BOOK_PREFIX + "/{bookId}", book.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteBook_returnHttpStatusNotFound_ifAuthorIsNotFound() throws Exception {
-        mockMvc.perform(delete("/book" + "/{bookId}", 20L))
+        mockMvc.perform(delete(URL_BOOK_PREFIX + "/{bookId}", 20L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -122,7 +120,7 @@ public class BookControllerIntegrationTest {
     void updateBook_returnHttpStatusOk() throws Exception {
         BookDto bookDto = createBookDto(BOOKDTO_ID, UPDATE_BOOK_TITLE, UPDATE_DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
-        mockMvc.perform(put("/book" + "/{bookId}", book.getId())
+        mockMvc.perform(put(URL_BOOK_PREFIX + "/{bookId}", book.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -136,7 +134,7 @@ public class BookControllerIntegrationTest {
     void updateBook_returnHttpStatusNotFound_ifBookIsNotFound() throws Exception {
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
-        mockMvc.perform(put("/book" + "/{bookId}", 200l)
+        mockMvc.perform(put(URL_BOOK_PREFIX + "/{bookId}", 200l)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
