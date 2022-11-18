@@ -6,6 +6,8 @@ import com.example.Library.model.entity.User;
 import com.example.Library.model.entity.UserRole;
 import com.example.Library.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.example.Library.utils.TestUtils.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,24 +35,24 @@ public class UserControllerIntegrationTest {
     @Autowired
     UserRepository userRepository;
 
-    private String FIRSTNAME = "Marko";
-    private String LASTNAME = "Adamovic";
-    private String EMAIL = "markoadam1995@yahoo.com";
-    private String ADDRESS = "Veternik";
-    private String PASSWORD = "123";
-    private UserRole USERROLE = UserRole.valueOf("USER");
-
-    private String FIRSTNAME_DTO = "Nikola";
-    private String LASTNAME_DTO = "Nikolic";
-    private String EMAIL_DTO = "nikolicniko@gmail.com";
-    private String ADDRESS_DTO = "NS";
-    private UserRole USERROLE_DTO = UserRole.valueOf("USER");
-
     ObjectMapper mapper = new ObjectMapper();
+
+    private User user;
+
+    @BeforeEach
+    private void setUp() {
+        user = createUser(FIRSTNAME_USER, LASTNAME_USER, EMAIL, ADDRESS, PASSWORD, USERROLE);
+    }
+
+    @AfterEach
+    private void clean() {
+        userRepository.deleteAll();
+    }
 
     @Test
     void createUser_returnHttpStatusCreated() throws Exception {
-        UserCreateDto userCreateDto = new UserCreateDto(FIRSTNAME, LASTNAME, EMAIL, ADDRESS, PASSWORD, USERROLE);
+        UserCreateDto userCreateDto = new UserCreateDto(FIRSTNAME_USER, LASTNAME_USER, EMAIL_CREATE,
+                                                        ADDRESS, PASSWORD, USERROLE);
         String userCreateDtoJson = mapper.writeValueAsString(userCreateDto);
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -63,7 +66,6 @@ public class UserControllerIntegrationTest {
 
     @Test
     void getUser_returnHttpStatusOk() throws Exception {
-        User user = createUser(FIRSTNAME, LASTNAME, EMAIL, ADDRESS, PASSWORD, USERROLE);
         mockMvc.perform(get("/user" + "/{id}", user.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -85,7 +87,6 @@ public class UserControllerIntegrationTest {
 
     @Test
     void deleteUser_returnHttpStatusNoContent() throws Exception {
-        User user = createUser(FIRSTNAME, LASTNAME, EMAIL, ADDRESS, PASSWORD, USERROLE);
         mockMvc.perform(delete("/user" + "/{id}", user.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -100,8 +101,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     void updateUser_returnHttpStatusOk() throws Exception {
-        User user = createUser(FIRSTNAME, LASTNAME, EMAIL, ADDRESS, PASSWORD, USERROLE);
-        UserDto userDto = createUserDto(FIRSTNAME_DTO, LASTNAME_DTO, EMAIL_DTO, ADDRESS_DTO, USERROLE_DTO);
+        UserDto userDto = createUserDto(UPDATE_FIRSTNAME, UPDATE_LASTNAME, UPDATE_EMAIL, UPDATE_ADDRESS, UPDATE_USERROLE);
         String userDtoJson = mapper.writeValueAsString(userDto);
 
         mockMvc.perform(put("/user" + "/{id}", user.getId())
@@ -115,7 +115,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     void updateUser_returnHttpStatusNotFound_ifUserIsNotFound() throws Exception {
-        UserDto userDto = createUserDto(FIRSTNAME_DTO, LASTNAME_DTO, EMAIL_DTO, ADDRESS_DTO, USERROLE_DTO);
+        UserDto userDto = createUserDto(UPDATE_FIRSTNAME, UPDATE_LASTNAME, UPDATE_EMAIL, UPDATE_ADDRESS, UPDATE_USERROLE);
         String userDtoJson = mapper.writeValueAsString(userDto);
         mockMvc.perform(put("/user" + "/{id}", 123L)
                         .contentType(MediaType.APPLICATION_JSON)

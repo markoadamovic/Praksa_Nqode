@@ -6,6 +6,8 @@ import com.example.Library.model.entity.Book;
 import com.example.Library.repository.AuthorRepository;
 import com.example.Library.repository.BookRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.example.Library.utils.TestUtils.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,18 +40,25 @@ public class BookControllerIntegrationTest {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    private final String FIRSTNAME = "Marko";
-    private final String LASTNAME = "Adamovic";
-    private final String TITLE = "Lord of the rings";
-    private final String DESCRIPTION = "Action";
-    private final String BOOK_TITLE = "Na Drini cuprija";
-    private final String BOOK_DESCRIPTION = "Drama";
+    private Book book;
 
-    private Long BOOKDTO_ID = 1L;
+    private Author author;
+
+    @BeforeEach
+    private void setUp() {
+        author = createAuthor(FIRSTNAME, LASTNAME);
+        book = createBook(TITLE, DESCRIPTION, author);
+    }
+
+    @AfterEach
+    private void clean() {
+        bookRepository.deleteAll();
+        authorRepository.deleteAll();
+    }
+
 
     @Test
     void createBook_returnHttpStatusCreated() throws Exception {
-        Author author = createAuthor(FIRSTNAME, LASTNAME);
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
@@ -84,8 +94,7 @@ public class BookControllerIntegrationTest {
 
     @Test
     void getBook_returnHttpStatusOk() throws Exception {
-        Author author = createAuthor(FIRSTNAME, LASTNAME);
-        Book book = createBook(BOOK_TITLE, BOOK_DESCRIPTION, author);
+
         mockMvc.perform(get("/book" + "/{bookId}", book.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -96,8 +105,7 @@ public class BookControllerIntegrationTest {
 
     @Test
     void deleteBook_returnHttpStatusNoContent() throws Exception {
-        Author author = createAuthor(FIRSTNAME, LASTNAME);
-        Book book = createBook(BOOK_TITLE, BOOK_DESCRIPTION, author);
+
         mockMvc.perform(delete("/book" + "/{bookId}", book.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -112,9 +120,7 @@ public class BookControllerIntegrationTest {
 
     @Test
     void updateBook_returnHttpStatusOk() throws Exception {
-        Author author = createAuthor(FIRSTNAME, LASTNAME);
-        Book book = createBook(BOOK_TITLE, BOOK_DESCRIPTION, author);
-        BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
+        BookDto bookDto = createBookDto(BOOKDTO_ID, UPDATE_BOOK_TITLE, UPDATE_DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
         mockMvc.perform(put("/book" + "/{bookId}", book.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -123,13 +129,11 @@ public class BookControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(bookDto.getTitle()))
-                .andExpect(jsonPath("$.description").value(bookDto.getDescription()))
-                .andExpect(jsonPath("$.id").value(bookDto.getId()));
+                .andExpect(jsonPath("$.description").value(bookDto.getDescription()));
     }
 
     @Test
     void updateBook_returnHttpStatusNotFound_ifBookIsNotFound() throws Exception {
-        Author author = createAuthor(FIRSTNAME, LASTNAME);
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
         mockMvc.perform(put("/book" + "/{bookId}", 200l)

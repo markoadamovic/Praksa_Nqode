@@ -4,6 +4,8 @@ import com.example.Library.model.dto.AuthorDto;
 import com.example.Library.model.entity.Author;
 import com.example.Library.repository.AuthorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aspectj.lang.annotation.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.example.Library.utils.TestUtils.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,9 +36,20 @@ public class AuthorControllerIntegrationTest {
 
     ObjectMapper mapper = new ObjectMapper();
 
+    private Author author;
+
+    @BeforeEach
+    private void setUp() {
+        author = createAuthor(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
+    }
+
+    @AfterEach
+    private void clean() {
+        authorRepository.deleteAll();
+    }
+
     @Test
     void getAuthor_returnHttpStatusOk() throws Exception {
-        Author author = createAuthor("Marko", "Adamovic");
         mockMvc.perform(get("/author" + "/{authorId}", author.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -67,7 +81,6 @@ public class AuthorControllerIntegrationTest {
 
     @Test
     void deleteAuthor_returnHttpStatusNoContent() throws Exception {
-        Author author = createAuthor("Marko", "Adamovic");
         mockMvc.perform(delete("/author" + "/{authorId}", author.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -82,7 +95,6 @@ public class AuthorControllerIntegrationTest {
 
     @Test
     void updateAuthor_returnHttpStatusOk() throws Exception {
-        Author author = createAuthor("Marko", "Markovic");
         AuthorDto authorDto = createAuthorDto("Niko", "Nikolic");
         String authorDtoJson = mapper.writeValueAsString(authorDto);
 
