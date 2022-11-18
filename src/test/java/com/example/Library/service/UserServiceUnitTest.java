@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.example.Library.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -49,10 +50,10 @@ public class UserServiceUnitTest {
 
     @BeforeEach
     void setup() {
-        user = createUser(1l, "Marko", "Adamovic", "Veternik", "marko@gmail.com",
-                "12345", UserRole.valueOf("USER"));
-        user1 = createUser(2l, "Niko", "Nikolic", "NS", "adam@gmail.com",
-                "22222", UserRole.valueOf("USER"));
+        user = createUser(1l, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL,
+                PASSWORD, USERROLE);
+        user1 = createUser(2l, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL2,
+                PASSWORD, USERROLE);
         userDto = UserMapper.toDto(user);
         userDto1 = UserMapper.toDto(user1);
         userCreateDto = UserMapper.toUserCreateDto(user);
