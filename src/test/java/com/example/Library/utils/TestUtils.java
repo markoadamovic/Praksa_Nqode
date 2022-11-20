@@ -38,4 +38,11 @@ public class TestUtils {
     public static final String FIRSTNAME_AUTHOR = "Marko";
     public static final String LASTNAME_AUTHOR = "Adamovic";
     public static final String URL_AUTHOR_PREFIX = "/author";
+
+    //BOOKCOPY
+
+    public static final String IDENTIFICATION = "aaa10";
+    public static final String URL_BOOKCOPY_PREFIX = "/bookCopy";
+    public static final String IDENTIFICATION_UPDATE = "aaa222";
+
 }
