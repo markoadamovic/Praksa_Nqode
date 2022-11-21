@@ -1,6 +1,7 @@
 package com.example.Library.service;
 
 import com.example.Library.model.dto.BookDto;
+import com.example.Library.model.entity.Book;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,5 +18,7 @@ public interface BookService {
     BookDto updateBook(BookDto bookDto, Long bookId);
 
     void delete(Long bookId);
+
+    Book findBookModel(Long bookId);
 
 }

@@ -19,3 +19,6 @@ values(default, 'Znakovi pored puta', 'knjiga', '1');
 
 insert into public."user"
 values(default, 'Veternik', 'adam95@gmail.com', 'Marko', 'Adamoviv', '123123', 'USER');
+
+insert into book_copy
+values (default, 'aaa1', '1');

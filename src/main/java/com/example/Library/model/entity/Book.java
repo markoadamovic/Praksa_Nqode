@@ -3,6 +3,7 @@ package com.example.Library.model.entity;
 import com.example.Library.model.entity.Author;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Book {
@@ -21,6 +22,9 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
+
+    @OneToMany(mappedBy = "book")
+    private List<BookCopy> bookCopy;
 
     public Book(String title, String description) {
         this.title = title;
