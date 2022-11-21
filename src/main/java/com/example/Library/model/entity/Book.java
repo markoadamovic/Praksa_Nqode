@@ -31,8 +31,6 @@ public class Book {
         this.description = description;
     }
 
-//    public Book();
-
     public Book() {
     }
 

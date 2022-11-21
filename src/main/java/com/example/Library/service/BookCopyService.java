@@ -17,4 +17,5 @@ public interface BookCopyService {
     void delete(Long id);
 
     BookCopyDto updateBookCopy(Long id, BookCopyDto bookCopyDto);
+
 }

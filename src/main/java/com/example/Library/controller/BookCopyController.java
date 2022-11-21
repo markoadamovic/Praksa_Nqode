@@ -19,7 +19,8 @@ public class BookCopyController {
     }
 
     @PostMapping(value = "/{bookId}/{identification}")
-    public ResponseEntity<BookCopyDto> createBookCopy(@PathVariable Long bookId, @PathVariable String identification) {
+    public ResponseEntity<BookCopyDto> createBookCopy(@PathVariable Long bookId,
+                                                      @PathVariable String identification) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookCopyService.createBookCopy(bookId, identification));
     }
 
@@ -40,7 +41,8 @@ public class BookCopyController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<BookCopyDto> updateBookCopy(@PathVariable Long id, @RequestBody BookCopyDto bookCopyDto) {
+    public ResponseEntity<BookCopyDto> updateBookCopy(@PathVariable Long id,
+                                                      @RequestBody BookCopyDto bookCopyDto) {
         return ResponseEntity.status(HttpStatus.OK).body(bookCopyService.updateBookCopy(id, bookCopyDto));
     }
 

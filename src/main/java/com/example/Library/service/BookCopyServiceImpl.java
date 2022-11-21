@@ -25,7 +25,8 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     private final BookService bookService;
 
-    public BookCopyServiceImpl(BookCopyRepository bookCopyRepository, BookRepository bookRepository,
+    public BookCopyServiceImpl(BookCopyRepository bookCopyRepository,
+                               BookRepository bookRepository,
                                BookService bookService) {
         this.bookRepository = bookRepository;
         this.bookCopyRepository = bookCopyRepository;
