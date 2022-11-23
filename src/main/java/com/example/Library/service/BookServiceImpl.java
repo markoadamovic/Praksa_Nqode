@@ -1,5 +1,6 @@
 package com.example.Library.service;
 
+import com.example.Library.exception.BadRequestException;
 import com.example.Library.exception.NotFoundException;
 import com.example.Library.model.entity.Author;
 import com.example.Library.model.dto.BookDto;
@@ -58,7 +59,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public void delete(Long bookId) {
         Book book = findBookModel(bookId);
+        if(bookHasCopies(bookId)){
+            throw new BadRequestException(String.format("Book with id %s has bookCopies assigned to it", bookId));
+        }
         bookRepository.delete(book);
+    }
+
+    public boolean bookHasCopies(Long bookId) {
+        return bookRepository.bookHasCopies(bookId);
     }
 
     @Override
