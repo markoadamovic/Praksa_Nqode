@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class BookRentalDto {
 
-    private Long bookRentalId;
+    private Long id;
 
     private Long userId;
 
@@ -16,8 +16,8 @@ public class BookRentalDto {
 
     private LocalDate rentEnd;
 
-    public BookRentalDto(Long bookRentalId, Long bookId, Long userId, Long bookCopy, LocalDate rentStart, LocalDate rentEnd) {
-        this.bookRentalId = bookRentalId;
+    public BookRentalDto(Long id, Long bookId, Long userId, Long bookCopy, LocalDate rentStart, LocalDate rentEnd) {
+        this.id = id;
         this.userId = userId;
         this.bookCopyId = bookCopy;
         this.bookId = bookId;
@@ -29,12 +29,12 @@ public class BookRentalDto {
 
     }
 
-    public Long getBookRentalId() {
-        return bookRentalId;
+    public Long getId() {
+        return id;
     }
 
-    public void setBookRentalId(Long bookRentalId) {
-        this.bookRentalId = bookRentalId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getUserId() {

@@ -223,7 +223,7 @@ public class BookRentalControllerIntegrationTest {
 
     private BookRentalDto createBookRentalDto(Long id, Long userId, Long bookCopyId) {
         BookRentalDto bookRentalDto = new BookRentalDto();
-        bookRentalDto.setBookRentalId(id);
+        bookRentalDto.setId(id);
         bookRentalDto.setUserId(userId);
         bookRentalDto.setBookCopy(bookCopyId);
 

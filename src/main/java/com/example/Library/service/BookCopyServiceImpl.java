@@ -36,7 +36,8 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public BookCopyDto createBookCopy(Long bookId, BookCopyDto bookCopyDto) {
         if(bookCopyWithIdentificationExists(bookCopyDto.getIdentification())){
-            throw new BadRequestException("BookCopy with identificator " + bookCopyDto.getIdentification() + " exists");
+            throw new BadRequestException(String.format("BookCopy with identificator %s exists",
+                    bookCopyDto.getIdentification()));
         }
         BookCopy bookCopy = new BookCopy();
         bookCopy.setRented(bookCopyDto.isRented());

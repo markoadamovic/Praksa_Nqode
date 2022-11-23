@@ -84,7 +84,7 @@ public class BookRentalServiceImpl implements BookRentalService {
 
     @Override
     public List<BookRentalDto> getActiveRents() {
-        List<BookRental> bookRentals = activeRents();
+        List<BookRental> bookRentals = bookRentalRepository.findByRentEnd();
         return bookRentals.stream()
                 .map(BookRentalMapper::toDto)
                 .collect(Collectors.toList());
@@ -92,25 +92,12 @@ public class BookRentalServiceImpl implements BookRentalService {
 
     @Override
     public List<BookRentalDto> getClosedRents() {
-        List<BookRental> bookRentals = closedRents();
+        List<BookRental> bookRentals = bookRentalRepository.findByRentStart();
         return bookRentals.stream()
                 .map(BookRentalMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<BookRental> closedRents() {
-        if(bookRentalRepository.findByRentStart().isEmpty()) {
-            throw new NotFoundException("No closed rents");
-        }
-        return bookRentalRepository.findByRentStart();
-    }
-
-    public List<BookRental> activeRents() {
-        if(bookRentalRepository.findByRentEnd().isEmpty()) {
-            throw new NotFoundException("No active rents");
-        }
-        return bookRentalRepository.findByRentEnd();
-    }
 
     public BookRental getBookRentalModelById(Long bookRentalId) {
         return bookRentalRepository.findById(bookRentalId).orElseThrow(() -> new NotFoundException("Rent is not found"));

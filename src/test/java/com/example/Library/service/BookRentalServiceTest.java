@@ -253,14 +253,6 @@ public class BookRentalServiceTest {
     }
 
     @Test
-    void getActiveRents_throwNotFoundException_ifNoActiveRentsAreFound() {
-        Mockito.when(bookRentalRepository.findByRentEnd()).thenThrow(new NotFoundException("no active rents"));
-
-        Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.getActiveRents());
-        assertTrue(exception.getMessage().contains("no active rents"));
-    }
-
-    @Test
     void getClosedRents_returnListBookRentalDto() {
         Mockito.when(bookRentalRepository.findByRentStart()).thenReturn(bookRentalList);
 
@@ -270,18 +262,9 @@ public class BookRentalServiceTest {
         assertEquals(bookRentalList.get(0).getUser().getId(), expected.get(0).getUserId());
     }
 
-
-    @Test
-    void getClosedRents_throwNotFoundException_ifClosedRentsAreNotFound() {
-        Mockito.when(bookRentalRepository.findByRentStart()).thenThrow(new NotFoundException("no closed rents"));
-
-        Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.getClosedRents());
-        assertTrue(exception.getMessage().contains("no closed rents"));
-    }
-
     public BookRentalDto createBookRentalDto(BookRental bookRental) {
         BookRentalDto bookRentalDto = new BookRentalDto();
-        bookRentalDto.setBookRentalId(bookRental.getId());
+        bookRentalDto.setId(bookRental.getId());
         bookRentalDto.setBookCopy(bookRental.getBookCopy().getId());
         bookRentalDto.setBookId(bookRental.getBookCopy().getBook().getId());
         bookRentalDto.setRentEnd(bookRentalDto.getRentEnd());
