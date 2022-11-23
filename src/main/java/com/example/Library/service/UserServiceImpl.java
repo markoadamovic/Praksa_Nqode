@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     public User findUserModel(Long userId) throws NotFoundException {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %s is not found", userId )));
     }
 
     @Override

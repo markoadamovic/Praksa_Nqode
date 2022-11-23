@@ -100,7 +100,8 @@ public class BookRentalServiceImpl implements BookRentalService {
 
 
     public BookRental getBookRentalModelById(Long bookRentalId) {
-        return bookRentalRepository.findById(bookRentalId).orElseThrow(() -> new NotFoundException("Rent is not found"));
+        return bookRentalRepository.findById(bookRentalId)
+                .orElseThrow(() -> new NotFoundException(String.format("Rent with id %s is not found", bookRentalId)));
     }
 
 }
