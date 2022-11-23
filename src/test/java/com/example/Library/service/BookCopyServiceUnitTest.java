@@ -98,7 +98,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void getBookCopy_throwNotFoundException_ifBookCopyIsNotFound() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(bookCopyRepository.findById(any())).thenThrow(new NotFoundException("BookCopy not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookCopyService.getBookCopy(1L));
         assertTrue(exception.getMessage().contains("not found"));
@@ -122,7 +122,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void deleteBookCopy_throwNotFoundException_ifBookCopyNotFound() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(bookCopyRepository.findById(any())).thenThrow(new NotFoundException("BookCopy not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookCopyService.delete(1L));
         assertTrue(exception.getMessage().contains("not found"));
@@ -141,7 +141,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void updateBookCopy_throwNotFoundException_ifBookCopyIsNotFound() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(bookCopyRepository.findById(any())).thenThrow(new NotFoundException("BookCopy not found"));
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> bookCopyService.updateBookCopy(1L, bookCopyDto));
@@ -185,7 +185,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void findBookCopyModel_throwNotFoundException_ifBookCopyIsNotFound() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(bookCopyRepository.findById(any())).thenThrow(new NotFoundException("BookCopy not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookCopyService.findBookCopyModel(1L));
         assertTrue(exception.getMessage().contains("not found"));

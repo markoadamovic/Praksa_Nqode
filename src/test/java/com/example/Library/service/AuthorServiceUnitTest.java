@@ -73,7 +73,7 @@ public class AuthorServiceUnitTest {
 
     @Test
     void findAuthor_ifAuthorNotExists_throwNotFoundException() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(authorRepository.findById(any())).thenThrow(new NotFoundException("Author is not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> authorService.findAuthorModel(any()));
         assertTrue(exception.getMessage().contains("Author is not found"));
@@ -90,7 +90,7 @@ public class AuthorServiceUnitTest {
 
     @Test
     void getAuthor_ifAuthorNotExists_throwNotFoundExpception() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(authorRepository.findById(any())).thenThrow(new NotFoundException("Author is not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> authorService.getAuthor(any()));
         assertTrue(exception.getMessage().contains("Author is not found"));
@@ -120,7 +120,7 @@ public class AuthorServiceUnitTest {
 
     @Test
     void updateAuthor_ifAuthorNotExists_throwNotFoundException() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(authorRepository.findById(any())).thenThrow(new NotFoundException("Author is not found"));
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> authorService.updateAuthor(authorDto1, any()));
@@ -147,7 +147,7 @@ public class AuthorServiceUnitTest {
     @Test
     void deleteAuthor_ifAuthorNotExists_throwNotFoundException() {
         Mockito.when(authorRepository.isAuthorAssignedToBook(any())).thenReturn(false);
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(authorRepository.findById(any())).thenThrow(new NotFoundException("Author is not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> authorService.delete(any()));
         assertTrue(exception.getMessage().contains("Author is not found"));
