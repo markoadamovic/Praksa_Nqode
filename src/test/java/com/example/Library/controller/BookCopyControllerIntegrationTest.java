@@ -56,7 +56,7 @@ public class BookCopyControllerIntegrationTest {
     private void setUp() {
         author = createAuthor(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
         book = createBook(TITLE, DESCRIPTION, author);
-        bookCopy = createBookCopy(book, IDENTIFICATION);
+        bookCopy = createBookCopy(book, IDENTIFICATION, IS_RENTED);
     }
 
     @AfterEach
@@ -68,11 +68,16 @@ public class BookCopyControllerIntegrationTest {
 
     @Test
     void createBookCopy_returnHttpStatusCreated() throws Exception {
-        BookCopyDto bookCopyDto = createBookCopyDto(1L,book.getId(),IDENTIFICATION);
-        mockMvc.perform(post(URL_BOOKCOPY_PREFIX + "/{bookId}",book.getId() +
-                                "/{aaa234}", IDENTIFICATION))
+        BookCopyDto bookCopyDto = createBookCopyDto(1L, book.getId(), IDENTIFICATION_UPDATE, IS_RENTED);
+        String bookCopyDtoJson = mapper.writeValueAsString(bookCopyDto);
+
+        mockMvc.perform(post(URL_BOOKCOPY_PREFIX + "/book/{bookId}", book.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookCopyDtoJson)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.identification").value(bookCopyDto.getIdentification()));
     }
 
     @Test
@@ -120,7 +125,7 @@ public class BookCopyControllerIntegrationTest {
 
     @Test
     void updateBookCopy_returnHttpStatusOk() throws Exception {
-        BookCopyDto bookCopyDto = createBookCopyDto(1L, book.getId(), IDENTIFICATION_UPDATE);
+        BookCopyDto bookCopyDto = createBookCopyDto(1L, book.getId(), IDENTIFICATION_UPDATE, IS_RENTED);
         String bookCopyDtoJson = mapper.writeValueAsString(bookCopyDto);
         mockMvc.perform(put(URL_BOOKCOPY_PREFIX + "/{id}", bookCopy.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -134,7 +139,7 @@ public class BookCopyControllerIntegrationTest {
 
     @Test
     void updateBookCopy_throwNotFoundException_ifBookCopyIsNotFound() throws Exception {
-        BookCopyDto bookCopyDto = createBookCopyDto(1L, book.getId(), IDENTIFICATION_UPDATE);
+        BookCopyDto bookCopyDto = createBookCopyDto(1L, book.getId(), IDENTIFICATION_UPDATE, IS_RENTED);
         String bookCopyDtoJson = mapper.writeValueAsString(bookCopyDto);
         mockMvc.perform(put(URL_BOOKCOPY_PREFIX + "/{id}", 12345L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -161,19 +166,21 @@ public class BookCopyControllerIntegrationTest {
         return bookRepository.save(book);
     }
 
-    private BookCopy createBookCopy(Book book, String identification) {
+    private BookCopy createBookCopy(Book book, String identification, boolean isRented) {
         BookCopy bookCopy = new BookCopy();
         bookCopy.setBook(book);
         bookCopy.setIdentification(identification);
+        bookCopy.setRented(isRented);
 
         return bookCopyRepository.save(bookCopy);
     }
 
-    private BookCopyDto createBookCopyDto(Long id, Long bookId, String identification) {
+    private BookCopyDto createBookCopyDto(Long id, Long bookId, String identification, boolean isRented) {
         BookCopyDto bookCopyDto = new BookCopyDto();
         bookCopyDto.setId(id);
         bookCopyDto.setBookId(bookId);
         bookCopyDto.setIdentification(identification);
+        bookCopyDto.setRented(isRented);
 
         return bookCopyDto;
     }

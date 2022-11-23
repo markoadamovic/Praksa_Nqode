@@ -2,6 +2,8 @@ package com.example.Library.utils;
 
 import com.example.Library.model.entity.UserRole;
 
+import java.time.LocalDate;
+
 public class TestUtils {
 
     //BOOK CONSTANTS
@@ -36,13 +38,25 @@ public class TestUtils {
     //AUTHOR CONSTANTS
 
     public static final String FIRSTNAME_AUTHOR = "Marko";
+    public static final String FIRSTNAME_AUTHOR_DTO = "Maarkan";
     public static final String LASTNAME_AUTHOR = "Adamovic";
+    public static final String LASTNAME_AUTHOR_DTO = "Adaamnam";
     public static final String URL_AUTHOR_PREFIX = "/author";
 
     //BOOKCOPY
 
     public static final String IDENTIFICATION = "aaa10";
+    public static final Boolean IS_RENTED = false;
     public static final String URL_BOOKCOPY_PREFIX = "/bookCopy";
     public static final String IDENTIFICATION_UPDATE = "aaa222";
+
+    //BOOK RENTAL
+    public static final LocalDate DATE_START = null;
+    public static final LocalDate DATE_END = null;
+    public static final String URL_BOOKRENTAL_PREFIX = "/bookRental";
+    public static final String CREATE_BOOKRENTAL_URL = "/book/{bookId}/user/{userId}";
+    public static final String END_BOOKRENTAL_URL = "/book/{bookId}/bookCopy/{bookCopyId}";
+    public static final String ACTIVE_RENTS = "/activeRents";
+    public static final String CLOSED_RENTS = "/closedRents";
 
 }

@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     public UserCreateDto createUser(UserCreateDto userCreateDto) {
 
         if(userWithEmailExists(userCreateDto.getEmail())) {
-            throw new BadRequestException("User with email " + userCreateDto.getEmail() + " exists");
+            throw new BadRequestException(String.format("User with email %s  exists", userCreateDto.getEmail()));
         }
         User user = UserMapper.toEntity(userCreateDto);
 
@@ -36,14 +36,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public User findUserModel(Long id) throws NotFoundException {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
+    public User findUserModel(Long userId) throws NotFoundException {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %s is not found", userId )));
     }
 
     @Override
-    public UserDto getUser(Long id) {
-        User user = findUserModel(id);
+    public UserDto getUser(Long userId) {
+        User user = findUserModel(userId);
 
         return UserMapper.toDto(user);
     }
@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
-        User user = findUserModel(id);
+    public void deleteUser(Long userId) {
+        User user = findUserModel(userId);
         userRepository.delete(user);
     }
 

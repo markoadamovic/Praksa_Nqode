@@ -1,6 +1,5 @@
 package com.example.Library.controller;
 
-import com.example.Library.model.dto.BookDto;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.service.UserService;
@@ -25,9 +24,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userCreateDto));
     }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(id));
+    @GetMapping(path = "/{userId}")
+    public ResponseEntity<UserDto> getUser(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userId));
     }
 
     @GetMapping
@@ -35,17 +34,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUsers());
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    @DeleteMapping(path = "/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping(path = "/{id}")
+    @PutMapping(path = "/{userId}")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto,
-                                              @PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userDto, id));
+                                              @PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userDto, userId));
     }
 
 }

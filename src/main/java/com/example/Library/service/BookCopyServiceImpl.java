@@ -34,20 +34,22 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public BookCopyDto createBookCopy(Long bookId, String identification) {
-        if(bookCopyWithIdentificationExists(identification)){
-            throw new BadRequestException("BookCopy with identificator " + identification + " exists");
+    public BookCopyDto createBookCopy(Long bookId, BookCopyDto bookCopyDto) {
+        if(bookCopyWithIdentificationExists(bookCopyDto.getIdentification())){
+            throw new BadRequestException(String.format("BookCopy with identificator %s exists",
+                    bookCopyDto.getIdentification()));
         }
         BookCopy bookCopy = new BookCopy();
+        bookCopy.setRented(bookCopyDto.isRented());
         bookCopy.setBook(bookService.findBookModel(bookId));
-        bookCopy.setIdentification(identification);
+        bookCopy.setIdentification(bookCopyDto.getIdentification());
 
         return BookCopyMapper.toDto(bookCopyRepository.save(bookCopy));
     }
 
     @Override
-    public BookCopyDto getBookCopy(Long id) {
-        BookCopy bookCopy = findBookCopyModel(id);
+    public BookCopyDto getBookCopy(Long bookCopyId) {
+        BookCopy bookCopy = findBookCopyModel(bookCopyId);
         return BookCopyMapper.toDto(bookCopy);
     }
 
@@ -61,17 +63,18 @@ public class BookCopyServiceImpl implements BookCopyService {
     }
 
     @Override
-    public void delete(Long id) {
-        BookCopy bookCopy = findBookCopyModel(id);
+    public void delete(Long bookCopyId) {
+        BookCopy bookCopy = findBookCopyModel(bookCopyId);
         bookCopyRepository.delete(bookCopy);
     }
 
     @Override
-    public BookCopyDto updateBookCopy(Long id, BookCopyDto bookCopyDto) {
-        BookCopy bookCopy = findBookCopyModel(id);
+    public BookCopyDto updateBookCopy(Long bookCopyId, BookCopyDto bookCopyDto) {
+        BookCopy bookCopy = findBookCopyModel(bookCopyId);
         Book book = bookService.findBookModel(bookCopyDto.getBookId());
         bookCopy.setBook(book);
         bookCopy.setIdentification(bookCopyDto.getIdentification());
+        bookCopy.setRented(bookCopyDto.isRented());
 
         return BookCopyMapper.toDto(bookCopyRepository.save(bookCopy));
     }
@@ -80,9 +83,33 @@ public class BookCopyServiceImpl implements BookCopyService {
         return bookCopyRepository.findByIdentification(identification).isPresent();
     }
 
-    public BookCopy findBookCopyModel(Long id) {
-        return bookCopyRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("BookCopy with id " +id + " not found"));
+    public BookCopy findBookCopyModel(Long bookCopyId) {
+        return bookCopyRepository.findById(bookCopyId)
+                .orElseThrow(() -> new NotFoundException(String.format("BookCopy with id %s is not found", bookCopyId)));
+    }
+
+    @Override
+    public List<BookCopy> findBookCopiesByBook(Long bookId) {
+        Book book = bookService.findBookModel(bookId);
+
+        return bookCopyRepository.findByBook(book);
+    }
+
+    @Override
+    public BookCopy findBookCopyByBookId(Long bookId, Long bookCopyId) {
+        Book book = bookService.findBookModel(bookId);
+
+        return bookCopyRepository.findBookCopyByBookId(bookId, bookCopyId);
+    }
+
+    @Override
+    public BookCopy findNotRentedBookCopy(Long bookId) {
+        List<BookCopy> bookCopies = findBookCopiesByBook(bookId);
+        List<BookCopy> list = bookCopies.stream().filter(x -> !x.isRented()).toList();
+        if(list.isEmpty()) {
+            throw new NotFoundException(String.format("All books with id %s are rented", bookId));
+        }
+        return bookCopies.stream().filter(x -> !x.isRented()).toList().get(0);
     }
 
 }

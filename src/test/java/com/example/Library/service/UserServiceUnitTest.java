@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,30 +58,6 @@ public class UserServiceUnitTest {
         userCreateDto = UserMapper.toUserCreateDto(user);
         userDtoList = createUserDtoList(userDto);
         userList = createUserList(user);
-    }
-
-    private List<User> createUserList(User user){
-
-        return List.of(user);
-    }
-
-    private List<UserDto> createUserDtoList(UserDto userDto) {
-
-        return List.of(userDto);
-    }
-
-    private User createUser(Long id, String firstName, String lastName, String address,
-                       String email, String password, UserRole userRole) {
-        User user = new User();
-        user.setId(id);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setAdress(address);
-        user.setPassword(password);
-        user.setUserType(userRole);
-
-        return user;
     }
 
     @Test
@@ -175,4 +150,29 @@ public class UserServiceUnitTest {
         Exception exception = assertThrows(NotFoundException.class, () -> userService.updateUser(userDto1, any()));
         assertTrue(exception.getMessage().contains("not found"));
     }
+
+    private List<UserDto> createUserDtoList(UserDto userDto) {
+
+        return List.of(userDto);
+    }
+
+    private User createUser(Long id, String firstName, String lastName, String address,
+                            String email, String password, UserRole userRole) {
+        User user = new User();
+        user.setId(id);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setAdress(address);
+        user.setPassword(password);
+        user.setUserType(userRole);
+
+        return user;
+    }
+
+    private List<User> createUserList(User user){
+
+        return List.of(user);
+    }
+
 }

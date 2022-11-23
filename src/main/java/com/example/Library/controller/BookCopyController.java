@@ -18,15 +18,15 @@ public class BookCopyController {
         this.bookCopyService = bookCopyService;
     }
 
-    @PostMapping(value = "/{bookId}/{identification}")
+    @PostMapping(value = "/book/{bookId}")
     public ResponseEntity<BookCopyDto> createBookCopy(@PathVariable Long bookId,
-                                                      @PathVariable String identification) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookCopyService.createBookCopy(bookId, identification));
+                                                      @RequestBody BookCopyDto bookCopyDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookCopyService.createBookCopy(bookId, bookCopyDto));
     }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<BookCopyDto> getBookCopy(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(bookCopyService.getBookCopy(id));
+    @GetMapping(path = "/{bookCopyId}")
+    public ResponseEntity<BookCopyDto> getBookCopy(@PathVariable Long bookCopyId) {
+        return ResponseEntity.status(HttpStatus.OK).body(bookCopyService.getBookCopy(bookCopyId));
     }
 
     @GetMapping
@@ -34,16 +34,16 @@ public class BookCopyController {
         return ResponseEntity.status(HttpStatus.OK).body(bookCopyService.getBookCopies());
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> deleteBookCopy(@PathVariable Long id) {
-        bookCopyService.delete(id);
+    @DeleteMapping(path = "/{bookCopyId}")
+    public ResponseEntity<Void> deleteBookCopy(@PathVariable Long bookCopyId) {
+        bookCopyService.delete(bookCopyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping(path = "/{id}")
-    public ResponseEntity<BookCopyDto> updateBookCopy(@PathVariable Long id,
+    @PutMapping(path = "/{bookCopyId}")
+    public ResponseEntity<BookCopyDto> updateBookCopy(@PathVariable Long bookCopyId,
                                                       @RequestBody BookCopyDto bookCopyDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(bookCopyService.updateBookCopy(id, bookCopyDto));
+        return ResponseEntity.status(HttpStatus.OK).body(bookCopyService.updateBookCopy(bookCopyId, bookCopyDto));
     }
 
 }

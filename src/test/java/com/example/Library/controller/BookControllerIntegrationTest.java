@@ -62,7 +62,7 @@ class BookControllerIntegrationTest {
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
-        mockMvc.perform(post(URL_BOOK_PREFIX + "/{authorId}", author.getId())
+        mockMvc.perform(post(URL_BOOK_PREFIX + "/author/{authorId}", author.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -77,7 +77,7 @@ class BookControllerIntegrationTest {
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, 1L);
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
-        mockMvc.perform(post(URL_BOOK_PREFIX + "/{authorId}", 1000L)
+        mockMvc.perform(post(URL_BOOK_PREFIX + "/author/{authorId}", 1000L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookDtoJson)
                         .accept(MediaType.APPLICATION_JSON))

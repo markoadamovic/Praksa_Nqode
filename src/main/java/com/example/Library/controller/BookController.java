@@ -2,7 +2,6 @@ package com.example.Library.controller;
 
 import com.example.Library.model.dto.BookDto;
 import com.example.Library.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @PostMapping(value = "/{authorId}")
+    @PostMapping(value = "/author/{authorId}")
     public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto,
                                               @PathVariable Long authorId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDto, authorId));
