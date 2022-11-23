@@ -1,43 +1,47 @@
 package com.example.Library.model.dto;
 
+import java.time.LocalDate;
+
 public class BookRentalDto {
 
-    private Long id;
-
-    private boolean isRented;
+    private Long bookRentalId;
 
     private Long userId;
 
     private Long bookCopyId;
 
-    public BookRentalDto(Long id, boolean isRented, Long user, Long bookCopy) {
-        this.id = id;
-        this.isRented = isRented;
-        this.userId = user;
+    private Long bookId;
+
+    private LocalDate rentStart;
+
+    private LocalDate rentEnd;
+
+    public BookRentalDto(Long bookRentalId, Long bookId, Long userId, Long bookCopy, LocalDate rentStart, LocalDate rentEnd) {
+        this.bookRentalId = bookRentalId;
+        this.userId = userId;
         this.bookCopyId = bookCopy;
+        this.bookId = bookId;
+        this.rentStart = rentStart;
+        this.rentEnd = rentEnd;
     }
 
-    public Long getId() {
-        return id;
+    public BookRentalDto(){
+
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getBookRentalId() {
+        return bookRentalId;
     }
 
-    public boolean isRented() {
-        return isRented;
+    public void setBookRentalId(Long bookRentalId) {
+        this.bookRentalId = bookRentalId;
     }
 
-    public void setRented(boolean rented) {
-        isRented = rented;
-    }
-
-    public Long getUser() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUser(Long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -49,4 +53,27 @@ public class BookRentalDto {
         this.bookCopyId = bookCopyId;
     }
 
+    public LocalDate getRentStart() {
+        return rentStart;
+    }
+
+    public void setRentStart(LocalDate rentStart) {
+        this.rentStart = rentStart;
+    }
+
+    public LocalDate getRentEnd() {
+        return rentEnd;
+    }
+
+    public void setRentEnd(LocalDate rentEnd) {
+        this.rentEnd = rentEnd;
+    }
+
+    public Long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
+    }
 }

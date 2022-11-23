@@ -66,7 +66,7 @@ class AuthorControllerIntegrationTest {
 
     @Test
     void createAuthor_returnHttpStatusCreated() throws Exception {
-        AuthorDto authorDto = createAuthorDto("Marko", "Adamovic");
+        AuthorDto authorDto = createAuthorDto(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
         String authorDtoJson = mapper.writeValueAsString(authorDto);
 
         mockMvc.perform(post(URL_AUTHOR_PREFIX)
@@ -95,7 +95,7 @@ class AuthorControllerIntegrationTest {
 
     @Test
     void updateAuthor_returnHttpStatusOk() throws Exception {
-        AuthorDto authorDto = createAuthorDto("Niko", "Nikolic");
+        AuthorDto authorDto = createAuthorDto(FIRSTNAME_AUTHOR_DTO, LASTNAME_AUTHOR_DTO);
         String authorDtoJson = mapper.writeValueAsString(authorDto);
 
         mockMvc.perform(put(URL_AUTHOR_PREFIX + "/{authorId}", author.getId())
@@ -110,7 +110,7 @@ class AuthorControllerIntegrationTest {
 
     @Test
     void updateAuthor_returnHttpStatusNotFound_ifAuthorIsNotFound() throws Exception {
-        AuthorDto authorDto = createAuthorDto("Niko", "Nikolic");
+        AuthorDto authorDto = createAuthorDto(FIRSTNAME_AUTHOR_DTO, LASTNAME_AUTHOR_DTO);
         String authorDtoJson = mapper.writeValueAsString(authorDto);
 
         mockMvc.perform(put(URL_AUTHOR_PREFIX + "/{authorId}", 100l )

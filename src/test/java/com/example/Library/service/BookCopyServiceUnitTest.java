@@ -53,7 +53,7 @@ public class BookCopyServiceUnitTest {
     void setup() {
         author = createAuthor(1L, FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
         book = createBook(1L, TITLE, DESCRIPTION, author);
-        bookCopy = createBookCopy(1L, IDENTIFICATION, book);
+        bookCopy = createBookCopy(1L, IDENTIFICATION, book, IS_RENTED);
         bookCopyDto = BookCopyMapper.toDto(bookCopy);
         bookCopyList = List.of(bookCopy);
     }
@@ -64,7 +64,7 @@ public class BookCopyServiceUnitTest {
         Mockito.when(bookService.findBookModel(any())).thenReturn(book);
         Mockito.when(bookCopyRepository.save(any())).thenReturn(bookCopy);
 
-        BookCopyDto expected = bookCopyService.createBookCopy(book.getId(), IDENTIFICATION);
+        BookCopyDto expected = bookCopyService.createBookCopy(book.getId(), bookCopyDto);
         assertEquals(bookCopy.getIdentification(), expected.getIdentification());
     }
 
@@ -73,7 +73,7 @@ public class BookCopyServiceUnitTest {
         Mockito.when(bookCopyRepository.findByIdentification(any())).thenReturn(Optional.ofNullable(bookCopy));
 
         Exception exception = assertThrows(BadRequestException.class,
-                () -> bookCopyService.createBookCopy(1l, IDENTIFICATION));
+                () -> bookCopyService.createBookCopy(1l, bookCopyDto));
         assertTrue(exception.getMessage().contains("exists"));
     }
 
@@ -83,7 +83,7 @@ public class BookCopyServiceUnitTest {
         Mockito.when(bookService.findBookModel(any())).thenThrow(new NotFoundException("not found"));
 
         Exception exception = assertThrows(NotFoundException.class,
-                () -> bookCopyService.createBookCopy(1L, IDENTIFICATION));
+                () -> bookCopyService.createBookCopy(1L, bookCopyDto));
         assertTrue(exception.getMessage().contains("not found"));
     }
 
@@ -191,11 +191,12 @@ public class BookCopyServiceUnitTest {
         assertTrue(exception.getMessage().contains("not found"));
     }
 
-    private BookCopy createBookCopy(Long id, String identification, Book book) {
+    private BookCopy createBookCopy(Long id, String identification, Book book, boolean isRented) {
         BookCopy bookCopy = new BookCopy();
         bookCopy.setId(id);
         bookCopy.setIdentification(identification);
         bookCopy.setBook(book);
+        bookCopy.setRented(isRented);
 
         return bookCopy;
     }

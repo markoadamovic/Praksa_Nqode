@@ -6,7 +6,8 @@ import com.example.Library.model.entity.BookCopy;
 public class BookCopyMapper {
 
     public static BookCopyDto toDto(BookCopy bookCopy) {
-        return new BookCopyDto(bookCopy.getId(), bookCopy.getBook().getId(), bookCopy.getIdentification());
+        return new BookCopyDto(bookCopy.getId(), bookCopy.getBook().getId(),
+                bookCopy.getIdentification(), bookCopy.isRented());
     }
 
 }

@@ -45,7 +45,7 @@ public class BookServiceImpl implements BookService {
 
     public Book findBookModel(Long bookId){
         return bookRepository.findById(bookId)
-                .orElseThrow(() -> new NotFoundException("Book with id " + bookId + " is not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("Book with id %s is not found", bookId)));
     }
 
     @Override

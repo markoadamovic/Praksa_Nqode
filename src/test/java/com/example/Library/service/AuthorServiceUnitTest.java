@@ -54,25 +54,6 @@ public class AuthorServiceUnitTest {
         authorDtoList = createAuthorDtoList(author1, author2);
     }
 
-    private List<Author> createAuthorList(Author author1, Author author2) {
-
-        return List.of(author1, author2);
-    }
-
-    private List<AuthorDto> createAuthorDtoList(Author author1, Author author2) {
-
-        return List.of(AuthorMapper.toDto(author1), AuthorMapper.toDto(author2));
-    }
-
-    private Author createAuthor(Long id, String firstName, String lastName) {
-        Author author = new Author();
-        author.setFirstName(firstName);
-        author.setLastName(lastName);
-        author.setId(id);
-
-        return author;
-    }
-
     @Test
     void shouldCreateNewAuthor() {
         Mockito.when(authorRepository.save(any())).thenReturn(author1);
@@ -170,6 +151,25 @@ public class AuthorServiceUnitTest {
 
         Exception exception = assertThrows(NotFoundException.class, () -> authorService.delete(any()));
         assertTrue(exception.getMessage().contains("Author is not found"));
+    }
+
+    private List<Author> createAuthorList(Author author1, Author author2) {
+
+        return List.of(author1, author2);
+    }
+
+    private List<AuthorDto> createAuthorDtoList(Author author1, Author author2) {
+
+        return List.of(AuthorMapper.toDto(author1), AuthorMapper.toDto(author2));
+    }
+
+    private Author createAuthor(Long id, String firstName, String lastName) {
+        Author author = new Author();
+        author.setFirstName(firstName);
+        author.setLastName(lastName);
+        author.setId(id);
+
+        return author;
     }
 
 }

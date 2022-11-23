@@ -9,10 +9,13 @@ public class BookCopyDto {
 
     private String identification;
 
-    public BookCopyDto(Long id, Long bookId, String identification) {
+    private boolean isRented;
+
+    public BookCopyDto(Long id, Long bookId, String identification, boolean isRented) {
         this.id = id;
         this.bookId = bookId;
         this.identification = identification;
+        this.isRented = isRented;
     }
 
     public BookCopyDto() {
@@ -40,6 +43,14 @@ public class BookCopyDto {
 
     public void setIdentification(String identification) {
         this.identification = identification;
+    }
+
+    public boolean isRented() {
+        return isRented;
+    }
+
+    public void setRented(boolean rented) {
+        isRented = rented;
     }
 
 }

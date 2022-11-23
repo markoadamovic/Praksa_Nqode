@@ -14,10 +14,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.Library.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -48,37 +48,14 @@ public class BookServiceUnitTest {
 
     @BeforeEach
     public void setup() {
-        book = createBook(1l,"Na drini cuprija", "knjiga");
-        book1 = createBook(2l, "Novi Sad", "Zanimljivo");
-        author = createAuthor(1l,"Marko", "Adamovic");
+        book = createBook(1l,TITLE, DESCRIPTION);
+        book1 = createBook(2l, TITLE, DESCRIPTION);
+        author = createAuthor(1l,FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
         book.setAuthor(author);
         book1.setAuthor(author);
         bookDto = BookMapper.toDto(book);
         bookDto1 = BookMapper.toDto(book1);
         bookList = createBookList(book, book1);
-    }
-
-    private List<Book> createBookList(Book book, Book book1) {
-
-        return List.of(book, book1);
-    }
-
-    private Author createAuthor(Long id, String firstName, String lastName) {
-        Author author = new Author();
-        author.setId(id);
-        author.setFirstName(firstName);
-        author.setLastName(lastName);
-
-        return author;
-    }
-
-    private Book createBook(Long id, String title, String description) {
-        Book book = new Book();
-        book.setId(id);
-        book.setTitle(title);
-        book.setDescription(description);
-
-        return book;
     }
 
     @Test
@@ -183,6 +160,29 @@ public class BookServiceUnitTest {
         Exception exception = assertThrows(NotFoundException.class,
                 () -> bookService.updateBook(bookDto, book.getId()));
         assertTrue(exception.getMessage().contains("not found"));
+    }
+
+    private List<Book> createBookList(Book book, Book book1) {
+
+        return List.of(book, book1);
+    }
+
+    private Author createAuthor(Long id, String firstName, String lastName) {
+        Author author = new Author();
+        author.setId(id);
+        author.setFirstName(firstName);
+        author.setLastName(lastName);
+
+        return author;
+    }
+
+    private Book createBook(Long id, String title, String description) {
+        Book book = new Book();
+        book.setId(id);
+        book.setTitle(title);
+        book.setDescription(description);
+
+        return book;
     }
 
 }

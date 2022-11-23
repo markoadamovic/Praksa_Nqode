@@ -1,8 +1,7 @@
 package com.example.Library.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 public class BookRental {
@@ -12,9 +11,6 @@ public class BookRental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "isRented")
-    private boolean isRented;
-
     @ManyToOne
     @JoinColumn(name = "book_copy_id")
     private BookCopy bookCopy;
@@ -23,20 +19,18 @@ public class BookRental {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "rent_start")
+    private LocalDate rentStart;
+
+    @Column(name = "rent_end")
+    private LocalDate rentEnd;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public boolean isRented() {
-        return isRented;
-    }
-
-    public void setRented(boolean isRented) {
-        this.isRented = isRented;
     }
 
     public BookCopy getBookCopy() {
@@ -55,14 +49,31 @@ public class BookRental {
         this.user = user;
     }
 
-    public BookRental(boolean isRented, BookCopy bookCopy, User user) {
-        this.isRented = isRented;
+    public BookRental(BookCopy bookCopy, User user, LocalDate rentStart, LocalDate rentEnd) {
         this.bookCopy = bookCopy;
         this.user = user;
+        this.rentStart = rentStart;
+        this.rentEnd = rentEnd;
     }
 
     public BookRental() {
 
+    }
+
+    public LocalDate getRentStart() {
+        return rentStart;
+    }
+
+    public void setRentStart(LocalDate rentStart) {
+        this.rentStart = rentStart;
+    }
+
+    public LocalDate getRentEnd() {
+        return rentEnd;
+    }
+
+    public void setRentEnd(LocalDate rentEnd) {
+        this.rentEnd = rentEnd;
     }
 
 }
