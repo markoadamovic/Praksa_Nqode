@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+  db:
+    container_name: postgres_container
+    image: 'postgres:latest'
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  library:
+    container_name: library_container
+    image: "library:latest"
+    restart: always
+    ports:
+      - "8080:8080"
+    profiles: [ "prod" ]
+    networks:
+      - library-network
+    depends_on:
+      - db
+
+volumes:
+  db:
+    driver: local
+  pg-data:
+    driver: local
+
+networks:
+  library-network:
+    driver: bridge
