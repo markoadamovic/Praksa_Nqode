@@ -7,9 +7,12 @@ import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.entity.User;
 import com.example.Library.model.mapper.UserMapper;
 import com.example.Library.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +31,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException(String.format("User with email %s  exists", userCreateDto.getEmail()));
         }
         User user = UserMapper.toEntity(userCreateDto);
+        user.setPassword(userCreateDto.getPassword());
 
         return UserMapper.toUserCreateDto(userRepository.save(user));
     }
@@ -39,6 +43,12 @@ public class UserServiceImpl implements UserService {
     public User findUserModel(Long userId) throws NotFoundException {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %s is not found", userId )));
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(String.format("Username or password is invalid")));
     }
 
     @Override

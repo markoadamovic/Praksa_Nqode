@@ -4,6 +4,7 @@ import com.example.Library.model.dto.AuthorDto;
 import com.example.Library.service.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class AuthorController {
     }
 
     @PostMapping
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authorService.createAuthor(authorDto));
     }
 
     @GetMapping(path = "/{authorId}")
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR', 'USER'})")
     public ResponseEntity<AuthorDto> getAuthor(@PathVariable Long authorId) {
         AuthorDto authorDto = authorService.getAuthor(authorId);
 
@@ -31,6 +34,7 @@ public class AuthorController {
     }
 
     @GetMapping
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<List<AuthorDto>> getAuthors() {
         List<AuthorDto> authorsDto = authorService.getAuthors();
 
@@ -38,6 +42,7 @@ public class AuthorController {
     }
 
     @DeleteMapping(value = "/{authorId}")
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long authorId) {
         authorService.delete(authorId);
 
@@ -45,6 +50,7 @@ public class AuthorController {
     }
 
     @PutMapping(path = "/{authorId}")
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<AuthorDto> updateAuthor(@RequestBody AuthorDto authorDto,
                                                   @PathVariable Long authorId) {
         return ResponseEntity.status(HttpStatus.OK).body(authorService.updateAuthor(authorDto, authorId));

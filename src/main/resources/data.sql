@@ -18,11 +18,11 @@ insert into book
 values(default, 'Znakovi pored puta', 'knjiga', '1');
 
 insert into public."user"
-values(default, 'Veternik', 'adam95@gmail.com', 'Marko', 'Adamoviv', '123123', 'USER');
+values(default, 'Veternik', 'adam95@gmail.com', 'Marko', 'Adamoviv', '$2a$12$pweqL4C1wT74yNuJRLknheBXbzhJcbUbz.sTHtqEnUerEY6n8Xsui', 'ADMINISTRATOR');
 insert into public."user"
-values(default, 'NS', 'nikola@gmail.com', 'Nokola', 'Namada', '123123', 'USER');
+values(default, 'NS', 'nikola@gmail.com', 'Nokola', 'Namada', '$2a$12$pweqL4C1wT74yNuJRLknheBXbzhJcbUbz.sTHtqEnUerEY6n8Xsui', 'USER');
 insert into public."user"
-values(default, 'BG', 'beogradjanin@gmail.com', 'Milos', 'Milosevic', '33333', 'USER');
+values(default, 'BG', 'beogradjanin@gmail.com', 'Milos', 'Milosevic', '$2a$12$pweqL4C1wT74yNuJRLknheBXbzhJcbUbz.sTHtqEnUerEY6n8Xsui', 'USER');
 
 insert into book_copy
 values (default, 'aaa111', false, '1');
