@@ -75,9 +75,6 @@ public class BookServiceImpl implements BookService {
         book.setTitle(bookDto.getTitle());
         book.setDescription(bookDto.getDescription());
 
-        Author author = authorService.findAuthorModel(bookDto.getAuthorId());
-        book.setAuthor(author);
-
         return BookMapper.toDto(bookRepository.save(book));
     }
 

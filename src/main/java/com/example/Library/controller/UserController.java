@@ -5,6 +5,7 @@ import com.example.Library.model.dto.UserDto;
 import com.example.Library.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,21 +21,25 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<UserCreateDto> createUser(@RequestBody UserCreateDto userCreateDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userCreateDto));
     }
 
     @GetMapping(path = "/{userId}")
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<UserDto> getUser(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userId));
     }
 
     @GetMapping
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<List<UserDto>> getUsers() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUsers());
     }
 
     @DeleteMapping(path = "/{userId}")
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
 
@@ -42,6 +47,7 @@ public class UserController {
     }
 
     @PutMapping(path = "/{userId}")
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto,
                                               @PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userDto, userId));

@@ -22,4 +22,6 @@ public interface UserService {
 
     User findUserModel(Long userId);
 
+    User getUserByEmail(String email);
+
 }
