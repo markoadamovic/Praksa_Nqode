@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import static java.util.Objects.isNull;
@@ -25,7 +27,7 @@ public class JwtProvider {
     public String SECRET;
 
     @Value("3600000")
-    private int EXPIRES_IN;
+    private Long EXPIRES_IN;
 
     @Value("Authorization")
     private String AUTH_HEADER;
@@ -51,7 +53,6 @@ public class JwtProvider {
         return Jwts.builder()
                 .setIssuer(APP_NAME)
                 .setSubject(email)
-                .setIssuedAt(new Date())
                 .setExpiration(generateExpiratonDate())
                 .claim("roles", role)
                 .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
@@ -103,7 +104,10 @@ public class JwtProvider {
     }
 
     private Date generateExpiratonDate() {
-        return new Date(new Date().getTime() + EXPIRES_IN);
+
+        Date expiration = Date.from(LocalDateTime.now().plusMinutes(EXPIRES_IN)
+                .atZone(ZoneId.systemDefault()).toInstant());
+        return expiration;
     }
 
 }
