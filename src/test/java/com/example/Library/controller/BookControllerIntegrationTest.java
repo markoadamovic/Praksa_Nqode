@@ -3,19 +3,33 @@ package com.example.Library.controller;
 import com.example.Library.model.dto.BookDto;
 import com.example.Library.model.entity.Author;
 import com.example.Library.model.entity.Book;
+import com.example.Library.model.entity.User;
+import com.example.Library.model.entity.UserRole;
 import com.example.Library.repository.AuthorRepository;
 import com.example.Library.repository.BookRepository;
+import com.example.Library.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Collections;
+import java.util.List;
 
 import static com.example.Library.utils.TestUtils.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,24 +52,42 @@ class BookControllerIntegrationTest {
     @Autowired
     private AuthorRepository authorRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private ObjectMapper mapper = new ObjectMapper();
 
     private Book book;
 
     private Author author;
 
+    @Autowired
+    private WebApplicationContext context;
+
     @BeforeEach
     private void setUp() {
         author = createAuthor(FIRSTNAME, LASTNAME);
         book = createBook(TITLE, DESCRIPTION, author);
+
+        User authUser = createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+
+        List<SimpleGrantedAuthority> grantedAuthorities = Collections
+                .singletonList(new SimpleGrantedAuthority(authUser.getUserType().getName()));
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                authUser.getEmail(), authUser.getPassword(), grantedAuthorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @AfterEach
     private void clean() {
         bookRepository.deleteAll();
         authorRepository.deleteAll();
+        userRepository.deleteAll();
     }
-
 
     @Test
     void createBook_returnHttpStatusCreated() throws Exception {
@@ -168,4 +200,18 @@ class BookControllerIntegrationTest {
 
         return bookRepository.save(book);
     }
+
+    private User createUser(String firstName, String lastName, String email,
+                            String address, String password, UserRole userRole) {
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setAdress(address);
+        user.setPassword(password);
+        user.setUserType(userRole);
+
+        return userRepository.save(user);
+    }
+
 }

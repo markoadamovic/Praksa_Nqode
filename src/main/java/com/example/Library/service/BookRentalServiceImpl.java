@@ -44,6 +44,11 @@ public class BookRentalServiceImpl implements BookRentalService {
     }
 
     @Override
+    public void delete(BookRental bookRental) {
+        bookRentalRepository.delete(bookRental);
+    }
+
+    @Override
     public List<BookRentalDto> getRentedBooks() {
         List<BookRental> bookRentals = bookRentalRepository.findAll();
         return bookRentals.stream()
@@ -84,7 +89,7 @@ public class BookRentalServiceImpl implements BookRentalService {
 
     @Override
     public List<BookRentalDto> getActiveRents() {
-        List<BookRental> bookRentals = bookRentalRepository.findByRentEnd();
+        List<BookRental> bookRentals = bookRentalRepository.findActiveRents();
         return bookRentals.stream()
                 .map(BookRentalMapper::toDto)
                 .collect(Collectors.toList());
@@ -92,7 +97,7 @@ public class BookRentalServiceImpl implements BookRentalService {
 
     @Override
     public List<BookRentalDto> getClosedRents() {
-        List<BookRental> bookRentals = bookRentalRepository.findByRentStart();
+        List<BookRental> bookRentals = bookRentalRepository.findClosedRents();
         return bookRentals.stream()
                 .map(BookRentalMapper::toDto)
                 .collect(Collectors.toList());

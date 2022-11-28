@@ -52,6 +52,7 @@ public class BookServiceUnitTest {
         book1 = createBook(2l, TITLE, DESCRIPTION);
         author = createAuthor(1l,FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
         book.setAuthor(author);
+
         book1.setAuthor(author);
         bookDto = BookMapper.toDto(book);
         bookDto1 = BookMapper.toDto(book1);
@@ -59,7 +60,7 @@ public class BookServiceUnitTest {
     }
 
     @Test
-    void createBook_ifAuthorExists_returnBookDto(){
+    void createBook_returnBookDto(){
         Mockito.when(authorService.findAuthorModel(any())).thenReturn(author);
         Mockito.when(bookRepository.save(any())).thenReturn(book);
 
@@ -76,7 +77,7 @@ public class BookServiceUnitTest {
     }
 
     @Test
-    void getBooks_ifBooksExists_returnBookListDto() {
+    void getBooks_returnBookListDto() {
         Mockito.when(bookRepository.findAll()).thenReturn(bookList);
 
         List<BookDto> expected = bookService.getBooks();
@@ -85,8 +86,8 @@ public class BookServiceUnitTest {
     }
 
     @Test
-    void findBookModel_ifBookExists() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.ofNullable(book));
+    void findBookModel_returnBook() {
+        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
 
         Book expected = bookService.findBookModel(book.getId());
         assertEquals(book, expected);
@@ -94,15 +95,15 @@ public class BookServiceUnitTest {
 
     @Test
     void findBookModel_ifBookNotExists_thenThrowNotFoundException() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(bookRepository.findById(any())).thenThrow(new NotFoundException("not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookService.findBookModel(any()));
         assertTrue(exception.getMessage().contains("not found"));
     }
 
     @Test
-    void getBook_ifBookExist_returnBookDto() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.ofNullable(book));
+    void getBook_returnBookDto() {
+        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
 
         BookDto expected = bookService.getBook(book.getId());
         assertEquals(book.getId(), expected.getId());
@@ -111,15 +112,15 @@ public class BookServiceUnitTest {
 
     @Test
     void getBook_ifBookNotExists_throwNotFoundException() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(bookRepository.findById(any())).thenThrow(new NotFoundException("not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookService.getBook(any()));
         assertTrue(exception.getMessage().contains("not found"));
     }
 
     @Test
-    void deleteBook_ifBookExist() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.ofNullable(book));
+    void deleteBook() {
+        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
 
         bookService.delete(book.getId());
         verify(bookRepository).delete(book);
@@ -127,15 +128,14 @@ public class BookServiceUnitTest {
 
     @Test
     void deleteBook_ifBookNotExists_throwNotFoundException() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(bookRepository.findById(any())).thenThrow(new NotFoundException("not found"));
         Exception exception = assertThrows(NotFoundException.class, () -> bookService.delete(any()));
         assertTrue(exception.getMessage().contains("not found"));
     }
 
     @Test
-    void updateBook_ifBookAndAuthorExists_returnBookDto() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.ofNullable(book));
-        Mockito.when(authorService.findAuthorModel(any())).thenReturn(author);
+    void updateBook_returnBookDto() {
+        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
         Mockito.when(bookRepository.save(book)).thenReturn(book);
 
         BookDto expected = bookService.updateBook(bookDto1, book.getId());
@@ -146,19 +146,9 @@ public class BookServiceUnitTest {
 
     @Test
     void updateBook_ifBookNotExists_throwNotFoundException() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(bookRepository.findById(any())).thenThrow(new NotFoundException("not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookService.updateBook(bookDto, any()));
-        assertTrue(exception.getMessage().contains("not found"));
-    }
-
-    @Test
-    void updateBook_ifAuthorNotExists_throwNotFoundException() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.ofNullable(book));
-        Mockito.when(authorService.findAuthorModel(any())).thenThrow(new NotFoundException("not found"));
-
-        Exception exception = assertThrows(NotFoundException.class,
-                () -> bookService.updateBook(bookDto, book.getId()));
         assertTrue(exception.getMessage().contains("not found"));
     }
 

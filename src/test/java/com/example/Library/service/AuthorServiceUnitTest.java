@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +24,11 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class AuthorServiceUnitTest {
 
+    @Mock
+    private AuthorRepository authorRepository;
 
     @InjectMocks
     private AuthorServiceImpl authorService;
-
-    @Mock
-    private AuthorRepository authorRepository;
 
     private AuthorDto authorDto1;
 
@@ -44,6 +42,7 @@ public class AuthorServiceUnitTest {
 
     private List<AuthorDto> authorDtoList;
 
+
     @BeforeEach
     public void setup() {
         author1 = createAuthor(1l, "Marko", "Adamovic");
@@ -55,17 +54,18 @@ public class AuthorServiceUnitTest {
     }
 
     @Test
-    void shouldCreateNewAuthor() {
+    void createNewAuthor_returnAuthorDto() {
         Mockito.when(authorRepository.save(any())).thenReturn(author1);
 
         AuthorDto expectedDto = authorService.createAuthor(authorDto1);
+
         assertEquals(authorDto1.getId(), expectedDto.getId());
         assertEquals(authorDto1.getFirstName(), expectedDto.getFirstName());
     }
 
     @Test
-    void findAuthor_ifAuthorExists_returnAuthor() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author1));
+    void findAuthor_returnAuthor() {
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author1));
 
         Author expected = authorService.findAuthorModel(author1.getId());
         assertEquals(author1, expected);
@@ -80,8 +80,8 @@ public class AuthorServiceUnitTest {
     }
 
     @Test
-    void getAuthor_ifAuthorExists_returnAuthorDto() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author1));
+    void getAuthor_returnAuthorDto() {
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author1));
 
         AuthorDto expected = authorService.getAuthor(author1.getId());
         assertEquals(authorDto1.getId(), expected.getId());
@@ -97,7 +97,7 @@ public class AuthorServiceUnitTest {
     }
 
     @Test
-    void getAuthors_ifAuthorsExists_returnAuthorDtoList() {
+    void getAuthors_returnAuthorDtoList() {
         Mockito.when(authorRepository.findAll()).thenReturn(authorsList);
 
         List<AuthorDto> expected = authorService.getAuthors();
@@ -108,8 +108,8 @@ public class AuthorServiceUnitTest {
     }
 
     @Test
-    void updateAuthor_ifAuthorExists_returnUpdatedAuthorDto() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author1));
+    void updateAuthor_returnUpdatedAuthorDto() {
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author1));
         Mockito.when(authorRepository.save(author1)).thenReturn(author1);
 
         AuthorDto expected = authorService.updateAuthor(authorDto2, any());
@@ -128,7 +128,7 @@ public class AuthorServiceUnitTest {
     }
 
     @Test
-    void deleteAuthor_ifAuthorExists() {
+    void deleteAuthor() {
         Mockito.when(authorRepository.isAuthorAssignedToBook(any())).thenReturn(false);
         Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author1));
 
