@@ -1,5 +1,6 @@
 package com.example.Library.controller.auth;
 
+import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.dto.auth.AuthRequest;
 import com.example.Library.model.dto.auth.AuthResponse;
@@ -27,6 +28,11 @@ public class AuthenticationController {
     @PostMapping(path = "/authenticate")
     public ResponseEntity<AuthResponse> authenticate(@RequestBody @Validated AuthRequest request) {
         return ResponseEntity.ok(authService.authenticate(request));
+    }
+
+    @PostMapping(path = "/register")
+    public ResponseEntity<UserDto> registerUser(@RequestBody UserCreateDto userCreateDto) {
+        return ResponseEntity.ok(authService.register(userCreateDto));
     }
 
 

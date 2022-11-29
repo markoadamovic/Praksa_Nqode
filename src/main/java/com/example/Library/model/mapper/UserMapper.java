@@ -8,7 +8,7 @@ public class UserMapper {
 
     public static User toEntity(UserCreateDto userCreateDto) {
         return new User(userCreateDto.getFirstName(), userCreateDto.getLastName(), userCreateDto.getEmail(),
-                userCreateDto.getAddress(), userCreateDto.getPassword(), userCreateDto.getUserRole());
+                userCreateDto.getAddress(), userCreateDto.getUserRole());
     }
 
     public static UserCreateDto toUserCreateDto(User user) {

@@ -26,7 +26,7 @@ public class JwtProvider {
     @Value("secret")
     public String SECRET;
 
-    @Value("3600000")
+    @Value("1")
     private Long EXPIRES_IN;
 
     @Value("Authorization")

@@ -3,11 +3,13 @@ package com.example.Library.service.auth;
 import com.example.Library.configuration.auth.JwtProvider;
 import com.example.Library.exception.BadRequestException;
 import com.example.Library.exception.NotFoundException;
+import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.dto.auth.AuthRequest;
 import com.example.Library.model.dto.auth.AuthResponse;
 import com.example.Library.model.entity.User;
 import com.example.Library.model.mapper.UserMapper;
+import com.example.Library.repository.UserRepository;
 import com.example.Library.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +29,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtProvider jwtProvider;
+
+    private final UserRepository userRepository;
 
     public UserDto getAuthenticatedUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
@@ -63,4 +67,17 @@ public class AuthService {
         return allowedRoles.contains(user.getUserType().getName());
     }
 
+    public UserDto register(UserCreateDto userCreateDto) {
+        if(userWithEmailExists(userCreateDto.getEmail())) {
+            throw new BadRequestException(String.format("User with email %s  exists", userCreateDto.getEmail()));
+        }
+        User user = UserMapper.toEntity(userCreateDto);
+        user.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
+
+        return UserMapper.toDto(userRepository.save(user));
+    }
+
+    public boolean userWithEmailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
 }
