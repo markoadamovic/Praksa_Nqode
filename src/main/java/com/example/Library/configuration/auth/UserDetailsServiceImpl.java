@@ -28,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 user.getPassword(), grantedAuthorities);
     }
 
-    private User getUserByEmail(String username) {
+    public User getUserByEmail(String username) {
         try {
             return userService.getUserByEmail(username);
         } catch (NotFoundException e) {

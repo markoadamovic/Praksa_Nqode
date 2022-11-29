@@ -7,8 +7,10 @@ import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.dto.auth.AuthRequest;
 import com.example.Library.model.dto.auth.AuthResponse;
+import com.example.Library.model.entity.AuthToken;
 import com.example.Library.model.entity.User;
 import com.example.Library.model.mapper.UserMapper;
+import com.example.Library.repository.AuthTokenRepository;
 import com.example.Library.repository.UserRepository;
 import com.example.Library.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,8 @@ import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -41,6 +45,8 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     private final UserRepository userRepository;
+
+    private final AuthTokenService authTokenService;
 
     public UserDto getAuthenticatedUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
@@ -60,7 +66,20 @@ public class AuthService {
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadRequestException("Invalid credentials");
         }
-        return AuthResponse.builder().token(jwtProvider.generateToken(user.getEmail(), user.getPassword())).build();
+        String accessToken = jwtProvider.generateToken(user.getEmail(), user.getPassword());
+        saveAuthToken(request, accessToken);
+        return AuthResponse.builder().token(accessToken).build();
+    }
+
+    public void saveAuthToken(AuthRequest request, String accessToken) {
+        if(request.getEmail().isBlank() || request.getPassword().isBlank()) {
+            throw new BadRequestException("Invalid credentials");
+        }
+        User user = findUserByEmail(request.getEmail());
+        AuthToken authToken = new AuthToken();
+        authToken.setUser(user);
+        authToken.setAccessToken(accessToken);
+        authTokenService.save(authToken);
     }
 
     private User findUserByEmail(String email) {
@@ -84,11 +103,17 @@ public class AuthService {
         User user = UserMapper.toEntity(userCreateDto);
         user.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
 
-        return UserMapper.toDto(userRepository.save(user));
+        return UserMapper.toDto(userService.saveUser(user));
     }
 
     public boolean userWithEmailExists(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
 
+    public void singout() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        User user = userService.getUserByEmail(email);
+        AuthToken authToken = authTokenService.getAuthToken(user);
+        authTokenService.delete(authToken);
+    }
 }

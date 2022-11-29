@@ -37,7 +37,7 @@ public class JwtProvider {
     public String getEmailFromToken(String token) {
         String email;
         try {
-            final Claims claims = getAllClaimsFromToken(token);
+            final Claims claims = parseClaims(token);
             email = claims.getSubject();
         }catch (Exception e) {
             email = null;
@@ -59,7 +59,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    private Claims getAllClaimsFromToken(String token) {
+    private Claims parseClaims(String token) {
         Claims claims;
         try{
             if (!isNull(token) && token.startsWith(BEARER_HEADER)) {
@@ -78,19 +78,19 @@ public class JwtProvider {
     private boolean isTokenExpired(String token) {
         final Date expiration = this.getIssuedAtDateFromToken(token);
         return expiration.before(new Date());
-
     }
 
     private Date getIssuedAtDateFromToken(String token) {
         Date issuedAt;
         try{
-            final Claims claims = this.getAllClaimsFromToken(token);
+            final Claims claims = this.parseClaims(token);
             issuedAt = claims.getIssuedAt();
         }catch (Exception e){
             issuedAt = null;
         }
         return issuedAt;
     }
+
 
     public String getToken(HttpServletRequest request){
         String authHeader = getAuthHeaderFromHeader(request);
