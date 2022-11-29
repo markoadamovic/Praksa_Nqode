@@ -35,11 +35,11 @@ public class UserServiceUnitTest {
 
     private User user;
 
-    private User user1;
+    private User userUpdate;
 
     private UserDto userDto;
 
-    private UserDto userDto1;
+    private UserDto userUpdated;
 
     private UserCreateDto userCreateDto;
 
@@ -51,18 +51,18 @@ public class UserServiceUnitTest {
     void setup() {
         user = createUser(1l, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL,
                 PASSWORD, USERROLE);
-        user1 = createUser(2l, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL2,
+        userUpdate = createUser(2l, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL2,
                 PASSWORD, USERROLE);
         userDto = UserMapper.toDto(user);
-        userDto1 = UserMapper.toDto(user1);
+        userUpdated = UserMapper.toDto(userUpdate);
         userCreateDto = UserMapper.toUserCreateDto(user);
         userDtoList = createUserDtoList(userDto);
         userList = createUserList(user);
     }
 
     @Test
-    void shouldCreateUser() {
-        Mockito.when(userRepository.findByEmail(userCreateDto.getEmail())).thenReturn(Optional.empty());
+    void createUser() {
+        Mockito.when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
         Mockito.when(userRepository.save(any())).thenReturn(user);
 
         UserCreateDto expected = userService.createUser(userCreateDto);
@@ -71,7 +71,7 @@ public class UserServiceUnitTest {
 
     @Test
     void createUser_ifEmailIsInUse_throwBadRequestException() {
-        Mockito.when(userRepository.findByEmail(userCreateDto.getEmail())).thenReturn(Optional.ofNullable(user));
+        Mockito.when(userRepository.findByEmail(any())).thenThrow(new BadRequestException("exists"));
 
         Exception exception = assertThrows(BadRequestException.class, () -> userService.createUser(userCreateDto));
         assertTrue(exception.getMessage().contains("exists"));
@@ -79,23 +79,23 @@ public class UserServiceUnitTest {
 
     @Test
     void findUser_ifUserNotExists_throwNotFoundException() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findById(any())).thenThrow(new NotFoundException("not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> userService.findUserModel(any()));
         assertTrue(exception.getMessage().contains("not found"));
     }
 
     @Test
-    void findUser_ifUserExists() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(user));
+    void findUser_returnUser() {
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         User expected = userService.findUserModel(user.getId());
         assertEquals(user.getId(), expected.getId());
     }
 
     @Test
-    void getUser_ifUserExists() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(user));
+    void getUser_returnUserDto() {
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
 
         UserDto expected = userService.getUser(user.getId());
         assertEquals(user.getId(), expected.getId());
@@ -111,7 +111,7 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    void getUsers_ifUsersExists_returnUserDtoList() {
+    void getUsers_returnUserDtoList() {
         Mockito.when(userRepository.findAll()).thenReturn(userList);
 
         List<UserDto> expected = userService.getUsers();
@@ -119,7 +119,7 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    void deleteUser_ifUserExists() {
+    void deleteUser() {
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(user));
 
         userService.deleteUser(user.getId());
@@ -128,26 +128,26 @@ public class UserServiceUnitTest {
 
     @Test
     void deleteUser_ifUserNotExists_throwNotFoundException() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findById(any())).thenThrow(new NotFoundException("not found"));
 
         Exception exception = assertThrows(NotFoundException.class, () -> userService.deleteUser(any()));
         assertTrue(exception.getMessage().contains("not found"));
     }
 
     @Test
-    void updateUser_ifUserExists_returnUserDto() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(user));
+    void updateUser_returnUserDto() {
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
         Mockito.when(userRepository.save(any())).thenReturn(user);
 
-        UserDto expected = userService.updateUser(userDto1, user.getId());
+        UserDto expected = userService.updateUser(userUpdated, user.getId());
         assertEquals(user.getId(), expected.getId());
     }
 
     @Test
     void updateUser_ifUserNotExists_throwNotFoundException() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findById(any())).thenThrow(new NotFoundException("not found"));
 
-        Exception exception = assertThrows(NotFoundException.class, () -> userService.updateUser(userDto1, any()));
+        Exception exception = assertThrows(NotFoundException.class, () -> userService.updateUser(userUpdated, any()));
         assertTrue(exception.getMessage().contains("not found"));
     }
 

@@ -46,23 +46,20 @@ public class BookRentalServiceTest {
 
     private BookRentalDto bookRentalDto;
 
-    private List<BookRentalDto> bookRentalDtoList;
-
     private Book book;
 
     private Author author;
 
     @BeforeEach
     void setup() {
-        user = createUser(1l, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL,
+        user = createUser(1L, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL,
                 PASSWORD, USERROLE);
-        author = createAuthor(1l,FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
-        book = createBook(1l,TITLE, DESCRIPTION, author);
+        author = createAuthor(1L, FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
+        book = createBook(1L, TITLE, DESCRIPTION, author);
         bookCopy = createBookCopy(1L, IDENTIFICATION, book, IS_RENTED);
         bookRental = createBookRental(1L, bookCopy, user, DATE_START, DATE_END);
         bookRentalDto = createBookRentalDto(bookRental);
         bookRentalList = createBookRentalList(bookRental);
-        bookRentalDtoList = createBookRentalDtoList(bookRentalDto);
     }
 
     @Test
@@ -72,6 +69,7 @@ public class BookRentalServiceTest {
         Mockito.when(bookRentalRepository.save(any())).thenReturn(bookRental);
 
         BookRentalDto expected = bookRentalService.createBookRental(book.getId(), user.getId());
+
         assertEquals(bookRentalDto.getBookId(), expected.getBookId());
         assertEquals(bookRentalDto.getBookCopy(), expected.getBookCopy());
         assertEquals(bookRentalDto.getUserId(), expected.getUserId());
@@ -84,6 +82,7 @@ public class BookRentalServiceTest {
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> bookRentalService.createBookRental(book.getId(), user.getId()));
+
         assertTrue(exception.getMessage().contains("are rented"));
     }
 
@@ -94,18 +93,18 @@ public class BookRentalServiceTest {
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> bookRentalService.createBookRental(book.getId(), user.getId()));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void createBookRental_throwNotFoundException_ifBookRentalIsNotSaved() {
         Mockito.when(bookCopyService.findNotRentedBookCopy(any())).thenReturn(bookCopy);
         Mockito.when(userService.findUserModel(any())).thenReturn(user);
-        Mockito.when(bookRentalRepository.save(any())).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookRentalRepository.save(any())).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class,
                 ()-> bookRentalService.createBookRental(book.getId(), user.getId()));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
@@ -120,16 +119,16 @@ public class BookRentalServiceTest {
 
     @Test
     void getRentedBooks_throwNotFoundException_ifBookRentalIsNotFound() {
-        Mockito.when(bookRentalRepository.findAll()).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookRentalRepository.findAll()).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.getRentedBooks());
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void endBookRental_returnBookRentalDto() {
         Mockito.when(bookCopyService.findBookCopyByBookId(any(), any())).thenReturn(bookCopy);
-        Mockito.when(bookRentalRepository.findByBookCopy(any())).thenReturn(Optional.ofNullable(bookRental));
+        Mockito.when(bookRentalRepository.findByBookCopy(any())).thenReturn(Optional.of(bookRental));
         Mockito.when(bookRentalRepository.save(any())).thenReturn(bookRental);
 
         BookRentalDto expected = bookRentalService.endBookRental(book.getId(), bookCopy.getId());
@@ -139,35 +138,35 @@ public class BookRentalServiceTest {
 
     @Test
     void endBookRental_throwNotFoundException_ifBookCopyIsNotFound() {
-        Mockito.when(bookCopyService.findBookCopyByBookId(any(), any())).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookCopyService.findBookCopyByBookId(any(), any())).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> bookRentalService.endBookRental(any(), any()));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void endBookRental_throwNotFoundException_ifBookRentalIsNotFound() {
         Mockito.when(bookCopyService.findBookCopyByBookId(any(), any())).thenReturn(bookCopy);
-        Mockito.when(bookRentalRepository.findByBookCopy(any())).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookRentalRepository.findByBookCopy(any())).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.endBookRental(any(), any()));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void endBookRental_throwNotFoundException_ifBookRentalIsNotSaved() {
         Mockito.when(bookCopyService.findBookCopyByBookId(any(), any())).thenReturn(bookCopy);
-        Mockito.when(bookRentalRepository.findByBookCopy(any())).thenReturn(Optional.ofNullable(bookRental));
-        Mockito.when(bookRentalRepository.save(any())).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookRentalRepository.findByBookCopy(any())).thenReturn(Optional.of(bookRental));
+        Mockito.when(bookRentalRepository.save(any())).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.endBookRental(any(), any()));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void getBookRentalByBookCopy_returnBookRental() {
-        Mockito.when(bookRentalRepository.findByBookCopy(bookCopy)).thenReturn(Optional.ofNullable(bookRental));
+        Mockito.when(bookRentalRepository.findByBookCopy(any())).thenReturn(Optional.of(bookRental));
 
         BookRental expected = bookRentalService.getBookRentalByBookCopy(bookCopy);
         assertEquals(bookRental.getUser(), expected.getUser());
@@ -176,16 +175,16 @@ public class BookRentalServiceTest {
 
     @Test
     void getBookRentalByBookCopy_throwNotFoundException_ifBookRentalIsNotFound() {
-        Mockito.when(bookRentalRepository.findByBookCopy(bookCopy)).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookRentalRepository.findByBookCopy(bookCopy)).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> bookRentalService.getBookRentalByBookCopy(bookCopy));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void getRentedBook_returnBookRentalDto() {
-        Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.ofNullable(bookRental));
+        Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.of(bookRental));
 
         BookRentalDto expected = bookRentalService.getRentedBook(bookRental.getId());
         assertEquals(bookRental.getBookCopy().getId(), expected.getBookCopy());
@@ -194,16 +193,15 @@ public class BookRentalServiceTest {
 
     @Test
     void getRentedBook_throwNotFoundException_ifBookRentalIsNotFound() {
-//        Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.empty());
-        Mockito.when(bookRentalRepository.findById(any())).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookRentalRepository.findById(any())).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.getRentedBook(any()));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void updateRentedBook_returnBookRentalDto() {
-        Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.ofNullable(bookRental));
+        Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.of(bookRental));
         Mockito.when(userService.findUserModel(any())).thenReturn(user);
         Mockito.when(bookRentalRepository.save(any())).thenReturn(bookRental);
 
@@ -214,37 +212,37 @@ public class BookRentalServiceTest {
 
     @Test
     void updateRentedBook_throwNotFoundException_ifBookRentalIsNotFound() {
-        Mockito.when(bookRentalRepository.findById(any())).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookRentalRepository.findById(any())).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> bookRentalService.updateRentedBook(bookRental.getId(), bookRentalDto));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void updateRentedBook_throwNotFoundException_ifUserIsNotFound() {
-        Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.ofNullable(bookRental));
-        Mockito.when(userService.findUserModel(any())).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.of(bookRental));
+        Mockito.when(userService.findUserModel(any())).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> bookRentalService.updateRentedBook(bookRental.getId(), bookRentalDto));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void updateRentedBook_throwNotFoundException_ifBookRentalIsNotSaved() {
-        Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.ofNullable(bookRental));
+        Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.of(bookRental));
         Mockito.when(userService.findUserModel(any())).thenReturn(user);
-        Mockito.when(bookRentalRepository.save(any())).thenThrow(new NotFoundException("not found"));
+        Mockito.when(bookRentalRepository.save(any())).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> bookRentalService.updateRentedBook(book.getId(), bookRentalDto));
-        assertTrue(exception.getMessage().contains("not found"));
+        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
     void getActiveRents_returnListBookRentalDto() {
-        Mockito.when(bookRentalRepository.findByRentEnd()).thenReturn(bookRentalList);
+        Mockito.when(bookRentalRepository.findActiveRents()).thenReturn(bookRentalList);
 
         List<BookRentalDto> expected = bookRentalService.getActiveRents();
         assertEquals(bookRentalList.get(0).getUser().getId(), expected.get(0).getUserId());
@@ -254,7 +252,7 @@ public class BookRentalServiceTest {
 
     @Test
     void getClosedRents_returnListBookRentalDto() {
-        Mockito.when(bookRentalRepository.findByRentStart()).thenReturn(bookRentalList);
+        Mockito.when(bookRentalRepository.findClosedRents()).thenReturn(bookRentalList);
 
         List<BookRentalDto> expected = bookRentalService.getClosedRents();
         assertEquals(bookRentalList.get(0).getRentStart(), expected.get(0).getRentStart());
@@ -262,7 +260,7 @@ public class BookRentalServiceTest {
         assertEquals(bookRentalList.get(0).getUser().getId(), expected.get(0).getUserId());
     }
 
-    public BookRentalDto createBookRentalDto(BookRental bookRental) {
+    private BookRentalDto createBookRentalDto(BookRental bookRental) {
         BookRentalDto bookRentalDto = new BookRentalDto();
         bookRentalDto.setId(bookRental.getId());
         bookRentalDto.setBookCopy(bookRental.getBookCopy().getId());
@@ -283,11 +281,7 @@ public class BookRentalServiceTest {
         return author;
     }
 
-    public List<BookRentalDto> createBookRentalDtoList(BookRentalDto bookRentalDto) {
-        return List.of(bookRentalDto);
-    }
-
-    public List<BookRental> createBookRentalList(BookRental bookRental) {
+    private List<BookRental> createBookRentalList(BookRental bookRental) {
         return List.of(bookRental);
     }
 
@@ -301,7 +295,7 @@ public class BookRentalServiceTest {
         return book;
     }
 
-    public BookRental createBookRental(Long id, BookCopy bookCopy, User user, LocalDate rentStart, LocalDate rentEnd) {
+    private BookRental createBookRental(Long id, BookCopy bookCopy, User user, LocalDate rentStart, LocalDate rentEnd) {
         BookRental bookRental = new BookRental();
         bookRental.setId(id);
         bookRental.setBookCopy(bookCopy);

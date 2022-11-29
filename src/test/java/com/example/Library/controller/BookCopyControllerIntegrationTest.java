@@ -1,23 +1,32 @@
 package com.example.Library.controller;
 
 import com.example.Library.model.dto.BookCopyDto;
-import com.example.Library.model.entity.Author;
-import com.example.Library.model.entity.Book;
-import com.example.Library.model.entity.BookCopy;
+import com.example.Library.model.entity.*;
 import com.example.Library.repository.AuthorRepository;
 import com.example.Library.repository.BookCopyRepository;
 import com.example.Library.repository.BookRepository;
+import com.example.Library.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Collections;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import static com.example.Library.utils.TestUtils.*;
@@ -44,6 +53,9 @@ public class BookCopyControllerIntegrationTest {
     @Autowired
     BookRepository bookRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     private ObjectMapper mapper = new ObjectMapper();
 
     private Author author;
@@ -52,11 +64,25 @@ public class BookCopyControllerIntegrationTest {
 
     private BookCopy bookCopy;
 
+    private User adminUser;
+
     @BeforeEach
     private void setUp() {
         author = createAuthor(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
         book = createBook(TITLE, DESCRIPTION, author);
         bookCopy = createBookCopy(book, IDENTIFICATION, IS_RENTED);
+
+        User authUser = createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+
+        List<SimpleGrantedAuthority> grantedAuthorities = Collections
+                .singletonList(new SimpleGrantedAuthority(authUser.getUserType().getName()));
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                authUser.getEmail(), authUser.getPassword(), grantedAuthorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @AfterEach
@@ -64,6 +90,7 @@ public class BookCopyControllerIntegrationTest {
         bookCopyRepository.deleteAll();
         bookRepository.deleteAll();
         authorRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -184,4 +211,18 @@ public class BookCopyControllerIntegrationTest {
 
         return bookCopyDto;
     }
+
+    private User createUser(String firstName, String lastName, String email,
+                            String address, String password, UserRole userRole) {
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setAdress(address);
+        user.setPassword(password);
+        user.setUserType(userRole);
+
+        return userRepository.save(user);
+    }
+
 }

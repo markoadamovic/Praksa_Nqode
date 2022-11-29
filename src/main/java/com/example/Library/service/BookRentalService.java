@@ -12,6 +12,8 @@ public interface BookRentalService {
 
     BookRentalDto createBookRental(Long bookId, Long userId);
 
+    void delete(BookRental bookRental);
+
     List<BookRentalDto> getRentedBooks();
 
     BookRentalDto endBookRental(Long bookId, Long bookCopyId);

@@ -36,8 +36,6 @@ public class BookCopyServiceUnitTest {
     @Mock
     BookService bookService;
 
-    @Mock
-    AuthorService authorService;
 
     private BookCopy bookCopy;
 
@@ -70,7 +68,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void createBookCopy_throwBadRequestException_ifIdentificatorNotUnique() {
-        Mockito.when(bookCopyRepository.findByIdentification(any())).thenReturn(Optional.ofNullable(bookCopy));
+        Mockito.when(bookCopyRepository.findByIdentification(any())).thenReturn(Optional.of(bookCopy));
 
         Exception exception = assertThrows(BadRequestException.class,
                 () -> bookCopyService.createBookCopy(1l, bookCopyDto));
@@ -89,7 +87,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void getBookCopy_returnBookCopyDto() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.ofNullable(bookCopy));
+        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
 
         BookCopyDto expected = bookCopyService.getBookCopy(bookCopy.getId());
         assertEquals(bookCopy.getId(), expected.getBookId());
@@ -114,7 +112,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void deleteBookCopy() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.ofNullable(bookCopy));
+        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
 
         bookCopyService.delete(bookCopy.getId());
         verify(bookCopyRepository).delete(bookCopy);
@@ -130,7 +128,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void updateBookCopy_returnBookCopyDto() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.ofNullable(bookCopy));
+        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
         Mockito.when(bookService.findBookModel(any())).thenReturn(book);
         Mockito.when(bookCopyRepository.save(any())).thenReturn(bookCopy);
 
@@ -150,7 +148,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void updateBookCopy_throwNotFoundException_ifBookIsNotFound() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.ofNullable(bookCopy));
+        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
         Mockito.when(bookService.findBookModel(any())).thenThrow(new NotFoundException("not found"));
 
         Exception exception = assertThrows(NotFoundException.class,
@@ -168,7 +166,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void bookCopyWithIdentificationExists() {
-        Mockito.when(bookCopyRepository.findByIdentification(any())).thenReturn(Optional.ofNullable(bookCopy));
+        Mockito.when(bookCopyRepository.findByIdentification(any())).thenReturn(Optional.of(bookCopy));
 
         Boolean expected = bookCopyService.bookCopyWithIdentificationExists(bookCopy.getIdentification());
         assertEquals(true, expected );
@@ -176,7 +174,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void findBookCopyModel_returnBookCopy() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.ofNullable(bookCopy));
+        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
 
         BookCopy expected = bookCopyService.findBookCopyModel(bookCopy.getId());
         assertEquals(bookCopy.getId(), expected.getId());

@@ -7,13 +7,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Collections;
+import java.util.List;
 
 import static com.example.Library.utils.TestUtils.*;
 import static com.example.Library.utils.TestUtils.USERROLE;
@@ -64,6 +72,18 @@ public class BookRentalControllerIntegrationTest {
         book = createBook(TITLE, DESCRIPTION, author);
         bookCopy = createBookCopy(book, IDENTIFICATION, IS_RENTED);
         bookRental = createBookRental(bookCopy, user);
+
+        User authUser = createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+
+        List<SimpleGrantedAuthority> grantedAuthorities = Collections
+                .singletonList(new SimpleGrantedAuthority(authUser.getUserType().getName()));
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                authUser.getEmail(), authUser.getPassword(), grantedAuthorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @AfterEach

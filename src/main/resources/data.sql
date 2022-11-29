@@ -22,7 +22,7 @@ values(default, 'Veternik', 'adam95@gmail.com', 'Marko', 'Adamoviv', '$2a$12$pwe
 insert into public."user"
 values(default, 'NS', 'nikola@gmail.com', 'Nokola', 'Namada', '$2a$12$pweqL4C1wT74yNuJRLknheBXbzhJcbUbz.sTHtqEnUerEY6n8Xsui', 'USER');
 insert into public."user"
-values(default, 'BG', 'beogradjanin@gmail.com', 'Milos', 'Milosevic', '$2a$12$pweqL4C1wT74yNuJRLknheBXbzhJcbUbz.sTHtqEnUerEY6n8Xsui', 'USER');
+values(default, 'BG', 'beogradjanin@gmail.com', 'Milos', 'Milosevic', '$2a$12$pweqL4C1wT74yNuJRLknheBXbzhJcbUbz.sTHtqEnUerEY6n8Xsui', 'ADMINISTRATOR');
 
 insert into book_copy
 values (default, 'aaa111', false, '1');

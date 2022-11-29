@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public User findUserModel(Long userId) throws NotFoundException {
+    public User findUserModel(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %s is not found", userId )));
     }

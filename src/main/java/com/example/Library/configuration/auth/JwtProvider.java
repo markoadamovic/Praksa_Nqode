@@ -20,16 +20,16 @@ public class JwtProvider {
 
     private static final String BEARER_HEADER = "Bearer ";
 
-    @Value("Library")
+    @Value("${app_name")
     private String APP_NAME;
 
-    @Value("secret")
+    @Value("${secret}")
     public String SECRET;
 
-    @Value("3600000")
+    @Value("${expiration}")
     private Long EXPIRES_IN;
 
-    @Value("Authorization")
+    @Value("${authHeader}")
     private String AUTH_HEADER;
 
     private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
@@ -55,7 +55,8 @@ public class JwtProvider {
                 .setSubject(email)
                 .setExpiration(generateExpiratonDate())
                 .claim("roles", role)
-                .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
+                .signWith(SIGNATURE_ALGORITHM, SECRET)
+                .compact();
     }
 
     private Claims getAllClaimsFromToken(String token) {

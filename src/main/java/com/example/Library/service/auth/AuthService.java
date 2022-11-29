@@ -3,19 +3,31 @@ package com.example.Library.service.auth;
 import com.example.Library.configuration.auth.JwtProvider;
 import com.example.Library.exception.BadRequestException;
 import com.example.Library.exception.NotFoundException;
+import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.dto.auth.AuthRequest;
 import com.example.Library.model.dto.auth.AuthResponse;
 import com.example.Library.model.entity.User;
 import com.example.Library.model.mapper.UserMapper;
+import com.example.Library.repository.UserRepository;
 import com.example.Library.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
 import java.util.Set;
 
 @Service
@@ -27,6 +39,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtProvider jwtProvider;
+
+    private final UserRepository userRepository;
 
     public UserDto getAuthenticatedUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
@@ -61,6 +75,20 @@ public class AuthService {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userService.getUserByEmail(email);
         return allowedRoles.contains(user.getUserType().getName());
+    }
+
+    public UserDto register(UserCreateDto userCreateDto) {
+        if(userWithEmailExists(userCreateDto.getEmail())) {
+            throw new BadRequestException(String.format("User with email %s  exists", userCreateDto.getEmail()));
+        }
+        User user = UserMapper.toEntity(userCreateDto);
+        user.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
+
+        return UserMapper.toDto(userRepository.save(user));
+    }
+
+    public boolean userWithEmailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
 }

@@ -59,4 +59,9 @@ public class TestUtils {
     public static final String ACTIVE_RENTS = "/activeRents";
     public static final String CLOSED_RENTS = "/closedRents";
 
+
+    // EXCEPTION
+
+    public static final String NOT_FOUND = "not found";
+
 }
