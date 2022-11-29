@@ -55,7 +55,8 @@ public class JwtProvider {
                 .setSubject(email)
                 .setExpiration(generateExpiratonDate())
                 .claim("roles", role)
-                .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
+                .signWith(SIGNATURE_ALGORITHM, SECRET)
+                .compact();
     }
 
     private Claims getAllClaimsFromToken(String token) {
