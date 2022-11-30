@@ -1,6 +1,8 @@
 package com.example.Library.configuration.auth;
 
+import com.example.Library.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.function.Function;
 
 import static java.util.Objects.isNull;
 
@@ -20,7 +24,7 @@ public class JwtProvider {
 
     private static final String BEARER_HEADER = "Bearer ";
 
-    @Value("${app_name")
+    @Value("${app_name}")
     private String APP_NAME;
 
     @Value("${secret}")
@@ -54,6 +58,7 @@ public class JwtProvider {
                 .setIssuer(APP_NAME)
                 .setSubject(email)
                 .setExpiration(generateExpiratonDate())
+                .setIssuedAt(new Date())
                 .claim("roles", role)
                 .signWith(SIGNATURE_ALGORITHM, SECRET)
                 .compact();
@@ -69,15 +74,21 @@ public class JwtProvider {
                     .setSigningKey(SECRET)
                     .parseClaimsJws(token)
                     .getBody();
-        }catch (Exception e){
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (Exception e){
             claims = null;
         }
         return claims;
     }
 
-    private boolean isTokenExpired(String token) {
-        final Date expiration = this.getIssuedAtDateFromToken(token);
-        return expiration.before(new Date());
+    public boolean isTokenExpired(String token) {
+        try {
+            Claims claims = parseClaims(token);
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
+        return false;
     }
 
     private Date getIssuedAtDateFromToken(String token) {
@@ -90,7 +101,6 @@ public class JwtProvider {
         }
         return issuedAt;
     }
-
 
     public String getToken(HttpServletRequest request){
         String authHeader = getAuthHeaderFromHeader(request);

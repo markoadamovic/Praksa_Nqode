@@ -68,8 +68,14 @@ public class AuthService {
             throw new BadRequestException("Invalid credentials");
         }
         if (authTokenService.userHasAccessToken(user)) {
-            String token = authTokenService.getAuthToken(user).getAccessToken();
-            return AuthResponse.builder().token(token).build();
+            AuthToken authToken = authTokenService.getAuthToken(user);
+            if(!jwtProvider.isTokenExpired(authToken.getAccessToken())) {
+                return AuthResponse.builder().token(authToken.getAccessToken()).build();
+            }
+            authTokenService.delete(authToken);
+            String accessToken = jwtProvider.generateToken(user.getEmail(), user.getPassword());
+            saveAuthToken(authRequest, accessToken);
+            return AuthResponse.builder().token(accessToken).build();
         } else {
             String accessToken = jwtProvider.generateToken(user.getEmail(), user.getPassword());
             saveAuthToken(authRequest, accessToken);
