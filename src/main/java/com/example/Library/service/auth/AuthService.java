@@ -3,6 +3,7 @@ package com.example.Library.service.auth;
 import com.example.Library.configuration.auth.JwtProvider;
 import com.example.Library.exception.BadRequestException;
 import com.example.Library.exception.NotFoundException;
+import com.example.Library.exception.UnauthorizedException;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.dto.auth.AuthRequest;
@@ -58,17 +59,22 @@ public class AuthService {
         return userService.getUserByEmail(email);
     }
 
-    public AuthResponse authenticate(AuthRequest request) {
-        if(request.getEmail().isBlank() || request.getPassword().isBlank()) {
+    public AuthResponse authenticate(AuthRequest authRequest) {
+        if(authRequest.getEmail().isBlank() || authRequest.getPassword().isBlank()) {
             throw new BadRequestException("Invalid credentials");
         }
-        User user = findUserByEmail(request.getEmail());
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        User user = findUserByEmail(authRequest.getEmail());
+        if(!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
             throw new BadRequestException("Invalid credentials");
         }
-        String accessToken = jwtProvider.generateToken(user.getEmail(), user.getPassword());
-        saveAuthToken(request, accessToken);
-        return AuthResponse.builder().token(accessToken).build();
+        if (authTokenService.userHasAccessToken(user)) {
+            String token = authTokenService.getAuthToken(user).getAccessToken();
+            return AuthResponse.builder().token(token).build();
+        } else {
+            String accessToken = jwtProvider.generateToken(user.getEmail(), user.getPassword());
+            saveAuthToken(authRequest, accessToken);
+            return AuthResponse.builder().token(accessToken).build();
+        }
     }
 
     public void saveAuthToken(AuthRequest request, String accessToken) {

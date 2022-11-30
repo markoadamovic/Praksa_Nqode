@@ -17,9 +17,13 @@ public class AuthTokenService {
     }
 
     public AuthToken getAuthToken(User user) {
-        return authTokenRepository.findByUserId(user.getId()).orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
+        return authTokenRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
     }
 
+    public boolean userHasAccessToken(User user) {
+        return authTokenRepository.userHasAccessToken(user);
+    }
 
     public AuthToken save(AuthToken authToken) {
         return authTokenRepository.save(authToken);
