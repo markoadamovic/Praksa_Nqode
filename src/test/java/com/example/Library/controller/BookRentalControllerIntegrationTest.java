@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.example.Library.utils.TestUtils.*;
-import static com.example.Library.utils.TestUtils.USERROLE;
+import static com.example.Library.utils.TestUtils.USERROLE_USER;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -67,15 +67,18 @@ public class BookRentalControllerIntegrationTest {
 
     @BeforeEach
     private void setUp() {
-        user = createUser(FIRSTNAME_USER, LASTNAME_USER, EMAIL, ADDRESS, PASSWORD, USERROLE);
-        author = createAuthor(FIRSTNAME, LASTNAME);
-        book = createBook(TITLE, DESCRIPTION, author);
-        bookCopy = createBookCopy(book, IDENTIFICATION, IS_RENTED);
-        bookRental = createBookRental(bookCopy, user);
+        user = createUser();
+        author = createAuthor();
+        book = createBook();
+        bookCopy = createBookCopy();
+        bookRental = createBookRental();
 
-        User authUser = createUser(FIRSTNAME_USER, LASTNAME_USER,
-                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+        User authUser = createAuthUser();
 
+        loginUser(authUser);
+    }
+
+    private static void loginUser(User authUser) {
         List<SimpleGrantedAuthority> grantedAuthorities = Collections
                 .singletonList(new SimpleGrantedAuthority(authUser.getUserType().getName()));
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -157,6 +160,20 @@ public class BookRentalControllerIntegrationTest {
     }
 
     @Test
+    void updateRentedBook_returnHttpStatusForbidden() throws Exception{
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        BookRentalDto bookRentalDto = createBookRentalDto(1L, user.getId(), bookCopy.getId());
+        String bookRentalDtoJson = mapper.writeValueAsString(bookRentalDto);
+        mockMvc.perform(put(URL_BOOKRENTAL_PREFIX + "/{bookRentalId}", bookRental.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookRentalDtoJson)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void updateRentedBook_throwNotFoundException_ifBookRentalIsNotFound() throws Exception {
         BookRentalDto bookRentalDto = createBookRentalDto(1L, user.getId(), bookCopy.getId());
         String bookRentalDtoJson = mapper.writeValueAsString(bookRentalDto);
@@ -188,10 +205,28 @@ public class BookRentalControllerIntegrationTest {
     }
 
     @Test
+    void getActiveRents_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        mockMvc.perform(get(URL_BOOKRENTAL_PREFIX + ACTIVE_RENTS))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void getClosedRents_returnHttpStatusOk() throws Exception {
         mockMvc.perform(get(URL_BOOKRENTAL_PREFIX + CLOSED_RENTS))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void getClosedRents_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        mockMvc.perform(get(URL_BOOKRENTAL_PREFIX + CLOSED_RENTS))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     public BookRental createBookRental(BookCopy bookCopy, User user) {
@@ -202,12 +237,20 @@ public class BookRentalControllerIntegrationTest {
         return bookRentalRepository.save(bookRental);
     }
 
+    private BookRental createBookRental() {
+        return createBookRental(bookCopy, user);
+    }
+
     private Author createAuthor(String firstName, String lastName) {
         Author author = new Author();
         author.setFirstName(firstName);
         author.setLastName(lastName);
 
         return authorRepository.save(author);
+    }
+
+    private Author createAuthor() {
+        return createAuthor(FIRSTNAME, LASTNAME);
     }
 
     private User createUser(String firstName, String lastName, String email,
@@ -223,6 +266,13 @@ public class BookRentalControllerIntegrationTest {
         return userRepository.save(user);
     }
 
+    private User createUser() {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER, EMAIL, ADDRESS, PASSWORD, USERROLE_USER);
+    }
+    private User createAuthUser() {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER, "adam95@gmail.com", ADDRESS, PASSWORD, USERROLE_ADMIN);
+    }
+
     private Book createBook(String title, String description, Author author) {
         Book book = new Book();
         book.setTitle(title);
@@ -230,6 +280,10 @@ public class BookRentalControllerIntegrationTest {
         book.setAuthor(author);
 
         return bookRepository.save(book);
+    }
+
+    private Book createBook() {
+        return createBook(TITLE, DESCRIPTION, author);
     }
 
     private BookCopy createBookCopy(Book book, String identification, boolean isRented) {
@@ -241,6 +295,10 @@ public class BookRentalControllerIntegrationTest {
         return bookCopyRepository.save(bookCopy);
     }
 
+    private BookCopy createBookCopy() {
+        return createBookCopy(book, IDENTIFICATION, IS_RENTED);
+    }
+
     private BookRentalDto createBookRentalDto(Long id, Long userId, Long bookCopyId) {
         BookRentalDto bookRentalDto = new BookRentalDto();
         bookRentalDto.setId(id);
@@ -248,6 +306,11 @@ public class BookRentalControllerIntegrationTest {
         bookRentalDto.setBookCopy(bookCopyId);
 
         return bookRentalDto;
+    }
+
+    private User createUser(UserRole role) {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam995@gmail.com", ADDRESS, PASSWORD, role);
     }
 
 }

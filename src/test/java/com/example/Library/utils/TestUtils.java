@@ -21,11 +21,12 @@ public class TestUtils {
 
     public static String FIRSTNAME_USER = "Marko";
     public static String LASTNAME_USER = "Adamovic";
-    public static String EMAIL = "markoadam1995@yahoo.com";
+    public static String EMAIL = "adam1995@gmail.com";
     public static String EMAIL2 = "drugimail@gmail.com";
     public static String ADDRESS = "Veternik";
     public static String PASSWORD = "123";
-    public static UserRole USERROLE = UserRole.valueOf("USER");
+    public static UserRole USERROLE_USER = UserRole.valueOf("USER");
+    public static UserRole USERROLE_ADMIN = UserRole.valueOf("ADMINISTRATOR");
     public static String EMAIL_CREATE = "noviemail@gmail.com";
 
     public static String UPDATE_FIRSTNAME = "Nikola";

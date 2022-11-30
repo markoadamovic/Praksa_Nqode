@@ -66,7 +66,7 @@ class BookControllerIntegrationTest {
 
     @BeforeEach
     private void setUp() {
-        author = createAuthor(FIRSTNAME, LASTNAME);
+        author = createAuthor();
         book = createBook(TITLE, DESCRIPTION, author);
 
         User authUser = createUser();
@@ -108,6 +108,21 @@ class BookControllerIntegrationTest {
     }
 
     @Test
+    void createBook_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
+        String bookDtoJson = mapper.writeValueAsString(bookDto);
+
+        mockMvc.perform(post(URL_BOOK_PREFIX + "/author/{authorId}", author.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookDtoJson)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void createBook_returnNotFoundException_ifAuthorIsNotFound() throws Exception {
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, 1L);
         String bookDtoJson = mapper.writeValueAsString(bookDto);
@@ -137,17 +152,6 @@ class BookControllerIntegrationTest {
     }
 
     @Test
-    void getBook_returnHttpStatusForbidden() throws Exception {
-        User regularUser = createUser(UserRole.USER);
-        loginUser(regularUser);
-        mockMvc.perform(get(URL_BOOK_PREFIX + "/{bookId}", book.getId()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value(book.getTitle()))
-                .andExpect(jsonPath("$.description").value(book.getDescription()));
-    }
-
-    @Test
     void deleteBook_returnHttpStatusNoContent() throws Exception {
         mockMvc.perform(delete(URL_BOOK_PREFIX + "/{bookId}", book.getId()))
                 .andDo(print())
@@ -164,13 +168,6 @@ class BookControllerIntegrationTest {
     }
 
     @Test
-    void deleteBook_returnHttpStatusNotFound_ifAuthorIsNotFound() throws Exception {
-        mockMvc.perform(delete(URL_BOOK_PREFIX + "/{bookId}", 20L))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     void updateBook_returnHttpStatusOk() throws Exception {
         BookDto bookDto = createBookDto(BOOKDTO_ID, UPDATE_BOOK_TITLE, UPDATE_DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
@@ -182,6 +179,20 @@ class BookControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(bookDto.getTitle()))
                 .andExpect(jsonPath("$.description").value(bookDto.getDescription()));
+    }
+
+    @Test
+    void updateBook_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        BookDto bookDto = createBookDto(BOOKDTO_ID, UPDATE_BOOK_TITLE, UPDATE_DESCRIPTION, author.getId());
+        String bookDtoJson = mapper.writeValueAsString(bookDto);
+        mockMvc.perform(put(URL_BOOK_PREFIX + "/{bookId}", book.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookDtoJson)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -202,6 +213,10 @@ class BookControllerIntegrationTest {
         author.setLastName(lastName);
 
         return authorRepository.save(author);
+    }
+
+    private Author createAuthor() {
+        return createAuthor(FIRSTNAME, LASTNAME);
     }
 
     private BookDto createBookDto(Long id, String title, String description, Long authorId) {
@@ -225,7 +240,7 @@ class BookControllerIntegrationTest {
 
     private User createUser() {
         return createUser(FIRSTNAME_USER, LASTNAME_USER,
-                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+                "adam95@gmail.com", ADDRESS, PASSWORD, USERROLE_ADMIN);
     }
 
     private User createUser(UserRole role) {

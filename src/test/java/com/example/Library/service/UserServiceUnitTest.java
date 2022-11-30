@@ -49,10 +49,8 @@ public class UserServiceUnitTest {
 
     @BeforeEach
     void setup() {
-        user = createUser(1l, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL,
-                PASSWORD, USERROLE);
-        userUpdate = createUser(2l, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL2,
-                PASSWORD, USERROLE);
+        user = createUser();
+        userUpdate = createUpdateUser();
         userDto = UserMapper.toDto(user);
         userUpdated = UserMapper.toDto(userUpdate);
         userCreateDto = UserMapper.toUserCreateDto(user);
@@ -61,7 +59,7 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    void createUser() {
+    void createUser_returnUserCreateDto() {
         Mockito.when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
         Mockito.when(userRepository.save(any())).thenReturn(user);
 
@@ -168,6 +166,17 @@ public class UserServiceUnitTest {
         user.setUserType(userRole);
 
         return user;
+    }
+
+
+    private User createUpdateUser() {
+        return createUser(2l, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL2,
+                PASSWORD, USERROLE_USER);
+    }
+
+    private User createUser() {
+        return createUser(123L, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL2,
+                PASSWORD, USERROLE_USER);
     }
 
     private List<User> createUserList(User user){

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.Library.utils.TestUtils.*;
-import static com.example.Library.utils.TestUtils.USERROLE;
+import static com.example.Library.utils.TestUtils.USERROLE_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -52,12 +52,11 @@ public class BookRentalServiceTest {
 
     @BeforeEach
     void setup() {
-        user = createUser(1L, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL,
-                PASSWORD, USERROLE);
-        author = createAuthor(1L, FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
-        book = createBook(1L, TITLE, DESCRIPTION, author);
-        bookCopy = createBookCopy(1L, IDENTIFICATION, book, IS_RENTED);
-        bookRental = createBookRental(1L, bookCopy, user, DATE_START, DATE_END);
+        user = createUser();
+        author = createAuthor();
+        book = createBook();
+        bookCopy = createBookCopy();
+        bookRental = createBookRental();
         bookRentalDto = createBookRentalDto(bookRental);
         bookRentalList = createBookRentalList(bookRental);
     }
@@ -295,6 +294,10 @@ public class BookRentalServiceTest {
         return book;
     }
 
+    private Book createBook() {
+        return createBook(1L, TITLE, DESCRIPTION, author);
+    }
+
     private BookRental createBookRental(Long id, BookCopy bookCopy, User user, LocalDate rentStart, LocalDate rentEnd) {
         BookRental bookRental = new BookRental();
         bookRental.setId(id);
@@ -306,6 +309,10 @@ public class BookRentalServiceTest {
         return bookRental;
     }
 
+    private BookRental createBookRental() {
+        return createBookRental(1L, bookCopy, user, DATE_START, DATE_END);
+    }
+
     private BookCopy createBookCopy(Long id, String identification, Book book, boolean isRented) {
         BookCopy bookCopy = new BookCopy();
         bookCopy.setId(id);
@@ -314,6 +321,10 @@ public class BookRentalServiceTest {
         bookCopy.setRented(isRented);
 
         return bookCopy;
+    }
+
+    private BookCopy createBookCopy() {
+        return createBookCopy(1L, IDENTIFICATION, book, IS_RENTED);
     }
 
     private User createUser(Long id, String firstName, String lastName, String address,
@@ -328,6 +339,15 @@ public class BookRentalServiceTest {
         user.setUserType(userRole);
 
         return user;
+    }
+
+    private User createUser() {
+        return createUser(1L, FIRSTNAME_USER, LASTNAME_USER, ADDRESS, EMAIL,
+                PASSWORD, USERROLE_USER);
+    }
+
+    private Author createAuthor() {
+        return createAuthor(1l, "Marko", "Adamovic");
     }
 
 }

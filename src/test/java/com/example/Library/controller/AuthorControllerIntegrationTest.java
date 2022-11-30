@@ -55,11 +55,14 @@ class AuthorControllerIntegrationTest {
 
     @BeforeEach
     private void setUp() {
-        author = createAuthor(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
+        author = createAuthor();
 
-        User authUser = createUser(FIRSTNAME_USER, LASTNAME_USER,
-                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+        User authUser = createUser();
 
+        loginUser(authUser);
+    }
+
+    private static void loginUser(User authUser) {
         List<SimpleGrantedAuthority> grantedAuthorities = Collections
                 .singletonList(new SimpleGrantedAuthority(authUser.getUserType().getName()));
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -86,13 +89,6 @@ class AuthorControllerIntegrationTest {
     }
 
     @Test
-    void getAuthor_returnHttpStatusNotFound_ifAuthorIsNotFound() throws Exception {
-        mockMvc.perform(get(URL_AUTHOR_PREFIX + "/{authorId}", 100L))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     void createAuthor_returnHttpStatusCreated() throws Exception {
         AuthorDto authorDto = createAuthorDto(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
         String authorDtoJson = mapper.writeValueAsString(authorDto);
@@ -115,6 +111,15 @@ class AuthorControllerIntegrationTest {
     }
 
     @Test
+    void deleteAuthor_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        mockMvc.perform(delete(URL_AUTHOR_PREFIX + "/{authorId}", author.getId()))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void deleteAuthor_returnHttpStatusNotFound_ifAuthorIsNotFound() throws Exception {
         mockMvc.perform(delete(URL_AUTHOR_PREFIX + "/{authorId}", 100L))
                 .andDo(print())
@@ -134,6 +139,21 @@ class AuthorControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value(authorDto.getFirstName()))
                 .andExpect(jsonPath("$.lastName").value(authorDto.getLastName()));
+    }
+
+    @Test
+    void updateAuthor_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        AuthorDto authorDto = createAuthorDto(FIRSTNAME_AUTHOR_DTO, LASTNAME_AUTHOR_DTO);
+        String authorDtoJson = mapper.writeValueAsString(authorDto);
+
+        mockMvc.perform(put(URL_AUTHOR_PREFIX + "/{authorId}", author.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorDtoJson)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -165,6 +185,10 @@ class AuthorControllerIntegrationTest {
         return authorRepository.save(author);
     }
 
+    private Author createAuthor() {
+        return createAuthor(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
+    }
+
     private User createUser(String firstName, String lastName, String email,
                             String address, String password, UserRole userRole) {
         User user = new User();
@@ -176,6 +200,16 @@ class AuthorControllerIntegrationTest {
         user.setUserType(userRole);
 
         return userRepository.save(user);
+    }
+
+    private User createUser() {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+    }
+
+    private User createUser(UserRole role) {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam995@gmail.com", ADDRESS, PASSWORD, role);
     }
 
 }

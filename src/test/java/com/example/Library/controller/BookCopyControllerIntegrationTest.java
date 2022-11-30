@@ -64,17 +64,19 @@ public class BookCopyControllerIntegrationTest {
 
     private BookCopy bookCopy;
 
-    private User adminUser;
+
 
     @BeforeEach
     private void setUp() {
-        author = createAuthor(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
-        book = createBook(TITLE, DESCRIPTION, author);
-        bookCopy = createBookCopy(book, IDENTIFICATION, IS_RENTED);
+        author = createAuthor();
+        book = createBook();
+        bookCopy = createBookCopy();
 
-        User authUser = createUser(FIRSTNAME_USER, LASTNAME_USER,
-                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+        User authUser = createUser();
+        loginUser(authUser);
+    }
 
+    private static void loginUser(User authUser) {
         List<SimpleGrantedAuthority> grantedAuthorities = Collections
                 .singletonList(new SimpleGrantedAuthority(authUser.getUserType().getName()));
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -108,7 +110,22 @@ public class BookCopyControllerIntegrationTest {
     }
 
     @Test
-    void createBookCopy_throwNotFoundException_ifBookIsNotFound() throws Exception {
+    void createBookCopy_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        BookCopyDto bookCopyDto = createBookCopyDto(1L, book.getId(), IDENTIFICATION_UPDATE, IS_RENTED);
+        String bookCopyDtoJson = mapper.writeValueAsString(bookCopyDto);
+
+        mockMvc.perform(post(URL_BOOKCOPY_PREFIX + "/book/{bookId}", book.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookCopyDtoJson)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void createBookCopy_returnHttpStatusNotFound_ifBookIsNotFound() throws Exception {
         mockMvc.perform(post(URL_BOOKCOPY_PREFIX + "/{bookId}",1000L +
                 "/{aaa234}", IDENTIFICATION))
                 .andDo(print())
@@ -123,7 +140,7 @@ public class BookCopyControllerIntegrationTest {
     }
 
     @Test
-    void getBookCopy_throwNotFoundException_ifBookCopyIsNotFound() throws Exception {
+    void getBookCopy_returnHttpStatusNotFound_ifBookCopyIsNotFound() throws Exception {
         mockMvc.perform(get(URL_BOOKCOPY_PREFIX + "/{id}", 12345L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -144,10 +161,34 @@ public class BookCopyControllerIntegrationTest {
     }
 
     @Test
-    void deleteBookCopy_ThrowNotFoundException_ifBookCopyIsNotFound() throws Exception {
+    void deleteBookCopy_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+
+        mockMvc.perform(delete(URL_BOOKCOPY_PREFIX + "/{id}", bookCopy.getId()))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deleteBookCopy_returnHttpStatusNotFound_ifBookCopyIsNotFound() throws Exception {
         mockMvc.perform(delete(URL_BOOKCOPY_PREFIX + "/{id}", 12345L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateBookCopy_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        BookCopyDto bookCopyDto = createBookCopyDto(1L, book.getId(), IDENTIFICATION_UPDATE, IS_RENTED);
+        String bookCopyDtoJson = mapper.writeValueAsString(bookCopyDto);
+        mockMvc.perform(put(URL_BOOKCOPY_PREFIX + "/{id}", bookCopy.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookCopyDtoJson)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -165,7 +206,7 @@ public class BookCopyControllerIntegrationTest {
     }
 
     @Test
-    void updateBookCopy_throwNotFoundException_ifBookCopyIsNotFound() throws Exception {
+    void updateBookCopy_returnHttpStatusNotFound_ifBookCopyIsNotFound() throws Exception {
         BookCopyDto bookCopyDto = createBookCopyDto(1L, book.getId(), IDENTIFICATION_UPDATE, IS_RENTED);
         String bookCopyDtoJson = mapper.writeValueAsString(bookCopyDto);
         mockMvc.perform(put(URL_BOOKCOPY_PREFIX + "/{id}", 12345L)
@@ -184,6 +225,10 @@ public class BookCopyControllerIntegrationTest {
         return authorRepository.save(author);
     }
 
+    private Author createAuthor() {
+        return createAuthor(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
+    }
+
     private Book createBook(String title, String description, Author author) {
         Book book = new Book();
         book.setTitle(title);
@@ -193,6 +238,10 @@ public class BookCopyControllerIntegrationTest {
         return bookRepository.save(book);
     }
 
+    private Book createBook() {
+        return createBook(TITLE, DESCRIPTION, author);
+    }
+
     private BookCopy createBookCopy(Book book, String identification, boolean isRented) {
         BookCopy bookCopy = new BookCopy();
         bookCopy.setBook(book);
@@ -200,6 +249,10 @@ public class BookCopyControllerIntegrationTest {
         bookCopy.setRented(isRented);
 
         return bookCopyRepository.save(bookCopy);
+    }
+
+    private BookCopy createBookCopy() {
+        return createBookCopy(book, IDENTIFICATION, IS_RENTED);
     }
 
     private BookCopyDto createBookCopyDto(Long id, Long bookId, String identification, boolean isRented) {
@@ -223,6 +276,16 @@ public class BookCopyControllerIntegrationTest {
         user.setUserType(userRole);
 
         return userRepository.save(user);
+    }
+
+    private User createUser() {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER,
+                EMAIL, ADDRESS, PASSWORD, USERROLE_ADMIN);
+    }
+
+    private User createUser(UserRole role) {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam995@gmail.com", ADDRESS, PASSWORD, role);
     }
 
 }
