@@ -1,6 +1,8 @@
 package com.example.Library.configuration.auth;
 
+import com.example.Library.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.function.Function;
 
 import static java.util.Objects.isNull;
 
@@ -20,7 +24,7 @@ public class JwtProvider {
 
     private static final String BEARER_HEADER = "Bearer ";
 
-    @Value("${app_name")
+    @Value("${app_name}")
     private String APP_NAME;
 
     @Value("${secret}")
@@ -37,9 +41,9 @@ public class JwtProvider {
     public String getEmailFromToken(String token) {
         String email;
         try {
-            final Claims claims = getAllClaimsFromToken(token);
+            final Claims claims = parseClaims(token);
             email = claims.getSubject();
-        }catch (Exception e) {
+        } catch (Exception e) {
             email = null;
         }
         return email;
@@ -54,14 +58,15 @@ public class JwtProvider {
                 .setIssuer(APP_NAME)
                 .setSubject(email)
                 .setExpiration(generateExpiratonDate())
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
                 .claim("roles", role)
                 .signWith(SIGNATURE_ALGORITHM, SECRET)
                 .compact();
     }
 
-    private Claims getAllClaimsFromToken(String token) {
+    private Claims parseClaims(String token) {
         Claims claims;
-        try{
+        try {
             if (!isNull(token) && token.startsWith(BEARER_HEADER)) {
                 token = removeBearerFromToken(token);
             }
@@ -69,32 +74,37 @@ public class JwtProvider {
                     .setSigningKey(SECRET)
                     .parseClaimsJws(token)
                     .getBody();
-        }catch (Exception e){
-            claims = null;
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnauthorizedException("Invalid credentials");
         }
         return claims;
     }
 
-    private boolean isTokenExpired(String token) {
-        final Date expiration = this.getIssuedAtDateFromToken(token);
-        return expiration.before(new Date());
-
+    public boolean isTokenExpired(String token) {
+        try {
+            Claims claims = parseClaims(token);
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
+        return false;
     }
 
     private Date getIssuedAtDateFromToken(String token) {
         Date issuedAt;
-        try{
-            final Claims claims = this.getAllClaimsFromToken(token);
+        try {
+            final Claims claims = this.parseClaims(token);
             issuedAt = claims.getIssuedAt();
-        }catch (Exception e){
+        } catch (Exception e) {
             issuedAt = null;
         }
         return issuedAt;
     }
 
-    public String getToken(HttpServletRequest request){
+    public String getToken(HttpServletRequest request) {
         String authHeader = getAuthHeaderFromHeader(request);
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
         return null;
