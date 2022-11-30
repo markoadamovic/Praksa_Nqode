@@ -36,7 +36,7 @@ public class JwtAuthFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
         String token = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if(!isNull(token) && !authenticated(token)) {
+        if (!isNull(token) && !authenticated(token)) {
             throw new UnauthorizedException("Not authorized");
         }
         filterChain.doFilter(servletRequest, servletResponse);
@@ -47,7 +47,7 @@ public class JwtAuthFilter extends GenericFilterBean {
             String email = jwtProvider.getEmailFromToken(token);
             User user = userDetailsService.getUserByEmail(email);
             AuthToken authToken = authTokenService.getAuthToken(user);
-            if(!authToken.getAccessToken().equals(jwtProvider.removeBearerFromToken(token))){
+            if (!authToken.getAccessToken().equals(jwtProvider.removeBearerFromToken(token))) {
                 return false;
             }
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);

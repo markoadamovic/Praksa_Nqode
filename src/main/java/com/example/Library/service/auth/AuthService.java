@@ -72,9 +72,9 @@ public class AuthService {
             if (!jwtProvider.isTokenExpired(authToken.getAccessToken())) {
                 return AuthResponse.builder().token(authToken.getAccessToken()).build();
             }
-            authTokenService.delete(authToken);
             String accessToken = jwtProvider.generateToken(user.getEmail(), user.getPassword());
-            saveAuthToken(authRequest, accessToken);
+            authToken.setAccessToken(accessToken);
+            authTokenService.save(authToken);
             return AuthResponse.builder().token(accessToken).build();
         } else {
             String accessToken = jwtProvider.generateToken(user.getEmail(), user.getPassword());
@@ -128,4 +128,5 @@ public class AuthService {
         AuthToken authToken = authTokenService.getAuthToken(user);
         authTokenService.delete(authToken);
     }
+
 }

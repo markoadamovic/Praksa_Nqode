@@ -69,9 +69,12 @@ class BookControllerIntegrationTest {
         author = createAuthor(FIRSTNAME, LASTNAME);
         book = createBook(TITLE, DESCRIPTION, author);
 
-        User authUser = createUser(FIRSTNAME_USER, LASTNAME_USER,
-                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+        User authUser = createUser();
 
+        loginUser(authUser);
+    }
+
+    private static void loginUser(User authUser) {
         List<SimpleGrantedAuthority> grantedAuthorities = Collections
                 .singletonList(new SimpleGrantedAuthority(authUser.getUserType().getName()));
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -133,12 +136,31 @@ class BookControllerIntegrationTest {
                 .andExpect(jsonPath("$.description").value(book.getDescription()));
     }
 
+    @Test
+    void getBook_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        mockMvc.perform(get(URL_BOOK_PREFIX + "/{bookId}", book.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(book.getTitle()))
+                .andExpect(jsonPath("$.description").value(book.getDescription()));
+    }
 
     @Test
     void deleteBook_returnHttpStatusNoContent() throws Exception {
         mockMvc.perform(delete(URL_BOOK_PREFIX + "/{bookId}", book.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteBook_returnHttpStatusIsForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        mockMvc.perform(delete(URL_BOOK_PREFIX + "/{bookId}", book.getId()))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -201,6 +223,15 @@ class BookControllerIntegrationTest {
         return bookRepository.save(book);
     }
 
+    private User createUser() {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+    }
+
+    private User createUser(UserRole role) {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam995@gmail.com", ADDRESS, PASSWORD, role);
+    }
     private User createUser(String firstName, String lastName, String email,
                             String address, String password, UserRole userRole) {
         User user = new User();

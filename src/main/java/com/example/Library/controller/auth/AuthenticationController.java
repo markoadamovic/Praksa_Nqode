@@ -20,10 +20,6 @@ public class AuthenticationController {
 
     private final AuthService authService;
 
-    private final AuthTokenService authTokenService;
-
-    private JwtProvider jwtProvider;
-
     @GetMapping("/authenticate/user")
     public ResponseEntity<UserDto> getAuthenticatedUser() {
         return ResponseEntity.status(HttpStatus.OK).body(authService.getAuthenticatedUser());

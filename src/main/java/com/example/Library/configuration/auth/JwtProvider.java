@@ -43,7 +43,7 @@ public class JwtProvider {
         try {
             final Claims claims = parseClaims(token);
             email = claims.getSubject();
-        }catch (Exception e) {
+        } catch (Exception e) {
             email = null;
         }
         return email;
@@ -58,7 +58,7 @@ public class JwtProvider {
                 .setIssuer(APP_NAME)
                 .setSubject(email)
                 .setExpiration(generateExpiratonDate())
-                .setIssuedAt(new Date())
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
                 .claim("roles", role)
                 .signWith(SIGNATURE_ALGORITHM, SECRET)
                 .compact();
@@ -66,7 +66,7 @@ public class JwtProvider {
 
     private Claims parseClaims(String token) {
         Claims claims;
-        try{
+        try {
             if (!isNull(token) && token.startsWith(BEARER_HEADER)) {
                 token = removeBearerFromToken(token);
             }
@@ -76,8 +76,8 @@ public class JwtProvider {
                     .getBody();
         } catch (ExpiredJwtException e) {
             throw e;
-        } catch (Exception e){
-            claims = null;
+        } catch (Exception e) {
+            throw new UnauthorizedException("Invalid credentials");
         }
         return claims;
     }
@@ -93,18 +93,18 @@ public class JwtProvider {
 
     private Date getIssuedAtDateFromToken(String token) {
         Date issuedAt;
-        try{
+        try {
             final Claims claims = this.parseClaims(token);
             issuedAt = claims.getIssuedAt();
-        }catch (Exception e){
+        } catch (Exception e) {
             issuedAt = null;
         }
         return issuedAt;
     }
 
-    public String getToken(HttpServletRequest request){
+    public String getToken(HttpServletRequest request) {
         String authHeader = getAuthHeaderFromHeader(request);
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
         return null;
