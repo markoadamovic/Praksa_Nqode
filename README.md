@@ -1,6 +1,6 @@
 # Library
 
-## Basic informations about project:
+#### Basic informations about project:
 This project is made for purpose of Library. This is my first project which i started developing as a junior developer at Nquode in Novi Sad.
 
 ## Project description
