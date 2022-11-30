@@ -60,16 +60,16 @@ public class AuthService {
     }
 
     public AuthResponse authenticate(AuthRequest authRequest) {
-        if(authRequest.getEmail().isBlank() || authRequest.getPassword().isBlank()) {
+        if (authRequest.getEmail().isBlank() || authRequest.getPassword().isBlank()) {
             throw new BadRequestException("Invalid credentials");
         }
         User user = findUserByEmail(authRequest.getEmail());
-        if(!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
             throw new BadRequestException("Invalid credentials");
         }
         if (authTokenService.userHasAccessToken(user)) {
             AuthToken authToken = authTokenService.getAuthToken(user);
-            if(!jwtProvider.isTokenExpired(authToken.getAccessToken())) {
+            if (!jwtProvider.isTokenExpired(authToken.getAccessToken())) {
                 return AuthResponse.builder().token(authToken.getAccessToken()).build();
             }
             authTokenService.delete(authToken);
@@ -84,7 +84,7 @@ public class AuthService {
     }
 
     public void saveAuthToken(AuthRequest request, String accessToken) {
-        if(request.getEmail().isBlank() || request.getPassword().isBlank()) {
+        if (request.getEmail().isBlank() || request.getPassword().isBlank()) {
             throw new BadRequestException("Invalid credentials");
         }
         User user = findUserByEmail(request.getEmail());
@@ -109,7 +109,7 @@ public class AuthService {
     }
 
     public UserDto register(UserCreateDto userCreateDto) {
-        if(userWithEmailExists(userCreateDto.getEmail())) {
+        if (userWithEmailExists(userCreateDto.getEmail())) {
             throw new BadRequestException(String.format("User with email %s  exists", userCreateDto.getEmail()));
         }
         User user = UserMapper.toEntity(userCreateDto);
