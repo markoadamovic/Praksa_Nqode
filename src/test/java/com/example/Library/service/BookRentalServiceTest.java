@@ -20,6 +20,7 @@ import static com.example.Library.utils.TestUtils.*;
 import static com.example.Library.utils.TestUtils.USERROLE_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class BookRentalServiceTest {
@@ -257,6 +258,22 @@ public class BookRentalServiceTest {
         assertEquals(bookRentalList.get(0).getRentStart(), expected.get(0).getRentStart());
         assertEquals(bookRentalList.get(0).getRentEnd(), expected.get(0).getRentEnd());
         assertEquals(bookRentalList.get(0).getUser().getId(), expected.get(0).getUserId());
+    }
+
+    @Test
+    void deleteBookRental_returnHttpStatusNoContent() {
+        Mockito.when(bookRentalRepository.findById(bookRental.getId())).thenReturn(Optional.of(bookRental));
+
+        bookRentalService.delete(bookRental.getId());
+        verify(bookRentalRepository).delete(bookRental);
+    }
+
+    @Test
+    void deleteBookRental_throwNotFoundException_ifBookRentalIsNotFound() {
+        Mockito.when(bookRentalRepository.findById(any())).thenThrow(new NotFoundException("not found"));
+
+        Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.delete(bookRental.getId()));
+        assertTrue(exception.getMessage().contains("not found"));
     }
 
     private BookRentalDto createBookRentalDto(BookRental bookRental) {

@@ -198,6 +198,30 @@ public class BookRentalControllerIntegrationTest {
     }
 
     @Test
+    void deleteBookRental_returnHttpStatusNoContent () throws Exception {
+        mockMvc.perform(delete(URL_BOOKRENTAL_PREFIX + "/{bookRentalId}", bookRental.getId()))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteBookRental_throwNotFoundException_ifBookRentalNotFound() throws Exception {
+        mockMvc.perform(delete(URL_BOOKRENTAL_PREFIX + "{bookRentalId}", 111123L))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteBookRental_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+
+        mockMvc.perform(delete(URL_BOOKRENTAL_PREFIX + "/{bookRentalId}", bookRental.getId()))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void getActiveRents_returnHttpStatusOk() throws Exception {
         mockMvc.perform(get(URL_BOOKRENTAL_PREFIX + ACTIVE_RENTS))
                 .andDo(print())
