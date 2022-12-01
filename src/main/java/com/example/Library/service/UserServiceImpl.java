@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserCreateDto createUser(UserCreateDto userCreateDto) {
 
-        if(userWithEmailExists(userCreateDto.getEmail())) {
+        if (userWithEmailExists(userCreateDto.getEmail())) {
             throw new BadRequestException(String.format("User with email %s  exists", userCreateDto.getEmail()));
         }
         User user = UserMapper.toEntity(userCreateDto);
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     public User findUserModel(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("User with id %s is not found", userId )));
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %s is not found", userId)));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         User user = findUserModel(userId);
         if (!userRentedBooks(userId)) {
             userRepository.delete(user);
-        }else {
+        } else {
             throw new BadRequestException("User have rented books");
         }
     }

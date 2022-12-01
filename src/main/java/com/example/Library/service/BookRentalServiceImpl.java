@@ -44,7 +44,7 @@ public class BookRentalServiceImpl implements BookRentalService {
         return BookRentalMapper.toDto(bookRentalRepository.save(bookRental));
     }
 
-    public BookRental findBookRental(Long bookRentalId){
+    public BookRental findBookRental(Long bookRentalId) {
         return bookRentalRepository.findById(bookRentalId)
                 .orElseThrow(() -> new NotFoundException(String.format("BookRental with id %s is not found", bookRentalId)));
     }
