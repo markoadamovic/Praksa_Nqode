@@ -68,19 +68,27 @@ public class AuthService {
             throw new BadRequestException("Invalid credentials");
         }
         if (authTokenService.userHasAccessToken(user)) {
-            AuthToken authToken = authTokenService.getAuthToken(user);
-            if (!jwtProvider.isTokenExpired(authToken.getAccessToken())) {
-                return AuthResponse.builder().token(authToken.getAccessToken()).build();
-            }
-            String accessToken = jwtProvider.generateToken(user.getEmail(), user.getPassword());
-            authToken.setAccessToken(accessToken);
-            authTokenService.save(authToken);
-            return AuthResponse.builder().token(accessToken).build();
+            return generateAuthTokenFromExistingToken(user);
         } else {
-            String accessToken = jwtProvider.generateToken(user.getEmail(), user.getPassword());
-            saveAuthToken(authRequest, accessToken);
-            return AuthResponse.builder().token(accessToken).build();
+            return generateNewAuthToken(user,authRequest);
         }
+    }
+
+    private AuthResponse generateNewAuthToken(User user, AuthRequest authRequest) {
+        String accessToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
+        saveAuthToken(authRequest, accessToken);
+        return AuthResponse.builder().token(accessToken).build();
+    }
+
+    private AuthResponse generateAuthTokenFromExistingToken(User user) {
+        AuthToken authToken = authTokenService.getAuthToken(user);
+        if (!jwtProvider.isTokenExpired(authToken.getAccessToken())) {
+            return AuthResponse.builder().token(authToken.getAccessToken()).build();
+        }
+        String accessToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
+        authToken.setAccessToken(accessToken);
+        authTokenService.save(authToken);
+        return AuthResponse.builder().token(accessToken).build();
     }
 
     public void saveAuthToken(AuthRequest request, String accessToken) {
