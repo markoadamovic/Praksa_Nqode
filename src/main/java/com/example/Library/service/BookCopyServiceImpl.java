@@ -5,16 +5,11 @@ import com.example.Library.exception.NotFoundException;
 import com.example.Library.model.dto.BookCopyDto;
 import com.example.Library.model.entity.Book;
 import com.example.Library.model.entity.BookCopy;
-import com.example.Library.model.entity.BookRental;
 import com.example.Library.model.mapper.BookCopyMapper;
-import com.example.Library.model.mapper.BookMapper;
-import com.example.Library.model.mapper.UserMapper;
 import com.example.Library.repository.BookCopyRepository;
 import com.example.Library.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,10 +62,14 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public void delete(Long bookCopyId) {
         BookCopy bookCopy = findBookCopyModel(bookCopyId);
-        if (!bookCopy.isRented())
+        if (!bookCopyIsRented(bookCopyId))
             bookCopyRepository.delete(bookCopy);
         else
-            throw new BadRequestException("Is rented");
+            throw new BadRequestException("Book copy is rented");
+    }
+
+    public boolean bookCopyIsRented(Long bookCopyId) {
+        return bookCopyRepository.isBookCopyRented(bookCopyId);
     }
 
     @Override

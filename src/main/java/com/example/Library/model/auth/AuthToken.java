@@ -1,5 +1,6 @@
-package com.example.Library.model.entity;
+package com.example.Library.model.auth;
 
+import com.example.Library.model.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

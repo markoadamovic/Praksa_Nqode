@@ -30,13 +30,9 @@ public class AuthorServiceUnitTest {
     @InjectMocks
     private AuthorServiceImpl authorService;
 
-    private AuthorDto authorDto1;
+    private AuthorDto authorDto;
 
-    private AuthorDto authorDto2;
-
-    private Author author1;
-
-    private Author author2;
+    private Author author;
 
     private List<Author> authorsList;
 
@@ -45,30 +41,28 @@ public class AuthorServiceUnitTest {
 
     @BeforeEach
     public void setup() {
-        author1 = createAuthor(1l, "Marko", "Adamovic");
-        author2 = createAuthor(2l, "Nikola", "Nikolic");
-        authorDto1 = AuthorMapper.toDto(author1);
-        authorDto2 = AuthorMapper.toDto(author2);
-        authorsList = createAuthorList(author1, author2);
-        authorDtoList = createAuthorDtoList(author1, author2);
+        author = createAuthor();
+        authorDto = AuthorMapper.toDto(author);
+        authorsList = createAuthorList(author);
+        authorDtoList = createAuthorDtoList(author);
     }
 
     @Test
     void createNewAuthor_returnAuthorDto() {
-        Mockito.when(authorRepository.save(any())).thenReturn(author1);
+        Mockito.when(authorRepository.save(any())).thenReturn(author);
 
-        AuthorDto expectedDto = authorService.createAuthor(authorDto1);
+        AuthorDto expectedDto = authorService.createAuthor(authorDto);
 
-        assertEquals(authorDto1.getId(), expectedDto.getId());
-        assertEquals(authorDto1.getFirstName(), expectedDto.getFirstName());
+        assertEquals(authorDto.getId(), expectedDto.getId());
+        assertEquals(authorDto.getFirstName(), expectedDto.getFirstName());
     }
 
     @Test
     void findAuthor_returnAuthor() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author1));
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author));
 
-        Author expected = authorService.findAuthorModel(author1.getId());
-        assertEquals(author1, expected);
+        Author expected = authorService.findAuthorModel(author.getId());
+        assertEquals(author, expected);
     }
 
     @Test
@@ -81,11 +75,11 @@ public class AuthorServiceUnitTest {
 
     @Test
     void getAuthor_returnAuthorDto() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author1));
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author));
 
-        AuthorDto expected = authorService.getAuthor(author1.getId());
-        assertEquals(authorDto1.getId(), expected.getId());
-        assertEquals(authorDto1.getFirstName(), expected.getFirstName());
+        AuthorDto expected = authorService.getAuthor(author.getId());
+        assertEquals(authorDto.getId(), expected.getId());
+        assertEquals(authorDto.getFirstName(), expected.getFirstName());
     }
 
     @Test
@@ -102,20 +96,18 @@ public class AuthorServiceUnitTest {
 
         List<AuthorDto> expected = authorService.getAuthors();
         assertEquals(authorDtoList.get(0).getId(), expected.get(0).getId());
-        assertEquals(authorDtoList.get(1).getId(), expected.get(1).getId());
         assertEquals(authorDtoList.get(0).getFirstName(), expected.get(0).getFirstName());
-        assertEquals(authorDtoList.get(1).getFirstName(), expected.get(1).getFirstName());
     }
 
     @Test
     void updateAuthor_returnUpdatedAuthorDto() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author1));
-        Mockito.when(authorRepository.save(author1)).thenReturn(author1);
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author));
+        Mockito.when(authorRepository.save(author)).thenReturn(author);
 
-        AuthorDto expected = authorService.updateAuthor(authorDto2, any());
-        assertEquals(author1.getId(), expected.getId());
-        assertEquals(authorDto2.getFirstName(), expected.getFirstName());
-        assertEquals(authorDto2.getLastName(), expected.getLastName());
+        AuthorDto expected = authorService.updateAuthor(authorDto, any());
+        assertEquals(author.getId(), expected.getId());
+        assertEquals(authorDto.getFirstName(), expected.getFirstName());
+        assertEquals(authorDto.getLastName(), expected.getLastName());
     }
 
     @Test
@@ -123,17 +115,17 @@ public class AuthorServiceUnitTest {
         Mockito.when(authorRepository.findById(any())).thenThrow(new NotFoundException("Author is not found"));
 
         Exception exception = assertThrows(NotFoundException.class,
-                () -> authorService.updateAuthor(authorDto1, any()));
+                () -> authorService.updateAuthor(authorDto, any()));
         assertTrue(exception.getMessage().contains("Author is not found"));
     }
 
     @Test
     void deleteAuthor() {
         Mockito.when(authorRepository.isAuthorAssignedToBook(any())).thenReturn(false);
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author1));
+        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author));
 
-        authorService.delete(author1.getId());
-        verify(authorRepository).delete(author1);
+        authorService.delete(author.getId());
+        verify(authorRepository).delete(author);
     }
 
     @Test
@@ -153,14 +145,14 @@ public class AuthorServiceUnitTest {
         assertTrue(exception.getMessage().contains("Author is not found"));
     }
 
-    private List<Author> createAuthorList(Author author1, Author author2) {
+    private List<Author> createAuthorList(Author author1) {
 
-        return List.of(author1, author2);
+        return List.of(author1);
     }
 
-    private List<AuthorDto> createAuthorDtoList(Author author1, Author author2) {
+    private List<AuthorDto> createAuthorDtoList(Author author) {
 
-        return List.of(AuthorMapper.toDto(author1), AuthorMapper.toDto(author2));
+        return List.of(AuthorMapper.toDto(author));
     }
 
     private Author createAuthor(Long id, String firstName, String lastName) {
@@ -170,6 +162,10 @@ public class AuthorServiceUnitTest {
         author.setId(id);
 
         return author;
+    }
+
+    private Author createAuthor() {
+        return createAuthor(1l, "Marko", "Adamovic");
     }
 
 }

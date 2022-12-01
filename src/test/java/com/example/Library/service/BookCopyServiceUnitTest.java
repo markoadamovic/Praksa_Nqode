@@ -49,9 +49,9 @@ public class BookCopyServiceUnitTest {
 
     @BeforeEach
     void setup() {
-        author = createAuthor(1L, FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
-        book = createBook(1L, TITLE, DESCRIPTION, author);
-        bookCopy = createBookCopy(1L, IDENTIFICATION, book, IS_RENTED);
+        author = createAuthor();
+        book = createBook();
+        bookCopy = createBookCopy();
         bookCopyDto = BookCopyMapper.toDto(bookCopy);
         bookCopyList = List.of(bookCopy);
     }
@@ -113,6 +113,7 @@ public class BookCopyServiceUnitTest {
     @Test
     void deleteBookCopy() {
         Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookCopyRepository.isBookCopyRented(bookCopy.getId())).thenReturn(false);
 
         bookCopyService.delete(bookCopy.getId());
         verify(bookCopyRepository).delete(bookCopy);
@@ -124,6 +125,15 @@ public class BookCopyServiceUnitTest {
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookCopyService.delete(1L));
         assertTrue(exception.getMessage().contains("not found"));
+    }
+
+    @Test
+    void deleteBookCopy_throwBadRequestException_ifBookIsRented() {
+        Mockito.when(bookCopyRepository.findById(bookCopy.getId())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookCopyRepository.isBookCopyRented(bookCopy.getId())).thenReturn(true);
+
+        Exception exception = assertThrows(BadRequestException.class, () -> bookCopyService.delete(bookCopy.getId()));
+        assertTrue(exception.getMessage().contains("Book copy is rented"));
     }
 
     @Test
@@ -199,6 +209,10 @@ public class BookCopyServiceUnitTest {
         return bookCopy;
     }
 
+    private BookCopy createBookCopy() {
+        return createBookCopy(1L, IDENTIFICATION, book, IS_RENTED);
+    }
+
     private Book createBook(Long id, String title, String description, Author author) {
         Book book = new Book();
         book.setId(id);
@@ -209,6 +223,10 @@ public class BookCopyServiceUnitTest {
         return book;
     }
 
+    private Book createBook() {
+        return createBook(1L, TITLE, DESCRIPTION, author);
+    }
+
     private Author createAuthor(Long id, String firstName, String lastName) {
         Author author = new Author();
         author.setId(id);
@@ -216,6 +234,10 @@ public class BookCopyServiceUnitTest {
         author.setLastName(lastName);
 
         return author;
+    }
+
+    private Author createAuthor() {
+        return createAuthor(1L, FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
     }
 
 }

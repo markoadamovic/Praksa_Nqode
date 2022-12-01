@@ -18,12 +18,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,11 +50,14 @@ class UserControllerIntegrationTest {
 
     @BeforeEach
     private void setUp() {
-        user = createUser(FIRSTNAME_USER, LASTNAME_USER, EMAIL, ADDRESS, PASSWORD, USERROLE);
+        user = createUser();
 
-        User authUser = createUser(FIRSTNAME_USER, LASTNAME_USER,
-                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
+        User authUser = createAuthUser();
 
+        loginUser(authUser);
+    }
+
+    private static void loginUser(User authUser) {
         List<SimpleGrantedAuthority> grantedAuthorities = Collections
                 .singletonList(new SimpleGrantedAuthority(authUser.getUserType().getName()));
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -76,7 +76,7 @@ class UserControllerIntegrationTest {
     @Test
     void createUser_returnHttpStatusCreated() throws Exception {
         UserCreateDto userCreateDto = new UserCreateDto(FIRSTNAME_USER, LASTNAME_USER, EMAIL_CREATE,
-                                                        ADDRESS, PASSWORD, USERROLE);
+                                                        ADDRESS, PASSWORD, USERROLE_USER);
         String userCreateDtoJson = mapper.writeValueAsString(userCreateDto);
         mockMvc.perform(post(URL_USER_PREFIX)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,10 +89,34 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    void createUser_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        UserCreateDto userCreateDto = new UserCreateDto(FIRSTNAME_USER, LASTNAME_USER, EMAIL_CREATE,
+                ADDRESS, PASSWORD, USERROLE_USER);
+        String userCreateDtoJson = mapper.writeValueAsString(userCreateDto);
+        mockMvc.perform(post(URL_USER_PREFIX)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userCreateDtoJson)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void getUser_returnHttpStatusOk() throws Exception {
         mockMvc.perform(get(URL_USER_PREFIX + "/{id}", user.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void getUser_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        mockMvc.perform(get(URL_USER_PREFIX + "/{id}", user.getId()))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -110,10 +134,28 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    void getUsers_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        mockMvc.perform(get(URL_USER_PREFIX))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void deleteUser_returnHttpStatusNoContent() throws Exception {
         mockMvc.perform(delete(URL_USER_PREFIX + "/{id}", user.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteUser_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        mockMvc.perform(delete(URL_USER_PREFIX + "/{id}", user.getId()))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -135,6 +177,21 @@ class UserControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value(userDto.getFirstName()));
+    }
+
+    @Test
+    void updateUser_returnHttpStatusForbidden() throws Exception {
+        User regularUser = createUser(UserRole.USER);
+        loginUser(regularUser);
+        UserDto userDto = createUserDto(UPDATE_FIRSTNAME, UPDATE_LASTNAME, UPDATE_EMAIL, UPDATE_ADDRESS, UPDATE_USERROLE);
+        String userDtoJson = mapper.writeValueAsString(userDto);
+
+        mockMvc.perform(put(URL_USER_PREFIX + "/{id}", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userDtoJson)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -171,5 +228,19 @@ class UserControllerIntegrationTest {
         userDto.setUserRole(userRole);
 
         return userDto;
+    }
+
+    private User createUser(UserRole role) {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam995@gmail.com", ADDRESS, PASSWORD, role);
+    }
+
+    private User createUser() {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER, EMAIL, ADDRESS, PASSWORD, USERROLE_USER);
+    }
+
+    private User createAuthUser() {
+        return createUser(FIRSTNAME_USER, LASTNAME_USER,
+                "adam95@gmail.com", ADDRESS, PASSWORD, UserRole.ADMINISTRATOR);
     }
 }

@@ -63,7 +63,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void delete(Long authorId) {
         if (authorHasBooks(authorId)) {
-            throw new AuthorIsAssignedToBookException(String.format("author with id %s can not be deleted" +
+            throw new AuthorIsAssignedToBookException(String.format("author with id %s can not be deleted " +
                     "because he has book assigned to him ", authorId));
         }
 

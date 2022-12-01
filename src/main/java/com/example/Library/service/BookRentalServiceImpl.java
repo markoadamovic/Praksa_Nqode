@@ -2,6 +2,7 @@ package com.example.Library.service;
 
 import com.example.Library.exception.NotFoundException;
 import com.example.Library.model.dto.BookRentalDto;
+import com.example.Library.model.entity.Book;
 import com.example.Library.model.entity.BookCopy;
 import com.example.Library.model.entity.BookRental;
 import com.example.Library.model.entity.User;
@@ -43,8 +44,15 @@ public class BookRentalServiceImpl implements BookRentalService {
         return BookRentalMapper.toDto(bookRentalRepository.save(bookRental));
     }
 
+    public BookRental findBookRental(Long bookRentalId) {
+        return bookRentalRepository.findById(bookRentalId)
+                .orElseThrow(() -> new NotFoundException(String.format("BookRental with id %s is not found", bookRentalId)));
+    }
+
     @Override
-    public void delete(BookRental bookRental) {
+    public void delete(Long bookRentalId) {
+        BookRental bookRental = findBookRental(bookRentalId);
+
         bookRentalRepository.delete(bookRental);
     }
 

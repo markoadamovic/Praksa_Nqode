@@ -7,12 +7,9 @@ import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.entity.User;
 import com.example.Library.model.mapper.UserMapper;
 import com.example.Library.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserCreateDto createUser(UserCreateDto userCreateDto) {
 
-        if(userWithEmailExists(userCreateDto.getEmail())) {
+        if (userWithEmailExists(userCreateDto.getEmail())) {
             throw new BadRequestException(String.format("User with email %s  exists", userCreateDto.getEmail()));
         }
         User user = UserMapper.toEntity(userCreateDto);
@@ -42,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     public User findUserModel(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("User with id %s is not found", userId )));
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %s is not found", userId)));
     }
 
     @Override
@@ -75,7 +72,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         User user = findUserModel(userId);
-        userRepository.delete(user);
+        if (!userRentedBooks(userId)) {
+            userRepository.delete(user);
+        } else {
+            throw new BadRequestException("User have rented books");
+        }
+    }
+
+    private boolean userRentedBooks(Long userId) {
+        return userRepository.userHaveRentedBooks(userId);
     }
 
     @Override

@@ -12,7 +12,7 @@ public interface BookRentalService {
 
     BookRentalDto createBookRental(Long bookId, Long userId);
 
-    void delete(BookRental bookRental);
+    void delete(Long bookRentalId);
 
     List<BookRentalDto> getRentedBooks();
 

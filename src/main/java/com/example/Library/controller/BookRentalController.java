@@ -63,4 +63,11 @@ public class BookRentalController {
         return ResponseEntity.status(HttpStatus.OK).body(bookRentalService.getClosedRents());
     }
 
+    @DeleteMapping(path = "/{bookRentalId}")
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
+    public ResponseEntity<Void> deleteBookRental(@PathVariable Long bookRentalId) {
+        bookRentalService.delete(bookRentalId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }

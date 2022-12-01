@@ -36,11 +36,7 @@ public class BookServiceUnitTest {
 
     private Book book;
 
-    private Book book1;
-
     private BookDto bookDto;
-
-    private BookDto bookDto1;
 
     private Author author;
 
@@ -48,15 +44,11 @@ public class BookServiceUnitTest {
 
     @BeforeEach
     public void setup() {
-        book = createBook(1l,TITLE, DESCRIPTION);
-        book1 = createBook(2l, TITLE, DESCRIPTION);
-        author = createAuthor(1l,FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
+        book = createBook();
+        author = createAuthor();
         book.setAuthor(author);
-
-        book1.setAuthor(author);
         bookDto = BookMapper.toDto(book);
-        bookDto1 = BookMapper.toDto(book1);
-        bookList = createBookList(book, book1);
+        bookList = createBookList(book);
     }
 
     @Test
@@ -138,7 +130,7 @@ public class BookServiceUnitTest {
         Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
         Mockito.when(bookRepository.save(book)).thenReturn(book);
 
-        BookDto expected = bookService.updateBook(bookDto1, book.getId());
+        BookDto expected = bookService.updateBook(bookDto, book.getId());
         assertEquals(book.getId(), expected.getId());
         assertEquals(book.getDescription(), expected.getDescription());
         assertEquals(book.getAuthor().getId(), expected.getAuthorId());
@@ -152,9 +144,9 @@ public class BookServiceUnitTest {
         assertTrue(exception.getMessage().contains("not found"));
     }
 
-    private List<Book> createBookList(Book book, Book book1) {
+    private List<Book> createBookList(Book book) {
 
-        return List.of(book, book1);
+        return List.of(book);
     }
 
     private Author createAuthor(Long id, String firstName, String lastName) {
@@ -166,6 +158,10 @@ public class BookServiceUnitTest {
         return author;
     }
 
+    private Author createAuthor() {
+        return createAuthor(1l,FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
+    }
+
     private Book createBook(Long id, String title, String description) {
         Book book = new Book();
         book.setId(id);
@@ -173,6 +169,10 @@ public class BookServiceUnitTest {
         book.setDescription(description);
 
         return book;
+    }
+
+    private Book createBook() {
+        return createBook(1l,TITLE, DESCRIPTION);
     }
 
 }

@@ -1,8 +1,7 @@
 package com.example.Library.service.auth;
 
-import com.example.Library.exception.NotFoundException;
 import com.example.Library.exception.UnauthorizedException;
-import com.example.Library.model.entity.AuthToken;
+import com.example.Library.model.auth.AuthToken;
 import com.example.Library.model.entity.User;
 import com.example.Library.repository.AuthTokenRepository;
 import org.springframework.stereotype.Service;
