@@ -1,12 +1,10 @@
 package com.example.Library.controller.auth;
 
-import com.example.Library.configuration.auth.JwtProvider;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
-import com.example.Library.model.dto.auth.AuthRequest;
-import com.example.Library.model.dto.auth.AuthResponse;
+import com.example.Library.model.auth.AuthRequest;
+import com.example.Library.model.auth.AuthResponse;
 import com.example.Library.service.auth.AuthService;
-import com.example.Library.service.auth.AuthTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

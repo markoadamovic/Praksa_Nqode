@@ -1,9 +1,8 @@
 package com.example.Library.configuration.auth;
 
 import com.example.Library.exception.UnauthorizedException;
-import com.example.Library.model.entity.AuthToken;
+import com.example.Library.model.auth.AuthToken;
 import com.example.Library.model.entity.User;
-import com.example.Library.service.auth.AuthService;
 import com.example.Library.service.auth.AuthTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

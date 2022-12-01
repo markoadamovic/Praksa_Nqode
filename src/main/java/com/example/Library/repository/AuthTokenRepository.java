@@ -1,6 +1,6 @@
 package com.example.Library.repository;
 
-import com.example.Library.model.entity.AuthToken;
+import com.example.Library.model.auth.AuthToken;
 import com.example.Library.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
