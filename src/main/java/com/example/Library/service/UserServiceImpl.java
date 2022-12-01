@@ -7,12 +7,9 @@ import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.entity.User;
 import com.example.Library.model.mapper.UserMapper;
 import com.example.Library.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,7 +72,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         User user = findUserModel(userId);
-        userRepository.delete(user);
+        if (!userRentedBooks(userId)) {
+            userRepository.delete(user);
+        }else {
+            throw new BadRequestException("User have rented books");
+        }
+    }
+
+    private boolean userRentedBooks(Long userId) {
+        return userRepository.userHaveRentedBooks(userId);
     }
 
     @Override

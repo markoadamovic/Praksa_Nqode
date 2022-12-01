@@ -113,6 +113,7 @@ public class BookCopyServiceUnitTest {
     @Test
     void deleteBookCopy() {
         Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookCopyRepository.isBookCopyRented(bookCopy.getId())).thenReturn(false);
 
         bookCopyService.delete(bookCopy.getId());
         verify(bookCopyRepository).delete(bookCopy);
@@ -124,6 +125,15 @@ public class BookCopyServiceUnitTest {
 
         Exception exception = assertThrows(NotFoundException.class, () -> bookCopyService.delete(1L));
         assertTrue(exception.getMessage().contains("not found"));
+    }
+
+    @Test
+    void deleteBookCopy_throwBadRequestException_ifBookIsRented() {
+        Mockito.when(bookCopyRepository.findById(bookCopy.getId())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookCopyRepository.isBookCopyRented(bookCopy.getId())).thenReturn(true);
+
+        Exception exception = assertThrows(BadRequestException.class, () -> bookCopyService.delete(bookCopy.getId()));
+        assertTrue(exception.getMessage().contains("Book copy is rented"));
     }
 
     @Test

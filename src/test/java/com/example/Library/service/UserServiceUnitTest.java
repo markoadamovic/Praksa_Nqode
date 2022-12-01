@@ -118,10 +118,20 @@ public class UserServiceUnitTest {
 
     @Test
     void deleteUser() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(user));
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.userHaveRentedBooks(user.getId())).thenReturn(false);
 
         userService.deleteUser(user.getId());
         verify(userRepository).delete(user);
+    }
+
+    @Test
+    void deleteUser_throwBadRequestException_ifUserRentedBook() {
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.userHaveRentedBooks(user.getId())).thenReturn(true);
+
+        Exception exception = assertThrows(BadRequestException.class, () -> userService.deleteUser(user.getId()));
+        assertTrue(exception.getMessage().contains("User have rented books"));
     }
 
     @Test
