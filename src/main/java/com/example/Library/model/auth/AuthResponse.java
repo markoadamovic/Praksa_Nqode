@@ -7,6 +7,13 @@ import lombok.Data;
 @Builder
 public class AuthResponse {
 
-    private String token;
+    private String jwtToken;
+
+    private String refreshToken;
+
+    public AuthResponse(String jwtToken, String refreshToken) {
+        this.jwtToken = jwtToken;
+        this.refreshToken = refreshToken;
+    }
 
 }

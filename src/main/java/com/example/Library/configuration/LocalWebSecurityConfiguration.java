@@ -31,6 +31,7 @@ public class LocalWebSecurityConfiguration {
                 .authorizeRequests()
                 .antMatchers("/authenticate").permitAll()
                 .antMatchers("/register").permitAll()
+                .antMatchers("/refreshToken").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -3,6 +3,7 @@ package com.example.Library.service.auth;
 import com.example.Library.configuration.auth.JwtProvider;
 import com.example.Library.exception.BadRequestException;
 import com.example.Library.exception.NotFoundException;
+import com.example.Library.model.auth.RefreshToken;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.auth.AuthRequest;
@@ -33,6 +34,8 @@ public class AuthService {
 
     private final AuthTokenService authTokenService;
 
+    private final RefreshTokenService refreshTokenService;
+
     public UserDto getAuthenticatedUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         return UserMapper.toDto(userService.getUserByEmail(email));
@@ -54,32 +57,61 @@ public class AuthService {
         if (authTokenService.userHasAccessToken(user)) {
             return generateAuthTokenFromExistingToken(user);
         } else {
-            return generateNewAuthToken(user,authRequest);
+            return generateNewAuthToken(user);
         }
     }
 
-    private AuthResponse generateNewAuthToken(User user, AuthRequest authRequest) {
+    private AuthResponse generateNewAuthToken(User user) {
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
         String accessToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
-        saveAuthToken(authRequest, accessToken);
-        return AuthResponse.builder().token(accessToken).build();
+        saveAuthToken(user, accessToken);
+        return AuthResponse.builder().jwtToken(accessToken).refreshToken(refreshToken.getRefreshToken()).build();
     }
 
     private AuthResponse generateAuthTokenFromExistingToken(User user) {
-        AuthToken authToken = authTokenService.getAuthToken(user);
+        AuthToken authToken = authTokenService.getAuthTokenByUser(user);
+        RefreshToken refreshToken = refreshTokenService.getRefreshTokenByUser(user);
         if (!jwtProvider.isTokenExpired(authToken.getAccessToken())) {
-            return AuthResponse.builder().token(authToken.getAccessToken()).build();
+            return AuthResponse.builder()
+                    .jwtToken(authToken.getAccessToken()).refreshToken(refreshToken.getRefreshToken()).build();
         }
+        if (!jwtProvider.isTokenExpired(refreshToken.getRefreshToken())) {
+            String newAccessToken = generateNewAccesToken(user);
+            return AuthResponse.builder()
+                    .jwtToken(newAccessToken).refreshToken(refreshToken.getRefreshToken()).build();
+        }
+        String newAccessToken = generateNewAccesToken(user);
+        String newRefreshToken = generateNewRefreshToken(user);
+
+        return AuthResponse.builder().jwtToken(newAccessToken).refreshToken(newRefreshToken).build();
+    }
+
+    private boolean refreshTokenExpired(RefreshToken refreshToken) {
+        return refreshTokenService.refreshTokenExpired(refreshToken);
+    }
+
+    private String generateNewAccesToken(User user) {
+        AuthToken authToken = authTokenService.getAuthTokenByUser(user);
         String accessToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
         authToken.setAccessToken(accessToken);
         authTokenService.save(authToken);
-        return AuthResponse.builder().token(accessToken).build();
+
+        return accessToken;
     }
 
-    public void saveAuthToken(AuthRequest request, String accessToken) {
-        if (request.getEmail().isBlank() || request.getPassword().isBlank()) {
+    private String generateNewRefreshToken(User user) {
+        RefreshToken refreshToken = refreshTokenService.getRefreshTokenByUser(user);
+        String newRefreshToken = jwtProvider.generateRefreshToken(user.getEmail(), user.getUserType().getName());
+        refreshToken.setRefreshToken(newRefreshToken);
+        refreshTokenService.save(refreshToken);
+
+        return newRefreshToken;
+    }
+
+    public void saveAuthToken(User user, String accessToken) {
+        if (user.getEmail().isBlank() || user.getPassword().isBlank()) {
             throw new BadRequestException("Invalid credentials");
         }
-        User user = findUserByEmail(request.getEmail());
         AuthToken authToken = new AuthToken();
         authToken.setUser(user);
         authToken.setAccessToken(accessToken);
@@ -117,7 +149,7 @@ public class AuthService {
     public void singout() {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userService.getUserByEmail(email);
-        AuthToken authToken = authTokenService.getAuthToken(user);
+        AuthToken authToken = authTokenService.getAuthTokenByUser(user);
         authTokenService.delete(authToken);
     }
 

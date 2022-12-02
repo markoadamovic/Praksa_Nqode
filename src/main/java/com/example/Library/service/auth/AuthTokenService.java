@@ -15,8 +15,8 @@ public class AuthTokenService {
         this.authTokenRepository = authTokenRepository;
     }
 
-    public AuthToken getAuthToken(User user) {
-        return authTokenRepository.findByUserId(user)
+    public AuthToken getAuthTokenByUser(User user) {
+        return authTokenRepository.findByUser(user)
                 .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
     }
 

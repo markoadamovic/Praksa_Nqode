@@ -1,10 +1,12 @@
 package com.example.Library.controller.auth;
 
+import com.example.Library.model.auth.TokenRefreshRequest;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.auth.AuthRequest;
 import com.example.Library.model.auth.AuthResponse;
 import com.example.Library.service.auth.AuthService;
+import com.example.Library.service.auth.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthService authService;
+
+    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/authenticate/user")
     public ResponseEntity<UserDto> getAuthenticatedUser() {
@@ -33,10 +37,15 @@ public class AuthenticationController {
         return ResponseEntity.ok(authService.register(userCreateDto));
     }
 
-    @PostMapping(path = "/signout")
-    public ResponseEntity logout() {
+    @PostMapping(path = "/signOut")
+    public ResponseEntity<Void> logout() {
         authService.singout();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "/refreshToken")
+    public ResponseEntity<AuthResponse> refreshToken(@RequestBody @Validated TokenRefreshRequest tokenRefreshRequest) {
+        return ResponseEntity.ok(refreshTokenService.refreshToken(tokenRefreshRequest));
     }
 
 }

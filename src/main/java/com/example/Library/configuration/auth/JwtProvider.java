@@ -26,13 +26,16 @@ public class JwtProvider {
     private String APP_NAME;
 
     @Value("${secret}")
-    public String SECRET;
+    private String SECRET;
 
     @Value("${expiration}")
     private Long EXPIRES_IN;
 
     @Value("${authHeader}")
     private String AUTH_HEADER;
+
+    @Value("${expirationTimeRefreshToken}")
+    private Long REFRESH_TOKEN_EXPIRATION;
 
     private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
@@ -56,6 +59,17 @@ public class JwtProvider {
                 .setIssuer(APP_NAME)
                 .setSubject(email)
                 .setExpiration(generateExpiratonDate())
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                .claim("roles", role)
+                .signWith(SIGNATURE_ALGORITHM, SECRET)
+                .compact();
+    }
+
+    public String generateRefreshToken(String email, String role) {
+        return Jwts.builder()
+                .setIssuer(APP_NAME)
+                .setSubject(email)
+                .setExpiration(generateRefreshTokenExpiratonDate())
                 .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
                 .claim("roles", role)
                 .signWith(SIGNATURE_ALGORITHM, SECRET)
@@ -114,9 +128,14 @@ public class JwtProvider {
 
     private Date generateExpiratonDate() {
 
-        Date expiration = Date.from(LocalDateTime.now().plusMinutes(EXPIRES_IN)
+        return Date.from(LocalDateTime.now().plusMinutes(EXPIRES_IN)
                 .atZone(ZoneId.systemDefault()).toInstant());
-        return expiration;
+    }
+
+    private Date generateRefreshTokenExpiratonDate() {
+
+        return Date.from(LocalDateTime.now().plusMinutes(REFRESH_TOKEN_EXPIRATION)
+                .atZone(ZoneId.systemDefault()).toInstant());
     }
 
 }
