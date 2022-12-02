@@ -50,7 +50,7 @@ public class RefreshTokenService {
     }
 
     public boolean refreshTokenExpired(RefreshToken refreshToken) {
-        if((jwtProvider.isTokenExpired(refreshToken.getRefreshToken()))) {
+        if ((jwtProvider.isTokenExpired(refreshToken.getRefreshToken()))) {
             refreshTokenRepository.delete(refreshToken);
             return true;
         }
@@ -66,7 +66,7 @@ public class RefreshTokenService {
     }
 
     public AuthResponse refreshToken(TokenRefreshRequest tokenRefreshRequest) {
-        if(tokenRefreshRequest.getRefreshToken().isBlank()) {
+        if (tokenRefreshRequest.getRefreshToken().isBlank()) {
             throw new BadRequestException("Invalid credentials");
         }
         String token = tokenRefreshRequest.getRefreshToken();
@@ -74,7 +74,7 @@ public class RefreshTokenService {
                 .findByRefreshToken(token).orElseThrow(() -> new UnauthorizedException("Not authorized"));
 //        if(refreshTokenExpired(refreshToken)){
 //            throw new UnauthorizedException("Not authorized");
-//        } ???
+//        } ??? da li treba da brisem tokene?
         User user = refreshToken.getUser();
         AuthToken authToken = authTokenService.getAuthTokenByUser(user);
         String jwtToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
@@ -82,4 +82,5 @@ public class RefreshTokenService {
         authTokenService.save(authToken);
         return AuthResponse.builder().jwtToken(jwtToken).refreshToken(refreshToken.getRefreshToken()).build();
     }
+
 }
