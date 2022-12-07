@@ -20,7 +20,7 @@ public class AuthTokenService {
     }
 
     public AuthToken getAuthTokenByUser(User user) {
-        return authTokenRepository.findByUser(user.getId())
+        return authTokenRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
     }
 

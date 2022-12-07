@@ -11,8 +11,7 @@ import java.util.Optional;
 @Repository
 public interface AuthTokenRepository extends JpaRepository<AuthToken, Long> {
 
-    @Query("SELECT at FROM AuthToken at WHERE at.user.id =:userId")
-    Optional<AuthToken> findByUser(@Param("userId") Long userId);
+    Optional<AuthToken> findByUserId(@Param("userId") Long userId);
 
     @Query("SELECT count(at) > 0 FROM AuthToken at " +
             "WHERE at.user.id = :userId")
