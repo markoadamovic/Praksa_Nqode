@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Set;
 
 @Service
@@ -146,10 +147,12 @@ public class AuthService {
         return userRepository.findByEmail(email).isPresent();
     }
 
+    @Transactional
     public void singout() {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userService.getUserByEmail(email);
         AuthToken authToken = authTokenService.getAuthTokenByUser(user);
+        refreshTokenService.deleteRefreshToken(user);
         authTokenService.delete(authToken);
     }
 
