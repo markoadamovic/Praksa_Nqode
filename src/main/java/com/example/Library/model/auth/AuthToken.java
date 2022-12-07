@@ -26,4 +26,8 @@ public class AuthToken {
     @Lob
     private String accessToken;
 
+    @Column(name = "refresh_token", nullable = false)
+    @Lob
+    private String refreshToken;
+
 }

@@ -6,7 +6,6 @@ import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.auth.AuthRequest;
 import com.example.Library.model.auth.AuthResponse;
 import com.example.Library.service.auth.AuthService;
-import com.example.Library.service.auth.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthService authService;
-
-    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/authenticate/user")
     public ResponseEntity<UserDto> getAuthenticatedUser() {
@@ -45,7 +42,7 @@ public class AuthenticationController {
 
     @PostMapping(path = "/refreshToken")
     public ResponseEntity<AuthResponse> refreshToken(@RequestBody @Validated TokenRefreshRequest tokenRefreshRequest) {
-        return ResponseEntity.ok(refreshTokenService.refreshToken(tokenRefreshRequest));
+        return ResponseEntity.ok(authService.refreshToken(tokenRefreshRequest));
     }
 
 }

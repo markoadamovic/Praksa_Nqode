@@ -26,4 +26,6 @@ public interface UserService {
 
     User saveUser(User user);
 
+    boolean userWithEmailExists(String email);
+
 }

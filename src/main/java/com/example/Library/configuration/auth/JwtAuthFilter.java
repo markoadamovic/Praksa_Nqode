@@ -2,10 +2,8 @@ package com.example.Library.configuration.auth;
 
 import com.example.Library.exception.UnauthorizedException;
 import com.example.Library.model.auth.AuthToken;
-import com.example.Library.model.auth.RefreshToken;
 import com.example.Library.model.entity.User;
 import com.example.Library.service.auth.AuthTokenService;
-import com.example.Library.service.auth.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
