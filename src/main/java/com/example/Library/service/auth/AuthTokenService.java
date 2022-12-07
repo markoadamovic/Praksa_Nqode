@@ -1,11 +1,8 @@
 package com.example.Library.service.auth;
 
 import com.example.Library.configuration.auth.JwtProvider;
-import com.example.Library.exception.BadRequestException;
 import com.example.Library.exception.UnauthorizedException;
-import com.example.Library.model.auth.AuthResponse;
 import com.example.Library.model.auth.AuthToken;
-import com.example.Library.model.auth.TokenRefreshRequest;
 import com.example.Library.model.entity.User;
 import com.example.Library.repository.AuthTokenRepository;
 import org.springframework.stereotype.Service;
