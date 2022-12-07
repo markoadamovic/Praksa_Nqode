@@ -45,7 +45,7 @@ public class JwtAuthFilter extends GenericFilterBean {
         try {
             String email = jwtProvider.getEmailFromToken(token);
             User user = userDetailsService.getUserByEmail(email);
-            AuthToken authToken = authTokenService.getAuthToken(user);
+            AuthToken authToken = authTokenService.getAuthTokenByUser(user);
             if (!authToken.getAccessToken().equals(jwtProvider.removeBearerFromToken(token))) {
                 return false;
             }

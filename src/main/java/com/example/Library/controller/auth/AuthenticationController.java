@@ -1,5 +1,6 @@
 package com.example.Library.controller.auth;
 
+import com.example.Library.model.auth.TokenRefreshRequest;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.auth.AuthRequest;
@@ -33,10 +34,15 @@ public class AuthenticationController {
         return ResponseEntity.ok(authService.register(userCreateDto));
     }
 
-    @PostMapping(path = "/signout")
-    public ResponseEntity logout() {
+    @PostMapping(path = "/signOut")
+    public ResponseEntity<Void> logout() {
         authService.singout();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "/refreshToken")
+    public ResponseEntity<AuthResponse> refreshToken(@RequestBody @Validated TokenRefreshRequest tokenRefreshRequest) {
+        return ResponseEntity.ok(authService.refreshToken(tokenRefreshRequest));
     }
 
 }

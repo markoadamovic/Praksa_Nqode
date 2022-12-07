@@ -3,14 +3,12 @@ package com.example.Library.service.auth;
 import com.example.Library.configuration.auth.JwtProvider;
 import com.example.Library.exception.BadRequestException;
 import com.example.Library.exception.NotFoundException;
+import com.example.Library.exception.UnauthorizedException;
+import com.example.Library.model.auth.*;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
-import com.example.Library.model.auth.AuthRequest;
-import com.example.Library.model.auth.AuthResponse;
-import com.example.Library.model.auth.AuthToken;
 import com.example.Library.model.entity.User;
 import com.example.Library.model.mapper.UserMapper;
-import com.example.Library.repository.UserRepository;
 import com.example.Library.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +26,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtProvider jwtProvider;
-
-    private final UserRepository userRepository;
 
     private final AuthTokenService authTokenService;
 
@@ -54,35 +50,60 @@ public class AuthService {
         if (authTokenService.userHasAccessToken(user)) {
             return generateAuthTokenFromExistingToken(user);
         } else {
-            return generateNewAuthToken(user,authRequest);
+            return generateNewAuthToken(user);
         }
     }
 
-    private AuthResponse generateNewAuthToken(User user, AuthRequest authRequest) {
+    private AuthResponse generateNewAuthToken(User user) {
+        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail(), user.getUserType().getName());
         String accessToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
-        saveAuthToken(authRequest, accessToken);
-        return AuthResponse.builder().token(accessToken).build();
+        saveAuthToken(user, accessToken, refreshToken);
+        return AuthResponse.builder().jwtToken(accessToken).refreshToken(refreshToken).build();
     }
 
     private AuthResponse generateAuthTokenFromExistingToken(User user) {
-        AuthToken authToken = authTokenService.getAuthToken(user);
+        AuthToken authToken = authTokenService.getAuthTokenByUser(user);
         if (!jwtProvider.isTokenExpired(authToken.getAccessToken())) {
-            return AuthResponse.builder().token(authToken.getAccessToken()).build();
+            return AuthResponse.builder()
+                    .jwtToken(authToken.getAccessToken()).refreshToken(authToken.getRefreshToken()).build();
         }
+        if (!jwtProvider.isTokenExpired(authToken.getRefreshToken())) {
+            String newAccessToken = generateNewAccesToken(user);
+            return AuthResponse.builder()
+                    .jwtToken(newAccessToken).refreshToken(authToken.getRefreshToken()).build();
+        }
+        String newAccessToken = generateNewAccesToken(user);
+        String newRefreshToken = generateNewRefreshToken(user);
+
+        return AuthResponse.builder().jwtToken(newAccessToken).refreshToken(newRefreshToken).build();
+    }
+
+    private String generateNewAccesToken(User user) {
+        AuthToken authToken = authTokenService.getAuthTokenByUser(user);
         String accessToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
         authToken.setAccessToken(accessToken);
         authTokenService.save(authToken);
-        return AuthResponse.builder().token(accessToken).build();
+
+        return accessToken;
     }
 
-    public void saveAuthToken(AuthRequest request, String accessToken) {
-        if (request.getEmail().isBlank() || request.getPassword().isBlank()) {
+    private String generateNewRefreshToken(User user) {
+        AuthToken authToken = authTokenService.getAuthTokenByUser(user);
+        String newRefreshToken = jwtProvider.generateRefreshToken(user.getEmail(), user.getUserType().getName());
+        authToken.setRefreshToken(newRefreshToken);
+        authTokenService.save(authToken);
+
+        return newRefreshToken;
+    }
+
+    public void saveAuthToken(User user, String accessToken, String refreshToken) {
+        if (user.getEmail().isBlank() || user.getPassword().isBlank()) {
             throw new BadRequestException("Invalid credentials");
         }
-        User user = findUserByEmail(request.getEmail());
         AuthToken authToken = new AuthToken();
         authToken.setUser(user);
         authToken.setAccessToken(accessToken);
+        authToken.setRefreshToken(refreshToken);
         authTokenService.save(authToken);
     }
 
@@ -111,14 +132,32 @@ public class AuthService {
     }
 
     public boolean userWithEmailExists(String email) {
-        return userRepository.findByEmail(email).isPresent();
+        return userService.userWithEmailExists(email);
     }
 
     public void singout() {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userService.getUserByEmail(email);
-        AuthToken authToken = authTokenService.getAuthToken(user);
+        AuthToken authToken = authTokenService.getAuthTokenByUser(user);
         authTokenService.delete(authToken);
+    }
+
+    public AuthResponse refreshToken(TokenRefreshRequest tokenRefreshRequest) {
+        if (tokenRefreshRequest.getRefreshToken().isBlank()) {
+            throw new BadRequestException("Invalid credentials");
+        }
+        String token = tokenRefreshRequest.getRefreshToken();
+        AuthToken authToken = authTokenService.getAuthTokenByRefreshToken(token);
+        if(authTokenService.refreshTokenExpired(authToken)){
+            throw new UnauthorizedException("Not authorized");
+        }
+        User user = authToken.getUser();
+        String jwtToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
+        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail(), user.getUserType().getName());
+        authToken.setAccessToken(jwtToken);
+        authToken.setRefreshToken(refreshToken);
+        authTokenService.save(authToken);
+        return AuthResponse.builder().jwtToken(jwtToken).refreshToken(refreshToken).build();
     }
 
 }
