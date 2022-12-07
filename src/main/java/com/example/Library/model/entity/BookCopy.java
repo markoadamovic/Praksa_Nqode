@@ -1,14 +1,17 @@
 package com.example.Library.model.entity;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-public class BookCopy {
+public class BookCopy extends Identity {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @Column(name = "id")
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     @Column(name = "identification", unique = true, nullable = false)
     private String identification;
@@ -61,4 +64,11 @@ public class BookCopy {
     public void setRented(boolean rented) {
         isRented = rented;
     }
+
+    @PrePersist
+    public void setCreatedAt() {
+        createdAt = LocalDateTime.now();
+        createdBy = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    }
+
 }

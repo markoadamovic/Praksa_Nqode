@@ -10,11 +10,14 @@ insert into book (id, title, description, author_id) values (1002, 'Book Book', 
 insert into book (id, title, description, author_id) values (1003, 'Znakovi pored puta', 'knjiga', 1003);
 
 insert into public."user" (id, first_name, last_name, email, address, password, role)
-values (1000, 'Marko', 'Adamoviv', 'adam95@gmail.com', 'Veternik', '123123', 'USER');
+values (1000, 'Marko', 'Adamoviv', 'adam95@gmail.com','Veternik',
+        '$2a$12$pweqL4C1wT74yNuJRLknheBXbzhJcbUbz.sTHtqEnUerEY6n8Xsui', 'ADMINISTRATOR');
 insert into public."user" (id, first_name, last_name, email, address, password, role)
-values (1001, 'Nokola', 'Namada', 'nikola@gmail.com', 'NS', '123123', 'USER');
+values (1001, 'Nokola', 'Namada', 'nikola@gmail.com', 'NS',
+        '$2a$12$pweqL4C1wT74yNuJRLknheBXbzhJcbUbz.sTHtqEnUerEY6n8Xsui', 'USER');
 insert into public."user" (id, first_name, last_name, email, address, password, role)
-values (1002, 'Milos', 'Milosevic', 'beogradjanin@gmail.com', 'NovISad', '33333', 'USER');
+values (1002, 'Milos', 'Milosevic', 'beogradjanin@gmail.com', 'NovISad',
+        '$2a$12$pweqL4C1wT74yNuJRLknheBXbzhJcbUbz.sTHtqEnUerEY6n8Xsui', 'ADMINISTRATOR');
 
 insert into book_copy (id, identification, is_rented, book_id) values (1000, 'aaa111', false, 1000);
 insert into book_copy (id, identification, is_rented, book_id) values (1001, 'aaa112', false, 1000);

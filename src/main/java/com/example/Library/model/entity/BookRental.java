@@ -1,15 +1,18 @@
 package com.example.Library.model.entity;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-public class BookRental {
+public class BookRental extends Identity {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @Column(name = "id")
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "book_copy_id")
@@ -74,6 +77,12 @@ public class BookRental {
 
     public void setRentEnd(LocalDate rentEnd) {
         this.rentEnd = rentEnd;
+    }
+
+    @PrePersist
+    public void setCreatedAt() {
+        createdAt = LocalDateTime.now();
+        createdBy = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 
 }

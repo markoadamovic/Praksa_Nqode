@@ -166,7 +166,7 @@ public class BookRentalServiceTest {
 
     @Test
     void getBookRentalByBookCopy_returnBookRental() {
-        Mockito.when(bookRentalRepository.findByBookCopy(any())).thenReturn(Optional.of(bookRental));
+        Mockito.when(bookRentalRepository.findByBookCopy(bookRental.getBookCopy())).thenReturn(Optional.of(bookRental));
 
         BookRental expected = bookRentalService.getBookRentalByBookCopy(bookCopy);
         assertEquals(bookRental.getUser(), expected.getUser());

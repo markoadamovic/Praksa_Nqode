@@ -1,17 +1,19 @@
 package com.example.Library.model.entity;
 
 import com.example.Library.model.entity.Author;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class Book {
+public class Book extends Identity {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @Column(name = "id")
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     @Column(name = "title")
     private String title;
@@ -64,6 +66,12 @@ public class Book {
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    @PrePersist
+    public void setCreatedAt() {
+        createdAt = LocalDateTime.now();
+        createdBy = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 
 }

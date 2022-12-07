@@ -1,15 +1,18 @@
 package com.example.Library.model.entity;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name= "\"user\"")
-public class User {
+public class User extends Identity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -104,6 +107,12 @@ public class User {
 
     public void setUserType(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    @PrePersist
+    public void setCreatedAt() {
+        createdAt = LocalDateTime.now();
+        createdBy = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 
 }
