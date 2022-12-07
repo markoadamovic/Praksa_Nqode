@@ -10,11 +10,6 @@ import java.util.List;
 @Entity
 public class Book extends Identity {
 
-//    @Id
-//    @Column(name = "id")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-
     @Column(name = "title")
     private String title;
 

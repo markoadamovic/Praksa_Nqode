@@ -8,11 +8,6 @@ import java.time.LocalDateTime;
 @Entity
 public class BookCopy extends Identity {
 
-//    @Id
-//    @Column(name = "id")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-
     @Column(name = "identification", unique = true, nullable = false)
     private String identification;
 

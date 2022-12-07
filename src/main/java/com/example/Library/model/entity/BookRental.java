@@ -9,11 +9,6 @@ import java.time.LocalDateTime;
 @Entity
 public class BookRental extends Identity {
 
-//    @Id
-//    @Column(name = "id")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-
     @ManyToOne
     @JoinColumn(name = "book_copy_id")
     private BookCopy bookCopy;

@@ -11,11 +11,6 @@ import java.util.List;
 @Entity
 public class Author extends Identity {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
-//    private Long id;
-
     @Column(name = "first_name")
     private String firstName;
 
