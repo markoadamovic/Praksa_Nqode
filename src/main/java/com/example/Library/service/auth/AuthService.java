@@ -54,13 +54,6 @@ public class AuthService {
         }
     }
 
-//    private AuthResponse generateNewAuthToken(User user) {
-//        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
-//        String accessToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
-//        saveAuthToken(user, accessToken);
-//        return AuthResponse.builder().jwtToken(accessToken).refreshToken(refreshToken.getRefreshToken()).build();
-//    }
-
     private AuthResponse generateNewAuthToken(User user) {
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail(), user.getUserType().getName());
         String accessToken = jwtProvider.generateToken(user.getEmail(), user.getUserType().getName());
@@ -84,10 +77,6 @@ public class AuthService {
 
         return AuthResponse.builder().jwtToken(newAccessToken).refreshToken(newRefreshToken).build();
     }
-
-//    private boolean refreshTokenExpired(RefreshToken refreshToken) {
-//        return refreshTokenService.refreshTokenExpired(refreshToken);
-//    }
 
     private String generateNewAccesToken(User user) {
         AuthToken authToken = authTokenService.getAuthTokenByUser(user);
