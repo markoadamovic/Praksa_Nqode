@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.example.Library.utils.TestUtils.*;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,11 +49,10 @@ class UserControllerIntegrationTest {
 
     @BeforeEach
     private void setUp() {
-        user = createUser();
-
         User authUser = createAuthUser();
-
         loginUser(authUser);
+
+        user = createUser();
     }
 
     private static void loginUser(User authUser) {

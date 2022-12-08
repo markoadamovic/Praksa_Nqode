@@ -68,12 +68,12 @@ public class BookCopyControllerIntegrationTest {
 
     @BeforeEach
     private void setUp() {
+        User authUser = createUser();
+        loginUser(authUser);
         author = createAuthor();
         book = createBook();
         bookCopy = createBookCopy();
 
-        User authUser = createUser();
-        loginUser(authUser);
     }
 
     private static void loginUser(User authUser) {

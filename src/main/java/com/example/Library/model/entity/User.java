@@ -1,9 +1,6 @@
 package com.example.Library.model.entity;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name= "\"user\"")
@@ -102,12 +99,6 @@ public class User extends Identity {
 
     public void setUserType(UserRole userRole) {
         this.userRole = userRole;
-    }
-
-    @PrePersist
-    public void setCreatedAt() {
-        createdAt = LocalDateTime.now();
-        createdBy = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 
 }

@@ -1,12 +1,12 @@
 package com.example.Library.model.entity;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.Library.listener.PersistenceListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@EntityListeners(PersistenceListener.class)
 public class Author extends Identity {
 
     @Column(name = "first_name")
@@ -56,12 +56,6 @@ public class Author extends Identity {
 
     public void setBooks(List<Book> books) {
         this.books = books;
-    }
-
-    @PrePersist
-    public void setCreatedAt() {
-        createdAt = LocalDateTime.now();
-        createdBy = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 
 }

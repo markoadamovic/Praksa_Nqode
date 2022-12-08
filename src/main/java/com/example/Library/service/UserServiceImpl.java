@@ -7,8 +7,10 @@ import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.entity.User;
 import com.example.Library.model.mapper.UserMapper;
 import com.example.Library.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,12 @@ public class UserServiceImpl implements UserService {
         User user = UserMapper.toEntity(userCreateDto);
         user.setPassword(userCreateDto.getPassword());
 
+        user.setCreatedAt(LocalDateTime.now());
+        try {
+            user.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        }catch(Exception ignored) {
+            //exception will be trown only on user registration
+        }
         return UserMapper.toUserCreateDto(userRepository.save(user));
     }
 

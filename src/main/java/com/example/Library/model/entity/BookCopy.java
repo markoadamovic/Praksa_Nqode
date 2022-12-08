@@ -1,11 +1,11 @@
 package com.example.Library.model.entity;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.Library.listener.PersistenceListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
+@EntityListeners(PersistenceListener.class)
 public class BookCopy extends Identity {
 
     @Column(name = "identification", unique = true, nullable = false)
@@ -58,12 +58,6 @@ public class BookCopy extends Identity {
 
     public void setRented(boolean rented) {
         isRented = rented;
-    }
-
-    @PrePersist
-    public void setCreatedAt() {
-        createdAt = LocalDateTime.now();
-        createdBy = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 
 }

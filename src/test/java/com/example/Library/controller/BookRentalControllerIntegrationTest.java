@@ -67,15 +67,15 @@ public class BookRentalControllerIntegrationTest {
 
     @BeforeEach
     private void setUp() {
+        User authUser = createAuthUser();
+        loginUser(authUser);
         user = createUser();
         author = createAuthor();
         book = createBook();
         bookCopy = createBookCopy();
         bookRental = createBookRental();
 
-        User authUser = createAuthUser();
 
-        loginUser(authUser);
     }
 
     private static void loginUser(User authUser) {
