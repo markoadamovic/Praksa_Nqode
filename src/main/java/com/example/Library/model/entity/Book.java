@@ -1,6 +1,5 @@
 package com.example.Library.model.entity;
 
-import com.example.Library.model.entity.Author;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;

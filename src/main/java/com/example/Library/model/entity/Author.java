@@ -1,7 +1,5 @@
 package com.example.Library.model.entity;
 
-
-import org.apache.catalina.core.ApplicationContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
