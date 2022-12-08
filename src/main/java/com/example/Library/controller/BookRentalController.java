@@ -17,7 +17,7 @@ public class BookRentalController {
 
     private final BookRentalService bookRentalService;
 
-    @PostMapping(path ="/book/{bookId}/user/{userId}")
+    @PostMapping(path = "/book/{bookId}/user/{userId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR', 'USER'})")
     public ResponseEntity<BookRentalDto> createBookRental(@PathVariable Long bookId,
                                                           @PathVariable Long userId) {

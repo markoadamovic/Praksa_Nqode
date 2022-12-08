@@ -32,7 +32,7 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public BookCopyDto createBookCopy(Long bookId, BookCopyDto bookCopyDto) {
-        if(bookCopyWithIdentificationExists(bookCopyDto.getIdentification())){
+        if (bookCopyWithIdentificationExists(bookCopyDto.getIdentification())) {
             throw new BadRequestException(String.format("BookCopy with identificator %s exists",
                     bookCopyDto.getIdentification()));
         }
@@ -110,7 +110,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     public BookCopy findNotRentedBookCopy(Long bookId) {
         List<BookCopy> bookCopies = findBookCopiesByBook(bookId);
         List<BookCopy> list = bookCopies.stream().filter(x -> !x.isRented()).toList();
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             throw new NotFoundException(String.format("All books with id %s are rented", bookId));
         }
         return list.get(0);

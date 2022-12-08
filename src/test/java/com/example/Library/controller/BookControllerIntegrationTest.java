@@ -246,6 +246,7 @@ class BookControllerIntegrationTest {
         return createUser(FIRSTNAME_USER, LASTNAME_USER,
                 "adam995@gmail.com", ADDRESS, PASSWORD, role);
     }
+
     private User createUser(String firstName, String lastName, String email,
                             String address, String password, UserRole userRole) {
         User user = new User();

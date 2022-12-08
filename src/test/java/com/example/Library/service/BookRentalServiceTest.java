@@ -103,7 +103,7 @@ public class BookRentalServiceTest {
         Mockito.when(bookRentalRepository.save(any())).thenThrow(new NotFoundException(NOT_FOUND));
 
         Exception exception = assertThrows(NotFoundException.class,
-                ()-> bookRentalService.createBookRental(book.getId(), user.getId()));
+                () -> bookRentalService.createBookRental(book.getId(), user.getId()));
         assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 

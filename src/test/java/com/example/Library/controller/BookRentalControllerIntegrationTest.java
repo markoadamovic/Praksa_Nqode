@@ -149,7 +149,7 @@ public class BookRentalControllerIntegrationTest {
     }
 
     @Test
-    void updateRentedBook_returnHttpStatusNoContent() throws Exception{
+    void updateRentedBook_returnHttpStatusNoContent() throws Exception {
         BookRentalDto bookRentalDto = createBookRentalDto(1L, user.getId(), bookCopy.getId());
         String bookRentalDtoJson = mapper.writeValueAsString(bookRentalDto);
         mockMvc.perform(put(URL_BOOKRENTAL_PREFIX + "/{bookRentalId}", bookRental.getId())
@@ -161,7 +161,7 @@ public class BookRentalControllerIntegrationTest {
     }
 
     @Test
-    void updateRentedBook_returnHttpStatusForbidden() throws Exception{
+    void updateRentedBook_returnHttpStatusForbidden() throws Exception {
         User regularUser = createUser(UserRole.USER);
         loginUser(regularUser);
         BookRentalDto bookRentalDto = createBookRentalDto(1L, user.getId(), bookCopy.getId());
@@ -199,7 +199,7 @@ public class BookRentalControllerIntegrationTest {
     }
 
     @Test
-    void deleteBookRental_returnHttpStatusNoContent () throws Exception {
+    void deleteBookRental_returnHttpStatusNoContent() throws Exception {
         mockMvc.perform(delete(URL_BOOKRENTAL_PREFIX + "/{bookRentalId}", bookRental.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -294,6 +294,7 @@ public class BookRentalControllerIntegrationTest {
     private User createUser() {
         return createUser(FIRSTNAME_USER, LASTNAME_USER, EMAIL, ADDRESS, PASSWORD, USERROLE_USER);
     }
+
     private User createAuthUser() {
         return createUser(FIRSTNAME_USER, LASTNAME_USER, "adam95@gmail.com", ADDRESS, PASSWORD, USERROLE_ADMIN);
     }

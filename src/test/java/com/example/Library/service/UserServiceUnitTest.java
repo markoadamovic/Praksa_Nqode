@@ -189,7 +189,7 @@ public class UserServiceUnitTest {
                 PASSWORD, USERROLE_USER);
     }
 
-    private List<User> createUserList(User user){
+    private List<User> createUserList(User user) {
 
         return List.of(user);
     }

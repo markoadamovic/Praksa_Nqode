@@ -160,7 +160,7 @@ class AuthorControllerIntegrationTest {
         AuthorDto authorDto = createAuthorDto(FIRSTNAME_AUTHOR_DTO, LASTNAME_AUTHOR_DTO);
         String authorDtoJson = mapper.writeValueAsString(authorDto);
 
-        mockMvc.perform(put(URL_AUTHOR_PREFIX + "/{authorId}", 100l )
+        mockMvc.perform(put(URL_AUTHOR_PREFIX + "/{authorId}", 100l)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorDtoJson)
                         .accept(MediaType.APPLICATION_JSON))

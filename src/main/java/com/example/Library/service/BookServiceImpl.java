@@ -44,7 +44,7 @@ public class BookServiceImpl implements BookService {
                 .collect(Collectors.toList());
     }
 
-    public Book findBookModel(Long bookId){
+    public Book findBookModel(Long bookId) {
         return bookRepository.findById(bookId)
                 .orElseThrow(() -> new NotFoundException(String.format("Book with id %s is not found", bookId)));
     }
@@ -59,7 +59,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void delete(Long bookId) {
         Book book = findBookModel(bookId);
-        if(bookHasCopies(bookId)){
+        if (bookHasCopies(bookId)) {
             throw new BadRequestException(String.format("Book with id %s has bookCopies assigned to it", bookId));
         }
         bookRepository.delete(book);
