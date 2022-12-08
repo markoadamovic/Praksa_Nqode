@@ -93,7 +93,7 @@ public class UserServiceUnitTest {
 
     @Test
     void getUser_returnUserDto() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         UserDto expected = userService.getUser(user.getId());
         assertEquals(user.getId(), expected.getId());
@@ -118,7 +118,7 @@ public class UserServiceUnitTest {
 
     @Test
     void deleteUser() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         Mockito.when(userRepository.userHaveRentedBooks(user.getId())).thenReturn(false);
 
         userService.deleteUser(user.getId());
@@ -144,7 +144,7 @@ public class UserServiceUnitTest {
 
     @Test
     void updateUser_returnUserDto() {
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         Mockito.when(userRepository.save(any())).thenReturn(user);
 
         UserDto expected = userService.updateUser(userUpdated, user.getId());

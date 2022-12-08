@@ -59,8 +59,8 @@ public class BookCopyServiceUnitTest {
     @Test
     void createBookCopy_returnBookCopyDto() {
         Mockito.when(bookCopyRepository.findByIdentification(any())).thenReturn(Optional.empty());
-        Mockito.when(bookService.findBookModel(any())).thenReturn(book);
-        Mockito.when(bookCopyRepository.save(any())).thenReturn(bookCopy);
+        Mockito.when(bookService.findBookModel(book.getId())).thenReturn(book);
+        Mockito.when(bookCopyRepository.save(Mockito.any(BookCopy.class))).thenReturn(bookCopy);
 
         BookCopyDto expected = bookCopyService.createBookCopy(book.getId(), bookCopyDto);
         assertEquals(bookCopy.getIdentification(), expected.getIdentification());
@@ -68,7 +68,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void createBookCopy_throwBadRequestException_ifIdentificatorNotUnique() {
-        Mockito.when(bookCopyRepository.findByIdentification(any())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookCopyRepository.findByIdentification(bookCopy.getIdentification())).thenReturn(Optional.of(bookCopy));
 
         Exception exception = assertThrows(BadRequestException.class,
                 () -> bookCopyService.createBookCopy(1l, bookCopyDto));
@@ -87,7 +87,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void getBookCopy_returnBookCopyDto() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookCopyRepository.findById(bookCopy.getId())).thenReturn(Optional.of(bookCopy));
 
         BookCopyDto expected = bookCopyService.getBookCopy(bookCopy.getId());
         assertEquals(bookCopy.getId(), expected.getBookId());
@@ -112,7 +112,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void deleteBookCopy() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookCopyRepository.findById(bookCopy.getId())).thenReturn(Optional.of(bookCopy));
         Mockito.when(bookCopyRepository.isBookCopyRented(bookCopy.getId())).thenReturn(false);
 
         bookCopyService.delete(bookCopy.getId());
@@ -138,8 +138,8 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void updateBookCopy_returnBookCopyDto() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
-        Mockito.when(bookService.findBookModel(any())).thenReturn(book);
+        Mockito.when(bookCopyRepository.findById(bookCopy.getId())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookService.findBookModel(book.getId())).thenReturn(book);
         Mockito.when(bookCopyRepository.save(any())).thenReturn(bookCopy);
 
         BookCopyDto expected = bookCopyService.updateBookCopy(1L, bookCopyDto);
@@ -184,7 +184,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void findBookCopyModel_returnBookCopy() {
-        Mockito.when(bookCopyRepository.findById(any())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookCopyRepository.findById(bookCopy.getId())).thenReturn(Optional.of(bookCopy));
 
         BookCopy expected = bookCopyService.findBookCopyModel(bookCopy.getId());
         assertEquals(bookCopy.getId(), expected.getId());
