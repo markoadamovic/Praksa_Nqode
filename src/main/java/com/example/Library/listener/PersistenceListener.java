@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class PersistenceListener {
 
     @PrePersist
-    protected void setCreatedAt(Identity identity) {
+    protected void setCreatedAtAndBy(Identity identity) {
         identity.setCreatedAt(LocalDateTime.now());
         identity.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
     }

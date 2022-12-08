@@ -176,7 +176,7 @@ public class BookCopyServiceUnitTest {
 
     @Test
     void bookCopyWithIdentificationExists() {
-        Mockito.when(bookCopyRepository.findByIdentification(any())).thenReturn(Optional.of(bookCopy));
+        Mockito.when(bookCopyRepository.findByIdentification(bookCopy.getIdentification())).thenReturn(Optional.of(bookCopy));
 
         Boolean expected = bookCopyService.bookCopyWithIdentificationExists(bookCopy.getIdentification());
         assertEquals(true, expected );
