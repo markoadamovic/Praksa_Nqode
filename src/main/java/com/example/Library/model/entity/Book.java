@@ -3,7 +3,6 @@ package com.example.Library.model.entity;
 import com.example.Library.listener.PersistenceListener;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @EntityListeners(PersistenceListener.class)
@@ -18,9 +17,6 @@ public class Book extends Identity {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
-
-    @OneToMany(mappedBy = "book")
-    private List<BookCopy> bookCopy;
 
     public Book(String title, String description) {
         this.title = title;
