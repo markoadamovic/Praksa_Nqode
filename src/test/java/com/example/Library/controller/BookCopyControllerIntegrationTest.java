@@ -70,6 +70,7 @@ public class BookCopyControllerIntegrationTest {
     private void setUp() {
         User authUser = createUser();
         loginUser(authUser);
+
         author = createAuthor();
         book = createBook();
         bookCopy = createBookCopy();

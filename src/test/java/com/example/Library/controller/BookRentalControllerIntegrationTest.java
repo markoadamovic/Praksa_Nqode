@@ -69,6 +69,7 @@ public class BookRentalControllerIntegrationTest {
     private void setUp() {
         User authUser = createAuthUser();
         loginUser(authUser);
+
         user = createUser();
         author = createAuthor();
         book = createBook();

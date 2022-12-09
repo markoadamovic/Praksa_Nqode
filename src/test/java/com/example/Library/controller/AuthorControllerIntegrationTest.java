@@ -55,9 +55,7 @@ class AuthorControllerIntegrationTest {
 
     @BeforeEach
     private void setUp() {
-
         User authUser = createUser();
-
         loginUser(authUser);
 
         author = createAuthor();

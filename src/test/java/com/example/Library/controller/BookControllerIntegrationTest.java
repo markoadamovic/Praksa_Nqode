@@ -66,14 +66,11 @@ class BookControllerIntegrationTest {
 
     @BeforeEach
     private void setUp() {
-
         User authUser = createUser();
-
         loginUser(authUser);
 
         author = createAuthor();
         book = createBook(TITLE, DESCRIPTION, author);
-
     }
 
     private static void loginUser(User authUser) {
