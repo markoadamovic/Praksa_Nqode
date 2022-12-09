@@ -30,8 +30,6 @@ public class LocalWebSecurityConfiguration {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/authenticate/**").permitAll()
-//                .antMatchers("/register").permitAll()
-//                .antMatchers("/refreshToken").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api-docs/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
