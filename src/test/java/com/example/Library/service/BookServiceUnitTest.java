@@ -53,7 +53,7 @@ public class BookServiceUnitTest {
 
     @Test
     void createBook_returnBookDto(){
-        Mockito.when(authorService.findAuthorModel(any())).thenReturn(author);
+        Mockito.when(authorService.findAuthorModel(author.getId())).thenReturn(author);
         Mockito.when(bookRepository.save(any())).thenReturn(book);
 
         BookDto expected = bookService.createBook(bookDto, author.getId());
@@ -79,7 +79,7 @@ public class BookServiceUnitTest {
 
     @Test
     void findBookModel_returnBook() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
+        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
 
         Book expected = bookService.findBookModel(book.getId());
         assertEquals(book, expected);
@@ -95,7 +95,7 @@ public class BookServiceUnitTest {
 
     @Test
     void getBook_returnBookDto() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
+        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
 
         BookDto expected = bookService.getBook(book.getId());
         assertEquals(book.getId(), expected.getId());
@@ -112,7 +112,7 @@ public class BookServiceUnitTest {
 
     @Test
     void deleteBook() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
+        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
 
         bookService.delete(book.getId());
         verify(bookRepository).delete(book);
@@ -127,7 +127,7 @@ public class BookServiceUnitTest {
 
     @Test
     void updateBook_returnBookDto() {
-        Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
+        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
         Mockito.when(bookRepository.save(book)).thenReturn(book);
 
         BookDto expected = bookService.updateBook(bookDto, book.getId());

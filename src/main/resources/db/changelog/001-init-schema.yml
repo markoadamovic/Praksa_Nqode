@@ -66,5 +66,41 @@ databaseChangeLog:
              - column:
                  name: role
                  type: varchar(50)
-
-
+        - createTable:
+            tableName: book_copy
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+              - column:
+                  name: identification
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: is_rented
+                  type: boolean
+              - column:
+                  name: book_id
+                  type: bigint
+        - createTable:
+            tableName: book_rental
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+              - column:
+                  name: book_copy_id
+                  type: bigint
+              - column:
+                  name: user_id
+                  type: bigint
+              - column:
+                  name: rent_start
+                  type: datetime
+              - column:
+                  name: rent_end
+                  type: datetime

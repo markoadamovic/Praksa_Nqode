@@ -96,7 +96,7 @@ public class BookCopyServiceImpl implements BookCopyService {
     public List<BookCopy> findBookCopiesByBook(Long bookId) {
         Book book = bookService.findBookModel(bookId);
 
-        return bookCopyRepository.findByBook(book);
+        return bookCopyRepository.findByBookId(book.getId());
     }
 
     @Override
@@ -113,7 +113,7 @@ public class BookCopyServiceImpl implements BookCopyService {
         if(list.isEmpty()) {
             throw new NotFoundException(String.format("All books with id %s are rented", bookId));
         }
-        return bookCopies.stream().filter(x -> !x.isRented()).toList().get(0);
+        return list.get(0);
     }
 
 }

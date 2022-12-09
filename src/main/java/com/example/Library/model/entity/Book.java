@@ -1,17 +1,12 @@
 package com.example.Library.model.entity;
 
-import com.example.Library.model.entity.Author;
+import com.example.Library.listener.PersistenceListener;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-public class Book {
-
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@EntityListeners(PersistenceListener.class)
+public class Book extends Identity {
 
     @Column(name = "title")
     private String title;
@@ -22,9 +17,6 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
-
-    @OneToMany(mappedBy = "book")
-    private List<BookCopy> bookCopy;
 
     public Book(String title, String description) {
         this.title = title;

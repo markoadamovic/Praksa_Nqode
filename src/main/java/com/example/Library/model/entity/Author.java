@@ -1,16 +1,13 @@
 package com.example.Library.model.entity;
 
+import com.example.Library.listener.PersistenceListener;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Author {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+@EntityListeners(PersistenceListener.class)
+public class Author extends Identity {
 
     @Column(name = "first_name")
     private String firstName;
@@ -60,6 +57,5 @@ public class Author {
     public void setBooks(List<Book> books) {
         this.books = books;
     }
-
 
 }

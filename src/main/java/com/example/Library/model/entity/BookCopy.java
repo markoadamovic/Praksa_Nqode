@@ -1,14 +1,12 @@
 package com.example.Library.model.entity;
 
+import com.example.Library.listener.PersistenceListener;
+
 import javax.persistence.*;
 
 @Entity
-public class BookCopy {
-
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@EntityListeners(PersistenceListener.class)
+public class BookCopy extends Identity {
 
     @Column(name = "identification", unique = true, nullable = false)
     private String identification;
@@ -61,4 +59,5 @@ public class BookCopy {
     public void setRented(boolean rented) {
         isRented = rented;
     }
+
 }

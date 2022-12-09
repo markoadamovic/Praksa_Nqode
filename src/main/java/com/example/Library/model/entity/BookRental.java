@@ -1,15 +1,13 @@
 package com.example.Library.model.entity;
 
+import com.example.Library.listener.PersistenceListener;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class BookRental {
-
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@EntityListeners(PersistenceListener.class)
+public class BookRental extends Identity {
 
     @ManyToOne
     @JoinColumn(name = "book_copy_id")

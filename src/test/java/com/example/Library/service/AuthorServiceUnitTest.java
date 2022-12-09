@@ -50,7 +50,6 @@ public class AuthorServiceUnitTest {
     @Test
     void createNewAuthor_returnAuthorDto() {
         Mockito.when(authorRepository.save(any())).thenReturn(author);
-
         AuthorDto expectedDto = authorService.createAuthor(authorDto);
 
         assertEquals(authorDto.getId(), expectedDto.getId());
@@ -59,7 +58,7 @@ public class AuthorServiceUnitTest {
 
     @Test
     void findAuthor_returnAuthor() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author));
+        Mockito.when(authorRepository.findById(author.getId())).thenReturn(Optional.of(author));
 
         Author expected = authorService.findAuthorModel(author.getId());
         assertEquals(author, expected);
@@ -75,7 +74,7 @@ public class AuthorServiceUnitTest {
 
     @Test
     void getAuthor_returnAuthorDto() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author));
+        Mockito.when(authorRepository.findById(author.getId())).thenReturn(Optional.of(author));
 
         AuthorDto expected = authorService.getAuthor(author.getId());
         assertEquals(authorDto.getId(), expected.getId());
@@ -101,10 +100,10 @@ public class AuthorServiceUnitTest {
 
     @Test
     void updateAuthor_returnUpdatedAuthorDto() {
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author));
+        Mockito.when(authorRepository.findById(author.getId())).thenReturn(Optional.of(author));
         Mockito.when(authorRepository.save(author)).thenReturn(author);
 
-        AuthorDto expected = authorService.updateAuthor(authorDto, any());
+        AuthorDto expected = authorService.updateAuthor(authorDto, author.getId());
         assertEquals(author.getId(), expected.getId());
         assertEquals(authorDto.getFirstName(), expected.getFirstName());
         assertEquals(authorDto.getLastName(), expected.getLastName());
@@ -122,7 +121,7 @@ public class AuthorServiceUnitTest {
     @Test
     void deleteAuthor() {
         Mockito.when(authorRepository.isAuthorAssignedToBook(any())).thenReturn(false);
-        Mockito.when(authorRepository.findById(any())).thenReturn(Optional.ofNullable(author));
+        Mockito.when(authorRepository.findById(author.getId())).thenReturn(Optional.ofNullable(author));
 
         authorService.delete(author.getId());
         verify(authorRepository).delete(author);
