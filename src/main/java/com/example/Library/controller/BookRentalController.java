@@ -47,8 +47,7 @@ public class BookRentalController {
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<BookRentalDto> updateRentedBook(@PathVariable Long bookRentalId,
                                                           @RequestBody BookRentalDto bookRentalDto) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(bookRentalService.updateRentedBook(bookRentalId, bookRentalDto));
+        return ResponseEntity.status(HttpStatus.OK).body(bookRentalService.updateRentedBook(bookRentalId, bookRentalDto));
     }
 
     @GetMapping(value = "/activeRents")
