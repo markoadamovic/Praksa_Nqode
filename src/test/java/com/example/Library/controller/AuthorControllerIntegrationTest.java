@@ -88,6 +88,13 @@ class AuthorControllerIntegrationTest {
     }
 
     @Test
+    void getAuthor_returnHttpStatusNotFound_ifAuthorIsNotFound() throws Exception {
+        mockMvc.perform(get(URL_AUTHOR_PREFIX + "/{authorId}", 1234L))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void createAuthor_returnHttpStatusCreated() throws Exception {
         AuthorDto authorDto = createAuthorDto(FIRSTNAME_AUTHOR, LASTNAME_AUTHOR);
         String authorDtoJson = mapper.writeValueAsString(authorDto);

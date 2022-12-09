@@ -1,8 +1,13 @@
 package com.example.Library.controller;
 
 import com.example.Library.model.dto.AuthorDto;
+import com.example.Library.model.entity.Author;
 import com.example.Library.service.AuthorService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,13 +25,20 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @Operation(summary = "Create author", description = "Creating new author")
+
     @PostMapping
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authorService.createAuthor(authorDto));
     }
 
+    @Operation(summary = "Get author")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Author is found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Author.class)) }),
+            @ApiResponse(responseCode = "404", description = "Author not found",
+                    content = @Content) })
     @GetMapping(path = "/{authorId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR', 'USER'})")
     public ResponseEntity<AuthorDto> getAuthor(@PathVariable Long authorId) {
