@@ -2,6 +2,7 @@ package com.example.Library.controller;
 
 import com.example.Library.model.dto.AuthorDto;
 import com.example.Library.service.AuthorService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
+    @Operation(summary = "Create author", description = "Creating new author")
     @PostMapping
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {

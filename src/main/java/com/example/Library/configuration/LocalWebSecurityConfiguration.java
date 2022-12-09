@@ -33,6 +33,8 @@ public class LocalWebSecurityConfiguration {
                 .antMatchers("/register").permitAll()
                 .antMatchers("/refreshToken").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/api-docs/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
