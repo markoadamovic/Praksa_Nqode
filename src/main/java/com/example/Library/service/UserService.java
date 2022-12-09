@@ -1,5 +1,6 @@
 package com.example.Library.service;
 
+import com.example.Library.model.dto.BookRentalDto;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.model.entity.User;
@@ -28,4 +29,5 @@ public interface UserService {
 
     boolean userWithEmailExists(String email);
 
+    List<BookRentalDto> getRentedBooks(Long userId);
 }

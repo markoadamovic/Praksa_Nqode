@@ -2,9 +2,12 @@ package com.example.Library.service;
 
 import com.example.Library.exception.BadRequestException;
 import com.example.Library.exception.NotFoundException;
+import com.example.Library.model.dto.BookRentalDto;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
+import com.example.Library.model.entity.BookRental;
 import com.example.Library.model.entity.User;
+import com.example.Library.model.mapper.BookRentalMapper;
 import com.example.Library.model.mapper.UserMapper;
 import com.example.Library.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,6 +46,14 @@ public class UserServiceImpl implements UserService {
 
     public boolean userWithEmailExists(String email) {
         return userRepository.findByEmail(email).isPresent();
+    }
+
+    @Override
+    public List<BookRentalDto> getRentedBooks(Long userId) {
+        List<BookRental> bookRentals = userRepository.getBookRentals(userId);
+        return bookRentals.stream()
+                .map(BookRentalMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public User findUserModel(Long userId) {

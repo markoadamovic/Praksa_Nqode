@@ -1,5 +1,6 @@
 package com.example.Library.controller;
 
+import com.example.Library.model.dto.BookRentalDto;
 import com.example.Library.model.dto.UserCreateDto;
 import com.example.Library.model.dto.UserDto;
 import com.example.Library.service.UserService;
@@ -51,6 +52,12 @@ public class UserController {
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto,
                                               @PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userDto, userId));
+    }
+
+    @GetMapping(path = "/getRentals/{userId}")
+    @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR', 'USER'})")
+    public ResponseEntity<List<BookRentalDto>> getRentedBooksForUser(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getRentedBooks(userId));
     }
 
 }
