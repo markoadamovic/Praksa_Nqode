@@ -32,13 +32,15 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(authorService.createAuthor(authorDto));
     }
 
-    @Operation(summary = "Get author")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Author is found",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Author.class)) }),
-            @ApiResponse(responseCode = "404", description = "Author not found",
-                    content = @Content) })
+//    @Operation(summary = "Get author for requested ID")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Author is successfully retrieved from DB",
+//                    content = { @Content(mediaType = "application/json",
+//                            schema = @Schema(implementation = Author.class)) }),
+//            @ApiResponse(responseCode = "401", description = "You are not authorized"),
+//            @ApiResponse(responseCode = "404", description = "Author is not found",
+//                    content = @Content)
+//    })
     @GetMapping(path = "/{authorId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR', 'USER'})")
     public ResponseEntity<AuthorDto> getAuthor(@PathVariable Long authorId) {
