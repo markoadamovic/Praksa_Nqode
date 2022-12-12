@@ -30,9 +30,12 @@ public class BookController {
             operationId = "createBook",
             summary = "Create book",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Successfully created",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully created",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookDto.class)))
+                                    schema = @Schema(implementation = BookDto.class))
+                    )
             }
     )
     @PostMapping()
@@ -46,9 +49,12 @@ public class BookController {
             operationId = "getBooks",
             summary = "Get books",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Successfully returned list of books",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully returned list of books",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = BookDto.class))))
+                                    array = @ArraySchema(schema = @Schema(implementation = BookDto.class)))
+                    )
             }
     )
     @GetMapping
@@ -64,10 +70,15 @@ public class BookController {
             operationId = "getBook",
             summary = "Get book",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Book is not found",
+                                    schema = @Schema(implementation = BookDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Book is not found",
                             content = @Content(mediaType = "application/json"))
             }
     )
@@ -103,11 +114,17 @@ public class BookController {
             operationId = "updateBook",
             summary = "Update book",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Book is updated",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Book is updated",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookDto.class))),
-                    @ApiResponse(responseCode = "404", description = "Book is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    schema = @Schema(implementation = BookDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Book is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @PutMapping(path = "/{bookId}")

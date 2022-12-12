@@ -31,9 +31,12 @@ public class BookCopyController {
             operationId = "updateBook",
             summary = "Update book",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Book is created",
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Book is created",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookCopyDto.class)))
+                                    schema = @Schema(implementation = BookCopyDto.class))
+                    )
             }
     )
     @PostMapping(value = "/book/{bookId}")
@@ -48,11 +51,17 @@ public class BookCopyController {
             operationId = "getBookCopy",
             summary = "Get book copy",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "BookCopy is successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "BookCopy is successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookCopyDto.class))),
-                    @ApiResponse(responseCode = "404", description = "BookCopy with provided ID is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    schema = @Schema(implementation = BookCopyDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "BookCopy with provided ID is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @GetMapping(path = "/{bookCopyId}")
@@ -66,9 +75,12 @@ public class BookCopyController {
             operationId = "getBookCopies",
             summary = "Get book copies",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "BookCopy list is successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "BookCopy list is successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = BookCopyDto.class))))
+                                    array = @ArraySchema(schema = @Schema(implementation = BookCopyDto.class)))
+                    )
             }
     )
     @GetMapping
@@ -100,11 +112,17 @@ public class BookCopyController {
             operationId = "updateBookCopy",
             summary = "Update book copy",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Book is successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Book is successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookCopyDto.class))),
-                    @ApiResponse(responseCode = "404", description = "BookCopy with provided ID is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    schema = @Schema(implementation = BookCopyDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "BookCopy with provided ID is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @PutMapping(path = "/{bookCopyId}")

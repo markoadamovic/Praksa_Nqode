@@ -29,9 +29,12 @@ public class AuthorController {
             operationId = "createAuthor",
             summary = "Create author",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Successfully created",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully created",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthorDto.class)))
+                                    schema = @Schema(implementation = AuthorDto.class))
+                    )
             }
     )
     @PostMapping
@@ -45,11 +48,17 @@ public class AuthorController {
             operationId = "getAuthor",
             summary = "Get author",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Author is successfully retrieved from database",
-                            content = { @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthorDto.class)) }),
-                    @ApiResponse(responseCode = "404", description = "Author is not found",
-                            content = @Content(mediaType = "application/json"))
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Author is successfully retrieved from database",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = AuthorDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Author is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @GetMapping(path = "/{authorId}")
@@ -65,9 +74,12 @@ public class AuthorController {
             operationId = "getAuthors",
             summary = "Get authors",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Authors are successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Authors are successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = AuthorDto.class))))
+                                    array = @ArraySchema(schema = @Schema(implementation = AuthorDto.class)))
+                    )
             }
     )
     @GetMapping

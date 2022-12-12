@@ -29,9 +29,12 @@ public class UserController {
             operationId = "createUser",
             summary = "Create user",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Successfully created",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully created",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = UserDto.class)))
+                                    schema = @Schema(implementation = UserDto.class))
+                    )
             }
     )
     @PostMapping
@@ -45,11 +48,17 @@ public class UserController {
             operationId = "getUser",
             summary = "Get user",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = UserDto.class))),
-                    @ApiResponse(responseCode = "404", description = "User with provided ID is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    schema = @Schema(implementation = UserDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "User with provided ID is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @GetMapping(path = "/{userId}")
@@ -63,9 +72,12 @@ public class UserController {
             operationId = "getUsers",
             summary = "Get users",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class))))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
+                    )
             }
     )
     @GetMapping
@@ -98,11 +110,17 @@ public class UserController {
             operationId = "updateUser",
             summary = "Update user",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "Successfully updated",
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Successfully updated",
                             content = @Content(mediaType = "application/json",
-                                    schema =  @Schema(implementation = UserDto.class))),
-                    @ApiResponse(responseCode = "404", description = "User is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    schema =  @Schema(implementation = UserDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "User is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @PutMapping(path = "/{userId}")
@@ -117,11 +135,17 @@ public class UserController {
             operationId = "getRentedBooksForUser",
             summary = "Get rented books",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "Successfully returned",
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = BookRentalDto.class)))),
-                    @ApiResponse(responseCode = "404", description = "User is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    array = @ArraySchema(schema = @Schema(implementation = BookRentalDto.class)))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "User is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @GetMapping(path = "/getRentals/{userId}")

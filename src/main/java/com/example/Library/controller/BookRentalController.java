@@ -27,9 +27,12 @@ public class BookRentalController {
             operationId = "createBookRental",
             summary = "Create book rental",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Book rental is successfully created",
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Book rental is successfully created",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookRentalDto.class)))
+                                    schema = @Schema(implementation = BookRentalDto.class))
+                    )
             }
     )
     @PostMapping(path = "/book/{bookId}/user/{userId}")
@@ -44,11 +47,17 @@ public class BookRentalController {
             operationId = "endBookRental",
             summary = "End book rental",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Book rental is successfully finished",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Book rental is successfully finished",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookRentalDto.class))),
-                    @ApiResponse(responseCode = "404", description = "BookCopy with provided ID is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    schema = @Schema(implementation = BookRentalDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "BookCopy with provided ID is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @PostMapping(path = "/book/{bookId}/bookCopy/{bookCopyId}")
@@ -63,9 +72,12 @@ public class BookRentalController {
             operationId = "getRentedBooks",
             summary = "Get rented books",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "List of book rentals is successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "List of book rentals is successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = BookRentalDto.class))))
+                                    array = @ArraySchema(schema = @Schema(implementation = BookRentalDto.class)))
+                    )
             }
     )
     @GetMapping
@@ -79,11 +91,17 @@ public class BookRentalController {
             operationId = "getBookRental",
             summary = "Get book rental",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "BookRental is successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "BookRental is successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookRentalDto.class))),
-                    @ApiResponse(responseCode = "404", description = "BookRental with provided ID is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    schema = @Schema(implementation = BookRentalDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "BookRental with provided ID is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @GetMapping(path = "/{bookRentalId}")
@@ -97,11 +115,17 @@ public class BookRentalController {
             operationId = "updateBookRental",
             summary = "Update book rental",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "BookRental is successfully updated",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "BookRental is successfully updated",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookRentalDto.class))),
-                    @ApiResponse(responseCode = "404", description = "BookRental with provided ID is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    schema = @Schema(implementation = BookRentalDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "BookRental with provided ID is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @PutMapping(path = "/{bookRentalId}")
@@ -117,9 +141,12 @@ public class BookRentalController {
             operationId = "getActiveRents",
             summary = "Get active book rentals",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "List of BookRentals is successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "List of BookRentals is successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = BookRentalDto.class))))
+                                    array = @ArraySchema(schema = @Schema(implementation = BookRentalDto.class)))
+                    )
             }
     )
     @GetMapping(value = "/activeRents")
@@ -133,11 +160,17 @@ public class BookRentalController {
             operationId = "getClosedRents",
             summary = "Get closed book rentals",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "List of BookRentals is successfully returned",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "List of BookRentals is successfully returned",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = BookRentalDto.class)))),
-                    @ApiResponse(responseCode = "404", description = "BookRental with provided ID is not found",
-                            content = @Content(mediaType = "application/json"))
+                                    array = @ArraySchema(schema = @Schema(implementation = BookRentalDto.class)))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "BookRental with provided ID is not found",
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
     @GetMapping(value = "/closedRents")
