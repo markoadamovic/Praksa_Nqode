@@ -28,9 +28,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto createBook(BookDto bookDto, Long authorId) {
+    public BookDto createBook(BookDto bookDto) {
         Book book = BookMapper.toEntity(bookDto);
-        book.setAuthor(authorService.findAuthorModel(authorId));
+        book.setAuthor(authorService.findAuthorModel(bookDto.getAuthorId()));
 
         return BookMapper.toDto(bookRepository.save(book));
     }

@@ -34,13 +34,22 @@ public class BookController {
                                     schema = @Schema(implementation = BookDto.class)))
             }
     )
-    @PostMapping(value = "/author/{authorId}")
+    @PostMapping()
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
-    public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto,
-                                              @PathVariable Long authorId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDto, authorId));
+    public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDto));
     }
 
+    @Operation(
+            description = "Get list of all books",
+            operationId = "getBooks",
+            summary = "Get books",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully returned list of books",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = BookDto.class)))
+            }
+    )
     @GetMapping
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR', 'USER'})")
     public ResponseEntity<List<BookDto>> getBooks() {
@@ -49,6 +58,18 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(bookList);
     }
 
+    @Operation(
+            description = "Get book for provided ID",
+            operationId = "getBook",
+            summary = "Get book",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully returned",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = BookDto.class))),
+                    @ApiResponse(responseCode = "400", description = "Book is not found",
+                            content = @Content(mediaType = "application/json"))
+            }
+    )
     @GetMapping(path = "/{bookId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR', 'USER'})")
     public ResponseEntity<BookDto> getBook(@PathVariable Long bookId) {
@@ -57,6 +78,15 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(bookDto);
     }
 
+    @Operation(
+            description = "Delete book for provided id",
+            operationId = "deleteBook",
+            summary = "Delete book",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Successfully deleted"),
+                    @ApiResponse(responseCode = "404", description = "Book is not found")
+            }
+    )
     @DeleteMapping(path = "/{bookId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<Void> deleteBook(@PathVariable Long bookId) {
@@ -65,6 +95,18 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Operation(
+            description = "Find book by provided id and update it",
+            operationId = "updateBook",
+            summary = "Update book",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Book is updated",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = BookDto.class))),
+                    @ApiResponse(responseCode = "404", description = "Book is not found",
+                            content = @Content(mediaType = "application/json"))
+            }
+    )
     @PutMapping(path = "/{bookId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<BookDto> updateBook(@RequestBody BookDto bookDto,
