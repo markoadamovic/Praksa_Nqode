@@ -1,13 +1,12 @@
 package com.example.Library.controller;
 
 import com.example.Library.model.dto.AuthorDto;
-import com.example.Library.model.entity.Author;
 import com.example.Library.service.AuthorService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,22 +24,34 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-
+    @Operation(
+            description = "Create Author and save it to database",
+            operationId = "createAuthor",
+            summary = "Create Author",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully created",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = AuthorDto.class)))
+            }
+    )
     @PostMapping
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authorService.createAuthor(authorDto));
     }
 
-//    @Operation(summary = "Get author for requested ID")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Author is successfully retrieved from DB",
-//                    content = { @Content(mediaType = "application/json",
-//                            schema = @Schema(implementation = Author.class)) }),
-//            @ApiResponse(responseCode = "401", description = "You are not authorized"),
-//            @ApiResponse(responseCode = "404", description = "Author is not found",
-//                    content = @Content)
-//    })
+    @Operation(
+            description = "Get author for provided ID",
+            operationId = "getAuthor",
+            summary = "Get Author",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Author is successfully retrieved from database",
+                            content = { @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = AuthorDto.class)) }),
+                    @ApiResponse(responseCode = "404", description = "Author is not found",
+                            content = @Content(mediaType = "application/json"))
+            }
+    )
     @GetMapping(path = "/{authorId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR', 'USER'})")
     public ResponseEntity<AuthorDto> getAuthor(@PathVariable Long authorId) {
@@ -49,6 +60,16 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.OK).body(authorDto);
     }
 
+    @Operation(
+            description = "Get list of authors",
+            operationId = "getAuthors",
+            summary = "Get authors",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Authors are successfully returned",
+                            content = @Content(mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = AuthorDto.class))))
+            }
+    )
     @GetMapping
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<List<AuthorDto>> getAuthors() {
@@ -57,6 +78,16 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.OK).body(authorsDto);
     }
 
+    @Operation(
+            description = "Delete author for provided ID",
+            operationId = "deleteAuthor",
+            summary = "Delete author",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Author is successfully deleted"),
+                    @ApiResponse(responseCode = "404", description = "Author is not found"),
+                    @ApiResponse(responseCode = "400", description = "Author can not be deleted")
+            }
+    )
     @DeleteMapping(value = "/{authorId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long authorId) {
@@ -65,6 +96,22 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Operation(
+            description = "Find author for requested ID and update its fields",
+            operationId = "updateAuthor",
+            summary = "Update Author",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully updated",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = AuthorDto.class))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "The Author is not found",
+                            content = @Content(mediaType = "application/json"))
+            }
+    )
     @PutMapping(path = "/{authorId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<AuthorDto> updateAuthor(@RequestBody AuthorDto authorDto,

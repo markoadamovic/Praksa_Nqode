@@ -1,7 +1,12 @@
 package com.example.Library.controller;
 
+import com.example.Library.model.dto.AuthorDto;
 import com.example.Library.model.dto.BookDto;
 import com.example.Library.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +24,16 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    @Operation(
+            description = "Create Book and save it to database",
+            operationId = "createBook",
+            summary = "Create Book",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully created",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = BookDto.class)))
+            }
+    )
     @PostMapping(value = "/author/{authorId}")
     @PreAuthorize("@authService.hasAccess({'ADMINISTRATOR'})")
     public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto,
