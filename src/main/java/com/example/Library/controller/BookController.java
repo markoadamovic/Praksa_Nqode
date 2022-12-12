@@ -4,6 +4,7 @@ import com.example.Library.model.dto.AuthorDto;
 import com.example.Library.model.dto.BookDto;
 import com.example.Library.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +28,7 @@ public class BookController {
     @Operation(
             description = "Create Book and save it to database",
             operationId = "createBook",
-            summary = "Create Book",
+            summary = "Create book",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully created",
                             content = @Content(mediaType = "application/json",
@@ -47,7 +48,7 @@ public class BookController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully returned list of books",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookDto.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = BookDto.class))))
             }
     )
     @GetMapping
@@ -59,7 +60,7 @@ public class BookController {
     }
 
     @Operation(
-            description = "Get book for provided ID",
+            description = "Get book by provided ID",
             operationId = "getBook",
             summary = "Get book",
             responses = {
@@ -79,12 +80,14 @@ public class BookController {
     }
 
     @Operation(
-            description = "Delete book for provided id",
+            description = "Delete book with provided ID",
             operationId = "deleteBook",
             summary = "Delete book",
             responses = {
                     @ApiResponse(responseCode = "204", description = "Successfully deleted"),
-                    @ApiResponse(responseCode = "404", description = "Book is not found")
+                    @ApiResponse(responseCode = "404", description = "Book is not found"),
+                    @ApiResponse(responseCode = "400", description = "Book can not be deleted because" +
+                            " it is assigned to another entity")
             }
     )
     @DeleteMapping(path = "/{bookId}")
@@ -96,7 +99,7 @@ public class BookController {
     }
 
     @Operation(
-            description = "Find book by provided id and update it",
+            description = "Update book by provided ID",
             operationId = "updateBook",
             summary = "Update book",
             responses = {

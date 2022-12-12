@@ -14,13 +14,13 @@ public interface BookRentalService {
 
     void delete(Long bookRentalId);
 
-    List<BookRentalDto> getRentedBooks();
+    List<BookRentalDto> getBookRentals();
 
     BookRentalDto endBookRental(Long bookId, Long bookCopyId);
 
     BookRental getBookRentalByBookCopy(BookCopy bookCopy);
 
-    BookRentalDto getRentedBook(Long bookRentalId);
+    BookRentalDto getBookRental(Long bookRentalId);
 
     BookRentalDto updateRentedBook(Long bookRentalId, BookRentalDto bookRentalDto);
 

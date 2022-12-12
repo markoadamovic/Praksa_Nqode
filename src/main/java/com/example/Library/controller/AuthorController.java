@@ -27,7 +27,7 @@ public class AuthorController {
     @Operation(
             description = "Create Author and save it to database",
             operationId = "createAuthor",
-            summary = "Create Author",
+            summary = "Create author",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully created",
                             content = @Content(mediaType = "application/json",
@@ -41,9 +41,9 @@ public class AuthorController {
     }
 
     @Operation(
-            description = "Get author for provided ID",
+            description = "Get author by provided ID",
             operationId = "getAuthor",
-            summary = "Get Author",
+            summary = "Get author",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Author is successfully retrieved from database",
                             content = { @Content(mediaType = "application/json",
@@ -79,13 +79,14 @@ public class AuthorController {
     }
 
     @Operation(
-            description = "Delete author for provided ID",
+            description = "Delete author with provided ID",
             operationId = "deleteAuthor",
             summary = "Delete author",
             responses = {
                     @ApiResponse(responseCode = "204", description = "Author is successfully deleted"),
-                    @ApiResponse(responseCode = "404", description = "Author is not found"),
-                    @ApiResponse(responseCode = "400", description = "Author can not be deleted")
+                    @ApiResponse(responseCode = "404", description = "Author with provided id is not found"),
+                    @ApiResponse(responseCode = "400", description = "Author can not be deleted because " +
+                            "it is assigned to another entity")
             }
     )
     @DeleteMapping(value = "/{authorId}")
@@ -97,9 +98,9 @@ public class AuthorController {
     }
 
     @Operation(
-            description = "Find author for requested ID and update its fields",
+            description = "Update author by provided ID",
             operationId = "updateAuthor",
-            summary = "Update Author",
+            summary = "Update author",
             responses = {
                     @ApiResponse(
                             responseCode = "200",

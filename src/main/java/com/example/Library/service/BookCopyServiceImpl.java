@@ -103,7 +103,8 @@ public class BookCopyServiceImpl implements BookCopyService {
     public BookCopy findBookCopyByBookId(Long bookId, Long bookCopyId) {
         Book book = bookService.findBookModel(bookId);
 
-        return bookCopyRepository.findBookCopyByBookId(bookId, bookCopyId);
+        return bookCopyRepository.findBookCopyByBookId(bookId, bookCopyId)
+                .orElseThrow(() -> new NotFoundException(String.format("BookCopy with id %s is not found", bookCopyId)));
     }
 
     @Override

@@ -108,21 +108,13 @@ public class BookRentalServiceTest {
     }
 
     @Test
-    void getRentedBooks_returnListBookRentalDto() {
+    void getBookRentals_returnListBookRentalDto() {
         Mockito.when(bookRentalRepository.findAll()).thenReturn(bookRentalList);
-        List<BookRentalDto> expected = bookRentalService.getRentedBooks();
+        List<BookRentalDto> expected = bookRentalService.getBookRentals();
 
         assertEquals(bookRentalList.get(0).getBookCopy().getId(), expected.get(0).getBookCopy());
         assertEquals(bookRentalList.get(0).getUser().getId(), expected.get(0).getUserId());
         assertEquals(bookRentalList.get(0).getRentStart(), expected.get(0).getRentStart());
-    }
-
-    @Test
-    void getRentedBooks_throwNotFoundException_ifBookRentalIsNotFound() {
-        Mockito.when(bookRentalRepository.findAll()).thenThrow(new NotFoundException(NOT_FOUND));
-
-        Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.getRentedBooks());
-        assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 
     @Test
@@ -186,7 +178,7 @@ public class BookRentalServiceTest {
     void getRentedBook_returnBookRentalDto() {
         Mockito.when(bookRentalRepository.findById(any())).thenReturn(Optional.of(bookRental));
 
-        BookRentalDto expected = bookRentalService.getRentedBook(bookRental.getId());
+        BookRentalDto expected = bookRentalService.getBookRental(bookRental.getId());
         assertEquals(bookRental.getBookCopy().getId(), expected.getBookCopy());
         assertEquals(bookRental.getUser().getId(), expected.getUserId());
     }
@@ -195,7 +187,7 @@ public class BookRentalServiceTest {
     void getRentedBook_throwNotFoundException_ifBookRentalIsNotFound() {
         Mockito.when(bookRentalRepository.findById(any())).thenThrow(new NotFoundException(NOT_FOUND));
 
-        Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.getRentedBook(any()));
+        Exception exception = assertThrows(NotFoundException.class, () -> bookRentalService.getBookRental(any()));
         assertTrue(exception.getMessage().contains(NOT_FOUND));
     }
 

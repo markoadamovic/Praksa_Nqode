@@ -135,17 +135,24 @@ public class BookRentalControllerIntegrationTest {
     }
 
     @Test
-    void getRentedBook_returnHttpStatusOk() throws Exception {
+    void getBookRental_returnHttpStatusOk() throws Exception {
         mockMvc.perform(get(URL_BOOKRENTAL_PREFIX + "/{bookRentalId}", bookRental.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    void getRentedBook_throwNotFoundException_ifRentedBookIsNotFound() throws Exception {
+    void getBookRental_throwNotFoundException_ifRentedBookIsNotFound() throws Exception {
         mockMvc.perform(get(URL_BOOKRENTAL_PREFIX + "/{bookRentalId}", 11111L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getBookRentals_returnHttpStatusOk() throws Exception {
+        mockMvc.perform(get(URL_BOOKRENTAL_PREFIX))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
