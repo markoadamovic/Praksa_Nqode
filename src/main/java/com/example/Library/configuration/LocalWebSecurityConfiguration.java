@@ -29,10 +29,10 @@ public class LocalWebSecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/authenticate").permitAll()
-                .antMatchers("/register").permitAll()
-                .antMatchers("/refreshToken").permitAll()
+                .antMatchers("/authenticate/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/api-docs/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

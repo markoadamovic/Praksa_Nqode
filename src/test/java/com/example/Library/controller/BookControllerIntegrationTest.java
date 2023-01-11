@@ -96,7 +96,7 @@ class BookControllerIntegrationTest {
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
-        mockMvc.perform(post(URL_BOOK_PREFIX + "/author/{authorId}", author.getId())
+        mockMvc.perform(post(URL_BOOK_PREFIX)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -113,7 +113,7 @@ class BookControllerIntegrationTest {
         BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, author.getId());
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
-        mockMvc.perform(post(URL_BOOK_PREFIX + "/author/{authorId}", author.getId())
+        mockMvc.perform(post(URL_BOOK_PREFIX)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -123,10 +123,10 @@ class BookControllerIntegrationTest {
 
     @Test
     void createBook_returnNotFoundException_ifAuthorIsNotFound() throws Exception {
-        BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, 1L);
+        BookDto bookDto = createBookDto(BOOKDTO_ID, TITLE, DESCRIPTION, 1000L);
         String bookDtoJson = mapper.writeValueAsString(bookDto);
 
-        mockMvc.perform(post(URL_BOOK_PREFIX + "/author/{authorId}", 1000L)
+        mockMvc.perform(post(URL_BOOK_PREFIX)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookDtoJson)
                         .accept(MediaType.APPLICATION_JSON))
@@ -246,6 +246,7 @@ class BookControllerIntegrationTest {
         return createUser(FIRSTNAME_USER, LASTNAME_USER,
                 "adam995@gmail.com", ADDRESS, PASSWORD, role);
     }
+
     private User createUser(String firstName, String lastName, String email,
                             String address, String password, UserRole userRole) {
         User user = new User();

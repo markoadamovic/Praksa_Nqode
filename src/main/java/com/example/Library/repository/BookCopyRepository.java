@@ -18,7 +18,7 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Long> {
     List<BookCopy> findByBookId(Long bookId);
 
     @Query("SELECT bc FROM BookCopy bc where bc.book.id = :bookId and bc.id= :bookCopyId")
-    BookCopy findBookCopyByBookId(@Param("bookId") Long bookId,
+    Optional<BookCopy> findBookCopyByBookId(@Param("bookId") Long bookId,
                                   @Param("bookCopyId") Long bookCopyId);
 
     @Query("SELECT count(br) > 0 FROM BookRental br " +

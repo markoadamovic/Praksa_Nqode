@@ -57,7 +57,7 @@ public class BookRentalServiceImpl implements BookRentalService {
     }
 
     @Override
-    public List<BookRentalDto> getRentedBooks() {
+    public List<BookRentalDto> getBookRentals() {
         List<BookRental> bookRentals = bookRentalRepository.findAll();
         return bookRentals.stream()
                 .map(BookRentalMapper::toDto)
@@ -80,7 +80,7 @@ public class BookRentalServiceImpl implements BookRentalService {
     }
 
     @Override
-    public BookRentalDto getRentedBook(Long bookRentalId) {
+    public BookRentalDto getBookRental(Long bookRentalId) {
         return BookRentalMapper.toDto(getBookRentalModelById(bookRentalId));
     }
 

@@ -74,7 +74,7 @@ class UserControllerIntegrationTest {
     @Test
     void createUser_returnHttpStatusCreated() throws Exception {
         UserCreateDto userCreateDto = new UserCreateDto(FIRSTNAME_USER, LASTNAME_USER, EMAIL_CREATE,
-                                                        ADDRESS, PASSWORD, USERROLE_USER);
+                ADDRESS, PASSWORD, USERROLE_USER);
         String userCreateDtoJson = mapper.writeValueAsString(userCreateDto);
         mockMvc.perform(post(URL_USER_PREFIX)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -217,7 +217,7 @@ class UserControllerIntegrationTest {
         return userRepository.save(user);
     }
 
-    private UserDto createUserDto(String firstName, String lastName,String email, String address, UserRole userRole) {
+    private UserDto createUserDto(String firstName, String lastName, String email, String address, UserRole userRole) {
         UserDto userDto = new UserDto();
         userDto.setFirstName(firstName);
         userDto.setLastName(lastName);

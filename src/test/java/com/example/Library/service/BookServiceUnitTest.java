@@ -56,7 +56,7 @@ public class BookServiceUnitTest {
         Mockito.when(authorService.findAuthorModel(author.getId())).thenReturn(author);
         Mockito.when(bookRepository.save(any())).thenReturn(book);
 
-        BookDto expected = bookService.createBook(bookDto, author.getId());
+        BookDto expected = bookService.createBook(bookDto);
         assertEquals(bookDto.getId(), expected.getId());
     }
 
@@ -64,7 +64,7 @@ public class BookServiceUnitTest {
     void createBook_IfAuthorNotExists_ThrowNotFoundException() {
         Mockito.when(authorService.findAuthorModel(any())).thenThrow(new NotFoundException("Author is not found"));
 
-        Exception exception = assertThrows(NotFoundException.class, () -> bookService.createBook(bookDto, any()));
+        Exception exception = assertThrows(NotFoundException.class, () -> bookService.createBook(bookDto));
         assertTrue(exception.getMessage().contains("Author is not found"));
     }
 
